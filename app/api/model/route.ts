@@ -8,5 +8,5 @@ export async function GET() {
 // Handle POST requests
 export async function POST(request: Request) {
   const data = await request.json();
-  return NextResponse.json({ received: data });
+  return NextResponse.json({ answer: data.message });
 }

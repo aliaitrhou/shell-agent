@@ -21,18 +21,18 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
     },
   ]);
   const { user } = useUser();
-  const { openSignUp } = useClerk();
+  const { openSignIn } = useClerk();
 
   const handlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const el = e.target as HTMLInputElement;
     setMsg(el.value);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!user) {
-      openSignUp();
+      openSignIn();
     }
 
     setMessages((prev) => [
@@ -45,6 +45,30 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
     console.log("Message : ", msg);
     //TODO: request to model api
+    const answer = await getModelAnswer();
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "assistent",
+        m: answer,
+      },
+    ]);
+  };
+
+  const getModelAnswer = async () => {
+    const res = await fetch("/api/model", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: msg,
+      }),
+    });
+
+    const data = await res.json();
+    return data.answer;
   };
 
   useEffect(() => {
@@ -57,12 +81,28 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
     <div
       className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center border-2 border-green-400 border-dashed`}
     >
-      {hasMessages ? (
-        <section className="flex-1 w-full border-2 border-orange-500 border-dashed">
-          hello
-          {/* {messages.map((msg) => { */}
-          {/*   <div>{msg.m}</div>; */}
-          {/* })} */}
+      {hasMessages && user ? (
+        <section className="flex-1 max-h-[800px] overflow-y-auto w-full border-2 border-orange-500 border-dashed space-y-4">
+          {messages
+            .filter((message) => message.m.trim() !== "")
+            .map((msg, index) => (
+              <div
+                key={index}
+                className={`w-full flex ${
+                  msg.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`border-2 border-orange-500 border-dashed max-w-[75%] p-2 rounded-lg  ${
+                    msg.role === "user"
+                      ? "bg-blue-500 text-right text-white"
+                      : "bg-gray-300 text-left text-black"
+                  }`}
+                >
+                  <p>{msg.m}</p>
+                </div>
+              </div>
+            ))}
         </section>
       ) : (
         <p className="text-xl sm:text-2xl md:text-3xl font-bold">
