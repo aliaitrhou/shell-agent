@@ -261,7 +261,7 @@ export function PlaceholdersAndVanishInput({
                 opacity: 0,
               }}
               transition={{
-                duration: 0.3,
+                duration: 0.6,
                 ease: "linear",
               }}
               className="dark:text-zinc-500 text-sm sm:text-base font-normal text-neutral-500 pl-4 sm:pl-12 text-left w-[calc(100%-2rem)] truncate"
