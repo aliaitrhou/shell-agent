@@ -6,18 +6,32 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import Image from "next/image";
+import logo from "@/public/msgs.png";
+import Link from "next/link";
 
 const Header = () => {
   return (
-    <nav className="w-full flex flex-row justify-between items-center">
-      <div>
-        <p className="text-3xl font-bold bg-gradient-to-r from-orange-500  to-yellow-500 bg-clip-text text-transparent">
-          AceOS
-        </p>
-      </div>
+    <nav className="absolute w-full flex flex-row justify-between items-center px-6 p-4">
+      <Link href="/">
+        <div className="flex flex-row gap-1">
+          <Image src={logo} alt="logo" width={35} height={30} />
+          <p className="text-2xl font-bold bg-gradient-to-r from-orange-500  to-yellow-500 bg-clip-text text-transparent">
+            AceOS
+          </p>
+        </div>
+      </Link>
       <div className="space-x-2">
         <SignedIn>
-          <UserButton appearance={{ baseTheme: dark }} afterSignOutUrl="/" />
+          <UserButton
+            appearance={{
+              baseTheme: dark,
+              elements: {
+                userButtonAvatarBox: "w-10 h-10", // Adjust avatar size
+              },
+            }}
+            afterSignOutUrl="/"
+          />
         </SignedIn>
         <SignedOut>
           <SignInButton mode="modal">
