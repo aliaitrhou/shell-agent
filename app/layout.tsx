@@ -5,6 +5,12 @@ import { dark } from "@clerk/themes";
 import Header from "./components/hearder";
 import Footer from "./components/footer";
 
+const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+if (!clerkKey) {
+  throw new Error("Missing Clerk publishableKey.");
+}
+
 export const metadata: Metadata = {
   title: "AceOS",
   description: "AI powered OS course",
@@ -20,6 +26,7 @@ export default function RootLayout({
       appearance={{
         baseTheme: dark,
       }}
+      publishableKey={clerkKey}
     >
       <html lang="en">
         <body className="bg-black">
