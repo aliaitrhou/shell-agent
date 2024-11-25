@@ -12,6 +12,7 @@
     "@clerk/nextjs": "^6.5.0",
     "@clerk/themes": "^2.1.48",
     "@heroicons/react": "^2.2.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "@vercel/analytics": "^1.4.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.17",
@@ -19,7 +20,10 @@
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-markdown": "^9.0.1",
+    "react-syntax-highlighter": "^15.6.1",
     "rehype-prism": "^2.3.3",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
     "tailwind-merge": "^2.5.4",
     "together-ai": "^0.9.0"
   },

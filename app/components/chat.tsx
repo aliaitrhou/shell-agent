@@ -7,7 +7,6 @@ import Image from "next/image";
 import TerminalToolBar from "./terminal-topbar";
 import { message } from "@/types";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
-import assistentImage from "@/public/assistent.webp";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import MarkdownRenderer from "./MarkdownRenderer";
 
@@ -51,8 +50,6 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       },
     ]);
 
-    console.log("Message : ", msg);
-    //TODO: request to model api
     await getModelAnswer();
   };
 
@@ -108,6 +105,9 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
   }, [messages, setRenderChat]); // Run effect whenever messages change
 
   const hasMessages = messages.some((message) => message.m.trim() !== "");
+
+  const MemoizedMarkdownRenderer = React.memo(MarkdownRenderer);
+
   return (
     <div
       className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center`}
@@ -149,7 +149,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
                   {msg.role == "user" ? (
                     <p>{msg.m}</p>
                   ) : (
-                    <MarkdownRenderer content={msg.m} />
+                    <MemoizedMarkdownRenderer>{msg.m}</MemoizedMarkdownRenderer>
                   )}
                 </div>
               </div>
