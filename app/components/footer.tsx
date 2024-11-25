@@ -6,10 +6,10 @@ const Footer = () => {
       <div>
         <p>
           © 2024 By{" "}
-          <span className="text-orange-400 font-bold text-lg">
+          <span className="text-orange-400 font-bold text-md">
             <a href="https://x.com/AliRhou17481">Ali</a>
           </span>
-          . All Rights Reserved.
+          , All Rights Reserved.
         </p>
       </div>
     </footer>
