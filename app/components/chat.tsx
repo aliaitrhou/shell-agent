@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { PlaceholdersAndVanishInput } from "./placeholders-and-vanish-input";
 import { useClerk, useUser } from "@clerk/nextjs";
 import Image from "next/image";
@@ -27,6 +27,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       m: "",
     },
   ]);
+  const refContainer = useRef<HTMLDivElement>(null);
   const { user } = useUser();
   const { openSignIn } = useClerk();
 
@@ -89,9 +90,21 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
     });
   };
 
+  const scroll = () => {
+    if (refContainer.current) {
+      const { offsetHeight, scrollHeight, scrollTop } =
+        refContainer.current as HTMLDivElement;
+
+      if (scrollHeight >= scrollTop + offsetHeight) {
+        refContainer.current.scrollTo(0, scrollHeight + 150);
+      }
+    }
+  };
+
   useEffect(() => {
     const hasMessages = messages.some((message) => message.m.trim() !== "");
     setRenderChat(hasMessages);
+    scroll();
   }, [messages, setRenderChat]); // Run effect whenever messages change
 
   const hasMessages = messages.some((message) => message.m.trim() !== "");
@@ -100,7 +113,10 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center`}
     >
       {hasMessages && user ? (
-        <section className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom border-[1px] border-gray-600/30">
+        <section
+          ref={refContainer}
+          className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom border-[1px] border-gray-600/30 pb-4"
+        >
           <TerminalToolBar setMessages={setMessages} />
           {messages
             .filter((message) => message.m.trim() !== "")
