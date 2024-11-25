@@ -3,6 +3,7 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { PlaceholdersAndVanishInput } from "./placeholders-and-vanish-input";
 import { useClerk, useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 interface Props {
   setRenderChat: (bar: boolean) => void;
@@ -79,10 +80,10 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
   const hasMessages = messages.some((message) => message.m.trim() !== "");
   return (
     <div
-      className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center border-2 border-green-400 border-dashed`}
+      className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center `}
     >
       {hasMessages && user ? (
-        <section className="flex-1 max-h-[800px] overflow-y-auto w-full border-2 border-orange-500 border-dashed space-y-4">
+        <section className="flex-1 max-h-[800px] overflow-y-auto w-full space-y-4 bg-gray-600/15 rounded-xl py-4 px-8">
           {messages
             .filter((message) => message.m.trim() !== "")
             .map((msg, index) => (
@@ -92,8 +93,14 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
                   msg.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
+                <Image
+                  src={user.imageUrl}
+                  alt={"user image"}
+                  width={30}
+                  height={30}
+                />
                 <div
-                  className={`border-2 border-orange-500 border-dashed max-w-[75%] p-2 rounded-lg  ${
+                  className={`max-w-[75%] p-2 rounded-lg  ${
                     msg.role === "user"
                       ? "bg-blue-500 text-right text-white"
                       : "bg-gray-300 text-left text-black"
