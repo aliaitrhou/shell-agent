@@ -7,10 +7,11 @@ const MarkdownRenderer: React.FC<{ content: string }> = ({ content }) => {
   return (
     <div className="">
       <ReactMarkdown
-        children={content}
         remarkPlugins={[remarkParse]}
         rehypePlugins={[rehypePrism]}
-      />
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   );
 };

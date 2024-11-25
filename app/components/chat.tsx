@@ -6,7 +6,7 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import TerminalToolBar from "./terminal-topbar";
 import { message } from "@/types";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import assistentImage from "@/public/assistent.webp";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import MarkdownRenderer from "./MarkdownRenderer";
