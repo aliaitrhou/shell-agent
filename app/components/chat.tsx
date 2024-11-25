@@ -4,6 +4,10 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { PlaceholdersAndVanishInput } from "./placeholders-and-vanish-input";
 import { useClerk, useUser } from "@clerk/nextjs";
 import Image from "next/image";
+import TerminalToolBar from "./terminal-topbar";
+import { message } from "@/types";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import assistentImage from "@/public/assistent.webp";
 
 interface Props {
   setRenderChat: (bar: boolean) => void;
@@ -11,7 +15,7 @@ interface Props {
 
 const Chat: React.FC<Props> = ({ setRenderChat }) => {
   const [msg, setMsg] = useState("");
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<message[]>([
     {
       role: "user",
       m: "",
@@ -83,31 +87,52 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center `}
     >
       {hasMessages && user ? (
-        <section className="flex-1 max-h-[800px] overflow-y-auto w-full space-y-4 bg-gray-600/15 rounded-xl py-4 px-8">
+        <section className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl pt-12 px-4">
+          <TerminalToolBar setMessages={setMessages} />
           {messages
             .filter((message) => message.m.trim() !== "")
             .map((msg, index) => (
               <div
                 key={index}
-                className={`w-full flex ${
-                  msg.role === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`w-full flex gap-2 items-center ${msg.role == "assistent" ? "justify-start " : "justify-end"} `}
               >
-                <Image
-                  src={user.imageUrl}
-                  alt={"user image"}
-                  width={30}
-                  height={30}
-                />
-                <div
-                  className={`max-w-[75%] p-2 rounded-lg  ${
-                    msg.role === "user"
-                      ? "bg-blue-500 text-right text-white"
-                      : "bg-gray-300 text-left text-black"
-                  }`}
-                >
-                  <p>{msg.m}</p>
-                </div>
+                {msg.role == "assistent" ? (
+                  <>
+                    <div className="flex flex-row items-center ">
+                      <Image
+                        src={assistentImage}
+                        alt={"user image"}
+                        width={20}
+                        height={20}
+                        className="rounded-md w-6 h-6 border border-white"
+                      />
+                      <ChevronRightIcon className="w-5 h-5 text-white font-bold text-xl" />
+                    </div>
+                    <div
+                      className={`max-w-[75%] rounded-lg font-light text-white`}
+                    >
+                      <p>{msg.m}</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      className={`max-w-[75%] rounded-lg font-light text-green-600`}
+                    >
+                      <p>{msg.m}</p>
+                    </div>
+                    <div className="flex flex-row items-center ">
+                      <ChevronLeftIcon className="w-5 h-5 text-white font-bold text-xl" />
+                      <Image
+                        src={user.imageUrl}
+                        alt={"user image"}
+                        width={20}
+                        height={20}
+                        className="rounded-md w-6 h-6 border border-white"
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             ))}
         </section>
