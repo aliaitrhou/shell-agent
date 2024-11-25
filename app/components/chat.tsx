@@ -125,34 +125,33 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
                 key={index}
                 className={`w-full flex gap-2 items-center  font-mono px-4`}
               >
-                <>
-                  <div className=" flex flex-row items-center self-start ">
-                    <Image
-                      src={
-                        msg.role == "assistent" ? assistentImage : user.imageUrl
-                      }
-                      alt={"user image"}
-                      width={20}
-                      height={20}
-                      className="rounded-md w-6 h-6 border border-white mr-2"
-                    />
-                    {msg.role == "user" ? (
-                      <p> {user.username}/</p>
-                    ) : (
-                      <p>stdout/</p>
-                    )}
-                    <ChevronRightIcon className="w-5 h-5 text-white font-bold text-xl mr-2" />
-                  </div>
-                  <div
-                    className={`max-w-[95%] rounded-lg font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"} `}
-                  >
-                    {msg.role == "user" ? (
-                      <p>{msg.m}</p>
-                    ) : (
-                      <MarkdownRenderer content={msg.m} />
-                    )}
-                  </div>
-                </>
+                <div className=" flex flex-row justify-center items-center self-start ">
+                  {msg.role == "user" && (
+                    <>
+                      <Image
+                        src={user.imageUrl}
+                        alt={"user image"}
+                        width={20}
+                        height={20}
+                        className="rounded-full w-5 h-5 border border-slate-400 mr-2"
+                      />
+
+                      <p className="text-md text-light text-slate-400">
+                        {user.username}/
+                      </p>
+                      <ChevronRightIcon className="w-4 h-4  font-bold text-xl text-slate-400" />
+                    </>
+                  )}
+                </div>
+                <div
+                  className={`max-w-[95%] rounded-lg font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"} `}
+                >
+                  {msg.role == "user" ? (
+                    <p>{msg.m}</p>
+                  ) : (
+                    <MarkdownRenderer content={msg.m} />
+                  )}
+                </div>
               </div>
             ))}
         </section>
