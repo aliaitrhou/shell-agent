@@ -9,6 +9,7 @@ import { message } from "@/types";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import assistentImage from "@/public/assistent.webp";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 interface Props {
   setRenderChat: (bar: boolean) => void;
@@ -99,7 +100,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center`}
     >
       {hasMessages && user ? (
-        <section className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom">
+        <section className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom border-[1px] border-gray-600/30">
           <TerminalToolBar setMessages={setMessages} />
           {messages
             .filter((message) => message.m.trim() !== "")
@@ -124,12 +125,16 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
                     ) : (
                       <p>stdout/</p>
                     )}
-                    <ChevronRightIcon className="w-5 h-5 text-white font-bold text-xl" />
+                    <ChevronRightIcon className="w-5 h-5 text-white font-bold text-xl mr-2" />
                   </div>
                   <div
                     className={`max-w-[95%] rounded-lg font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"} `}
                   >
-                    <p>{msg.m}</p>
+                    {msg.role == "user" ? (
+                      <p>{msg.m}</p>
+                    ) : (
+                      <MarkdownRenderer content={msg.m} />
+                    )}
                   </div>
                 </>
               </div>

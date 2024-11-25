@@ -1,11 +1,11 @@
 import Together from "together-ai";
 
-const together = new Together();
-
 if (!process.env.TOGETHER_API_KEY) throw new Error("Missing Together env var");
 
 export async function POST(req: Request) {
   const { message } = await req.json();
+
+  const together = new Together();
 
   const runner = together.chat.completions.stream({
     model: "Qwen/Qwen2.5-7B-Instruct-Turbo",
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   return new Response(runner.toReadableStream());
 }
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 // // Handle POST requests
 //
