@@ -8,6 +8,7 @@ import TerminalToolBar from "./terminal-topbar";
 import { message } from "@/types";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import assistentImage from "@/public/assistent.webp";
+import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 
 interface Props {
   setRenderChat: (bar: boolean) => void;
@@ -50,15 +51,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
     console.log("Message : ", msg);
     //TODO: request to model api
-    const answer = await getModelAnswer();
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "assistent",
-        m: answer,
-      },
-    ]);
+    await getModelAnswer();
   };
 
   const getModelAnswer = async () => {
@@ -72,8 +65,27 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       }),
     });
 
-    const data = await res.json();
-    return data.answer;
+    const runner = ChatCompletionStream.fromReadableStream(res.body!);
+    let currentMessage = "";
+
+    // in order to steam the response
+    runner.on("content", (delta) => {
+      currentMessage += delta;
+
+      setMessages((prev) => {
+        const updatedMessages = [...prev];
+        if (
+          updatedMessages.length > 0 &&
+          updatedMessages[updatedMessages.length - 1].role === "assistent"
+        ) {
+          updatedMessages[updatedMessages.length - 1].m = currentMessage; // Update the last message
+        } else {
+          updatedMessages.push({ role: "assistent", m: currentMessage }); // If no assistant message exists, create a new one
+        }
+
+        return updatedMessages;
+      });
+    });
   };
 
   useEffect(() => {
@@ -84,61 +96,48 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
   const hasMessages = messages.some((message) => message.m.trim() !== "");
   return (
     <div
-      className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center `}
+      className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center`}
     >
       {hasMessages && user ? (
-        <section className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl pt-12 px-4">
+        <section className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom">
           <TerminalToolBar setMessages={setMessages} />
           {messages
             .filter((message) => message.m.trim() !== "")
             .map((msg, index) => (
               <div
                 key={index}
-                className={`w-full flex gap-2 items-center ${msg.role == "assistent" ? "justify-start " : "justify-end"} `}
+                className={`w-full flex gap-2 items-center  font-mono px-4`}
               >
-                {msg.role == "assistent" ? (
-                  <>
-                    <div className="flex flex-row items-center ">
-                      <Image
-                        src={assistentImage}
-                        alt={"user image"}
-                        width={20}
-                        height={20}
-                        className="rounded-md w-6 h-6 border border-white"
-                      />
-                      <ChevronRightIcon className="w-5 h-5 text-white font-bold text-xl" />
-                    </div>
-                    <div
-                      className={`max-w-[75%] rounded-lg font-light text-white`}
-                    >
-                      <p>{msg.m}</p>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div
-                      className={`max-w-[75%] rounded-lg font-light text-green-600`}
-                    >
-                      <p>{msg.m}</p>
-                    </div>
-                    <div className="flex flex-row items-center ">
-                      <ChevronLeftIcon className="w-5 h-5 text-white font-bold text-xl" />
-                      <Image
-                        src={user.imageUrl}
-                        alt={"user image"}
-                        width={20}
-                        height={20}
-                        className="rounded-md w-6 h-6 border border-white"
-                      />
-                    </div>
-                  </>
-                )}
+                <>
+                  <div className=" flex flex-row items-center self-start ">
+                    <Image
+                      src={
+                        msg.role == "assistent" ? assistentImage : user.imageUrl
+                      }
+                      alt={"user image"}
+                      width={20}
+                      height={20}
+                      className="rounded-md w-6 h-6 border border-white mr-2"
+                    />
+                    {msg.role == "user" ? (
+                      <p> {user.username}/</p>
+                    ) : (
+                      <p>stdout/</p>
+                    )}
+                    <ChevronRightIcon className="w-5 h-5 text-white font-bold text-xl" />
+                  </div>
+                  <div
+                    className={`max-w-[95%] rounded-lg font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"} `}
+                  >
+                    <p>{msg.m}</p>
+                  </div>
+                </>
               </div>
             ))}
         </section>
       ) : (
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">
-          What is the mession today
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold font-mono">
+          What is the mession today?
         </p>
       )}
       <PlaceholdersAndVanishInput
