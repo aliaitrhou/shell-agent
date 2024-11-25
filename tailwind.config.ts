@@ -8,6 +8,9 @@ export default {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        custom: "4px 4px 50px 10px rgba(255, 255, 255, 0.2)",
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
