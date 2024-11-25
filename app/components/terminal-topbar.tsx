@@ -21,7 +21,7 @@ const TerminalToolBar: React.FC<Props> = ({ setMessages }) => {
   };
 
   return (
-    <div className="sticky top-0 left-0 right-0 w-full bg-gray-700 h-10 flex items-center  px-4 justify-between rounded-t-xl">
+    <div className="sticky top-0 left-0 right-0 w-full bg-zinc-600 h-10 flex items-center  px-4 justify-between rounded-t-xl">
       <div className="group flex items-center gap-2">
         <button
           onClick={handleRedButtonClick}
@@ -36,7 +36,7 @@ const TerminalToolBar: React.FC<Props> = ({ setMessages }) => {
           <PlusIcon className="w-3 h-3 text-black opacity-0 group-hover:opacity-100" />
         </button>
       </div>
-      <p className="font-bold text-sm text-gray-200/25">Terminal</p>
+      <p className="font-bold text-sm text-gray-100/45 font-mono">Terminal</p>
     </div>
   );
 };
