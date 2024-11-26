@@ -9,6 +9,7 @@ import { message } from "@/types";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import MarkdownRenderer from "./MarkdownRenderer";
+import AimationLayout from "./animation-layout";
 
 interface Props {
   setRenderChat: (bar: boolean) => void;
@@ -113,48 +114,52 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center`}
     >
       {hasMessages && user ? (
-        <section
-          ref={refContainer}
-          className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom border-[1px] border-gray-600/30 pb-4"
-        >
-          <TerminalToolBar setMessages={setMessages} />
-          {messages
-            .filter((message) => message.m.trim() !== "")
-            .map((msg, index) => (
-              <div
-                key={index}
-                className={`w-full flex gap-2 items-center  font-mono px-4`}
-              >
-                <div className=" flex flex-row justify-center items-center self-start ">
-                  {msg.role == "user" && (
-                    <>
-                      <Image
-                        src={user.imageUrl}
-                        alt={"user image"}
-                        width={20}
-                        height={20}
-                        className="rounded-full w-5 h-5 border border-slate-400 mr-2"
-                      />
-
-                      <p className="text-md text-light text-slate-400">
-                        {user.username}/
-                      </p>
-                      <ChevronRightIcon className="w-4 h-4  font-bold text-xl text-slate-400" />
-                    </>
-                  )}
-                </div>
+        <AimationLayout>
+          <section
+            ref={refContainer}
+            className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom border-[1px] border-gray-600/30 pb-4"
+          >
+            <TerminalToolBar setMessages={setMessages} />
+            {messages
+              .filter((message) => message.m.trim() !== "")
+              .map((msg, index) => (
                 <div
-                  className={`max-w-[95%] rounded-lg font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"} `}
+                  key={index}
+                  className={`w-full flex gap-2 items-center  font-mono px-4`}
                 >
-                  {msg.role == "user" ? (
-                    <p>{msg.m}</p>
-                  ) : (
-                    <MemoizedMarkdownRenderer>{msg.m}</MemoizedMarkdownRenderer>
-                  )}
+                  <div className=" flex flex-row justify-center items-center self-start ">
+                    {msg.role == "user" && (
+                      <>
+                        <Image
+                          src={user.imageUrl}
+                          alt={"user image"}
+                          width={20}
+                          height={20}
+                          className="rounded-full w-5 h-5 border border-slate-400 mr-2"
+                        />
+
+                        <p className="text-md text-light text-slate-400">
+                          {user.username}/
+                        </p>
+                        <ChevronRightIcon className="w-4 h-4  font-bold text-xl text-slate-400" />
+                      </>
+                    )}
+                  </div>
+                  <div
+                    className={`max-w-[95%] rounded-lg font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"} `}
+                  >
+                    {msg.role == "user" ? (
+                      <p>{msg.m}</p>
+                    ) : (
+                      <MemoizedMarkdownRenderer>
+                        {msg.m}
+                      </MemoizedMarkdownRenderer>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-        </section>
+              ))}
+          </section>
+        </AimationLayout>
       ) : (
         <p className="text-xl sm:text-2xl md:text-3xl font-bold font-mono">
           What is the mession today?
