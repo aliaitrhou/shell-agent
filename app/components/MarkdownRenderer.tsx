@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { FC, memo } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
@@ -103,7 +104,19 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
       remarkPlugins={[remarkGfm, remarkMath]}
       components={{
         p({ children }) {
-          return <p className="mb-2 last:mb-0">{children}</p>;
+          // Normalize children to an array
+          const childrenArray = React.Children.toArray(children);
+
+          // Prevent rendering `div` inside `p`
+          if (
+            childrenArray.some(
+              (child) => React.isValidElement(child) && child.type === "div",
+            )
+          ) {
+            return <>{childrenArray}</>;
+          }
+
+          return <p className="my-2 last:mb-0">{childrenArray}</p>;
         },
         code({ inline, className, children, ...props }) {
           const match = /language-(\w+)/.exec(className || "");
