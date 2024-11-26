@@ -112,16 +112,17 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
       remarkPlugins={[remarkGfm, remarkMath]}
       components={{
         p({ children }) {
-          // Normalize children to an array
+          // Check if any block-level element exists in children
           const childrenArray = React.Children.toArray(children);
 
-          // Prevent rendering `div` inside `p`
           if (
             childrenArray.some(
-              (child) => React.isValidElement(child) && child.type === "div",
+              (child) =>
+                React.isValidElement(child) &&
+                (child.type === "div" || child.type === "pre"),
             )
           ) {
-            return <>{childrenArray}</>;
+            return <>{childrenArray}</>; // Don't wrap div or pre inside p
           }
 
           return <p className="my-2 last:mb-0">{childrenArray}</p>;
@@ -135,19 +136,33 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
           const match = /language-(\w+)/.exec(className || "");
 
           if (inline) {
+            // Render inline code
             return (
-              <code className={className} {...props}>
+              <code
+                className={`${className || ""} px-1 bg-zinc-800 rounded`}
+                {...props}
+              >
                 {children}
               </code>
             );
           }
 
+          if (!inline && match) {
+            // Render block code
+            return (
+              <CodeBlock
+                language={match[1] || ""}
+                value={String(children).replace(/\n$/, "")}
+                {...props}
+              />
+            );
+          }
+
+          // If not detected as block code with a language, fallback to inline rendering
           return (
-            <CodeBlock
-              language={(match && match[1]) || ""}
-              value={String(children).replace(/\n$/, "")}
-              {...props}
-            />
+            <code className={className || "bg-gray-700 p-1 rounded"} {...props}>
+              {children}
+            </code>
           );
         },
       }}
