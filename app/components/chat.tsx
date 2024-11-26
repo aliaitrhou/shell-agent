@@ -15,6 +15,8 @@ interface Props {
   setRenderChat: (bar: boolean) => void;
 }
 
+const chatHistory = new Map();
+
 const Chat: React.FC<Props> = ({ setRenderChat }) => {
   const [msg, setMsg] = useState("");
   const [messages, setMessages] = useState<message[]>([
@@ -55,6 +57,12 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
   };
 
   const getModelAnswer = async () => {
+    messages.map((msg, index) => {
+      chatHistory.set(`${index % 2 == 0 ? "user" : "assistent"}`, msg.m);
+    });
+
+    console.log(chatHistory);
+
     const res = await fetch("/api/model", {
       method: "POST",
       headers: {
@@ -62,6 +70,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       },
       body: JSON.stringify({
         message: msg,
+        chatHistory: Object.fromEntries(chatHistory),
       }),
     });
 
