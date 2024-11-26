@@ -8,6 +8,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 
+interface CodeProps extends React.ComponentPropsWithoutRef<"code"> {
+  inline?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+}
+
 interface Props {
   language: string;
   value: string;
@@ -33,7 +39,6 @@ const programmingLanguages = {
   rust: ".rs",
   html: ".html",
   css: ".css",
-  // Add more extensions if needed.
 } as const;
 
 const generateRandomString = (length: number, lowercase = false) => {
@@ -121,7 +126,12 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
 
           return <p className="my-2 last:mb-0">{childrenArray}</p>;
         },
-        code({ inline, className, children, ...props }) {
+        code({
+          inline,
+          className,
+          children,
+          ...props
+        }: React.ComponentPropsWithoutRef<"code"> & { inline?: boolean }) {
           const match = /language-(\w+)/.exec(className || "");
 
           if (inline) {
