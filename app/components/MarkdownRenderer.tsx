@@ -125,7 +125,7 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
             return <>{childrenArray}</>; // Don't wrap div or pre inside p
           }
 
-          return <p className="my-2 last:mb-0">{childrenArray}</p>;
+          return <p className="sm:my-1 md:my-2 last:mb-0">{childrenArray}</p>;
         },
         code({
           inline,
@@ -160,7 +160,10 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
 
           // If not detected as block code with a language, fallback to inline rendering
           return (
-            <code className={className || "bg-gray-700 p-1 rounded"} {...props}>
+            <code
+              className={className || "bg-gray-700 sm:p-1 rounded"}
+              {...props}
+            >
               {children}
             </code>
           );

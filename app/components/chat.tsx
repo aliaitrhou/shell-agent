@@ -120,7 +120,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
   return (
     <div
-      className={`w-[350] sm:min-w-full ${hasMessages ? "px-40 space-y-6" : "space-y-8"} flex flex-col  items-center`}
+      className={`w-full md:w-[350] sm:min-w-full ${hasMessages ? "px-0 sm:px-4 xl:px-40 space-y-6" : "space-y-8"} flex flex-col  items-center`}
     >
       {hasMessages && user ? (
         <AimationLayout>
@@ -134,28 +134,26 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
               .map((msg, index) => (
                 <div
                   key={index}
-                  className={`w-full flex gap-2 items-center  font-mono px-4`}
+                  className={`w-full flex gap-0 sm:gap-2 items-center font-mono px-2 sm:px-4`}
                 >
-                  <div className=" flex flex-row justify-center items-center self-start ">
-                    {msg.role == "user" && (
-                      <>
-                        <Image
-                          src={user.imageUrl}
-                          alt={"user image"}
-                          width={20}
-                          height={20}
-                          className="rounded-full w-5 h-5 border border-slate-400 mr-2"
-                        />
+                  {msg.role == "user" && (
+                    <div className=" flex flex-row justify-center items-center self-start">
+                      <Image
+                        src={user.imageUrl}
+                        alt={"user image"}
+                        width={20}
+                        height={20}
+                        className="rounded-full w-5 h-5 border border-slate-400 mr-2"
+                      />
 
-                        <p className="text-md text-light text-slate-400">
-                          {user.username}/
-                        </p>
-                        <ChevronRightIcon className="w-4 h-4  font-bold text-xl text-slate-400" />
-                      </>
-                    )}
-                  </div>
+                      <p className="text-sm sm:text-md text-light text-slate-400">
+                        {user.username}/~$
+                      </p>
+                      <ChevronRightIcon className="w-4 h-4  font-bold text-xl text-slate-400" />
+                    </div>
+                  )}
                   <div
-                    className={`max-w-[95%] rounded-lg font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"} `}
+                    className={`max-w-[95%] text-sm sm:text-md font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"}`}
                   >
                     {msg.role == "user" ? (
                       <p>{msg.m}</p>
@@ -170,7 +168,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
           </section>
         </AimationLayout>
       ) : (
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold font-mono">
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold font-mono text-center">
           What is the mession today?
         </p>
       )}
