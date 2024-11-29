@@ -87,7 +87,6 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
         showLineNumbers
         customStyle={{
           marginTop: "5px",
-          width: "100%",
           background: "transparent",
           padding: "0.6rem 0.6rem",
         }}
@@ -98,7 +97,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
           },
         }}
       >
-        {value}
+        {value} test
       </SyntaxHighlighter>
     </div>
   );

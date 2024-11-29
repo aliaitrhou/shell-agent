@@ -3,13 +3,14 @@
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { PlaceholdersAndVanishInput } from "./placeholders-and-vanish-input";
 import { useClerk, useUser } from "@clerk/nextjs";
-import Image from "next/image";
 import TerminalToolBar from "./terminal-topbar";
 import { message } from "@/types";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import MarkdownRenderer from "./MarkdownRenderer";
 import AimationLayout from "./animation-layout";
+import logo from "@/public/msgs.png";
+import Image from "next/image";
 
 interface Props {
   setRenderChat: (bar: boolean) => void;
@@ -118,7 +119,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
   return (
     <div
-      className={`w-full md:w-[350] sm:min-w-full ${hasMessages ? "px-0 sm:px-4 xl:px-40 space-y-6" : "space-y-8"} flex flex-col  items-center`}
+      className={`w-full md:w-[350] sm:min-w-full ${hasMessages ? "px-0 sm:px-4 xl:px-40 space-y-6" : "space-y-6"} flex flex-col  items-center`}
     >
       {hasMessages && user ? (
         <AimationLayout>
@@ -175,7 +176,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
           placeholders={[
             "How does the ls command works",
             "What is the available flags of wc command ?",
-            "Blah blah blah, New boring chat app ?",
+            "How to switch between users ?",
           ]}
           onChange={handlChange}
           onSubmit={handleSubmit}
