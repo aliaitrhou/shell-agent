@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
   if (error) {
     console.log(error);
-  } // This will return the matched documents from supabase
+  }
 
   const prompt = process.env.MAGIC_PROMPT || "";
   const runner = together.chat.completions.stream({

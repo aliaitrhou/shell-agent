@@ -61,8 +61,6 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       chatHistory.set(`${index % 2 == 0 ? "user" : "assistent"}`, msg.m);
     });
 
-    console.log(chatHistory);
-
     const res = await fetch("/api/model", {
       method: "POST",
       headers: {
@@ -153,7 +151,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
                     </div>
                   )}
                   <div
-                    className={`max-w-[95%] text-sm sm:text-md font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"}`}
+                    className={`max-w-full text-sm sm:text-md font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"}`}
                   >
                     {msg.role == "user" ? (
                       <p>{msg.m}</p>
@@ -172,15 +170,17 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
           What is the mession today?
         </p>
       )}
-      <PlaceholdersAndVanishInput
-        placeholders={[
-          "How does the ls command works",
-          "What is the available flags of wc command ?",
-          "Blah blah blah, New boring chat app ?",
-        ]}
-        onChange={handlChange}
-        onSubmit={handleSubmit}
-      />
+      <div className={`w-full mx-auto px-4 ${!hasMessages && "sm:px-8"}`}>
+        <PlaceholdersAndVanishInput
+          placeholders={[
+            "How does the ls command works",
+            "What is the available flags of wc command ?",
+            "Blah blah blah, New boring chat app ?",
+          ]}
+          onChange={handlChange}
+          onSubmit={handleSubmit}
+        />
+      </div>
     </div>
   );
 };
