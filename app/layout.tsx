@@ -26,6 +26,9 @@ export default function RootLayout({
     <ClerkProvider
       appearance={{
         baseTheme: dark,
+        layout: {
+          unsafe_disableDevelopmentModeWarnings: true,
+        },
       }}
       publishableKey={clerkKey}
     >
