@@ -13,4 +13,4 @@ AceOS is an innovative web app designed for software engineering students to exp
 
 ---
 
-<img width="1680" alt="ace-os" src="https://github.com/user-attachments/assets/c9882679-ff55-4750-8752-9d6c0a802f36">
+<img width="1680" alt="Screenshot 2024-11-29 at 11 52 03" src="https://github.com/user-attachments/assets/d44144d6-429a-4b37-abfd-1f355702d6e5">
