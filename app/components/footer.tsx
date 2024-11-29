@@ -15,7 +15,7 @@ const Footer = () => {
           , source code
         </p>
         <Link href={"https://github.com/aliaitrhou/AceOS"}>
-          <div className="hidden bg-gray-400 sm:flex items-center gap-1 rounded-lg w-fit p-[1px]">
+          <div className="bg-gray-400 flex items-center gap-1 rounded-lg w-fit p-[1px]">
             <p className="font-bold text-xs text-black">Github</p>
             <Image src={GithubLogo} alt="github" className="w-3 h-3" />
           </div>
