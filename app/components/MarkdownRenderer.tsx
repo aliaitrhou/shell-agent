@@ -8,12 +8,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 
-interface CodeProps extends React.ComponentPropsWithoutRef<"code"> {
-  inline?: boolean;
-  className?: string;
-  children?: React.ReactNode;
-}
-
 interface Props {
   language: string;
   value: string;
@@ -23,58 +17,7 @@ type MarkdownRendererProps = {
   children: string;
 };
 
-const programmingLanguages = {
-  javascript: ".js",
-  python: ".py",
-  java: ".java",
-  c: ".c",
-  cpp: ".cpp",
-  "c++": ".cpp",
-  "c#": ".cs",
-  ruby: ".rb",
-  php: ".php",
-  swift: ".swift",
-  typescript: ".ts",
-  go: ".go",
-  rust: ".rs",
-  html: ".html",
-  css: ".css",
-} as const;
-
-const generateRandomString = (length: number, lowercase = false) => {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXY3456789"; // Avoiding similar-looking characters.
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return lowercase ? result.toLowerCase() : result;
-};
-
 const CodeBlock: FC<Props> = memo(({ language, value }) => {
-  const downloadAsFile = () => {
-    if (typeof window === "undefined") return;
-
-    const fileExtension =
-      language in programmingLanguages
-        ? programmingLanguages[language as keyof typeof programmingLanguages]
-        : ".file";
-    const suggestedFileName = `file-${generateRandomString(3, true)}${fileExtension}`;
-    const fileName = window.prompt("Enter file name", suggestedFileName);
-
-    if (!fileName) return;
-
-    const blob = new Blob([value], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.download = fileName;
-    link.href = url;
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="relative w-full font-sans codeblock bg-zinc-950">
       <div className="flex items-center justify-between w-full px-6 py-2 pr-4 rounded-t bg-zinc-800 text-zinc-100">
@@ -97,7 +40,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
           },
         }}
       >
-        {value} test
+        {value}
       </SyntaxHighlighter>
     </div>
   );
