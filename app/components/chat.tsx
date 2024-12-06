@@ -9,7 +9,6 @@ import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import MarkdownRenderer from "./MarkdownRenderer";
 import AimationLayout from "./animation-layout";
-import logo from "@/public/msgs.png";
 import Image from "next/image";
 
 interface Props {
@@ -146,7 +145,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
                       />
 
                       <p className="text-sm sm:text-md text-light text-slate-400">
-                        {user.username}/~$
+                        {user?.username}/~$
                       </p>
                       <ChevronRightIcon className="w-4 h-4  font-bold text-xl text-slate-400" />
                     </div>
