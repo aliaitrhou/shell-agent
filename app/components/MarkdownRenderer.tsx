@@ -1,3 +1,6 @@
+// HACK: don't push this to github,
+//NOTE: you have vercel issue with the SyntaxHighlighter
+
 "use client";
 
 import React from "react";
@@ -23,27 +26,25 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
       <div className="flex items-center justify-between w-full px-6 py-2 pr-4 rounded-t bg-zinc-800 text-zinc-100">
         <span className="text-xs lowercase">{language}</span>
       </div>
-      <>
-        <SyntaxHighlighter
-          language={language}
-          style={vscDarkPlus}
-          PreTag="div"
-          showLineNumbers
-          customStyle={{
-            marginTop: "5px",
-            background: "transparent",
-            padding: "0.6rem 0.6rem",
-          }}
-          codeTagProps={{
-            style: {
-              fontSize: "0.8rem",
-              fontFamily: "var(--font-mono)",
-            },
-          }}
-        >
-          {value}
-        </SyntaxHighlighter>
-      </>
+      <SyntaxHighlighter
+        language={language}
+        style={vscDarkPlus}
+        PreTag="div"
+        showLineNumbers
+        customStyle={{
+          marginTop: "5px",
+          background: "transparent",
+          padding: "0.6rem 0.6rem",
+        }}
+        codeTagProps={{
+          style: {
+            fontSize: "0.8rem",
+            fontFamily: "var(--font-mono)",
+          },
+        }}
+      >
+        {value}
+      </SyntaxHighlighter>
     </div>
   );
 });

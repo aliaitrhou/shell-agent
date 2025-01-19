@@ -180,7 +180,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
                     </div>
                   )}
                   <div
-                    className={`max-w-full text-sm sm:text-md font-light ${msg.role == "assistent" ? "text-green-600" : "text-white"}`}
+                    className={`max-w-full text-sm sm:text-md font-light leading-7 ${msg.role == "assistent" ? "text-green-600" : "text-white"}`}
                   >
                     {msg.role == "user" ? (
                       <p>{msg.m}</p>

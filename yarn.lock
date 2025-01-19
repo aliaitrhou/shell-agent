@@ -1362,13 +1362,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18":
+"@types/react@npm:*":
   version: 18.3.12
   resolution: "@types/react@npm:18.3.12"
   dependencies:
     "@types/prop-types": "*"
     csstype: ^3.0.2
   checksum: 4ab1577a8c2105a5e316536f724117c90eee5f4bd5c137fc82a2253d8c1fd299dedaa07e8dfc95d6e2f04a4be3cb8b0e1b06098c6233ebd55c508d88099395b7
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@types/react@npm:19.0.0"
+  dependencies:
+    csstype: ^3.0.2
+  checksum: dd7d7388b28fdf78cdf28c88490fe99413a0e1fab33e92afdf862620edc77dfe605ffe48dd3aeffb1de29107ea958a12f6d667236b2ead1affdf609db7152fad
   languageName: node
   linkType: hard
 
@@ -1602,7 +1611,7 @@ __metadata:
     "@langchain/textsplitters": latest
     "@supabase/supabase-js": ^2.46.2
     "@types/node": ^20
-    "@types/react": ^18
+    "@types/react": ^19.0.0
     "@types/react-dom": ^18
     "@types/react-syntax-highlighter": ^15.5.13
     "@vercel/analytics": ^1.4.1
