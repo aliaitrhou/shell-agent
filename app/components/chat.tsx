@@ -57,42 +57,71 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
   };
 
   const getModelAnswer = async () => {
-    messages.map((msg, index) => {
-      chatHistory.set(`${index % 2 == 0 ? "user" : "assistent"}`, msg.m);
-    });
-
-    const res = await fetch("/api/model", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: msg,
-        chatHistory: Object.fromEntries(chatHistory),
-      }),
-    });
-
-    const runner = ChatCompletionStream.fromReadableStream(res.body!);
-    let currentMessage = "";
-
-    // in order to steam the response
-    runner.on("content", (delta) => {
-      currentMessage += delta;
-
-      setMessages((prev) => {
-        const updatedMessages = [...prev];
-        if (
-          updatedMessages.length > 0 &&
-          updatedMessages[updatedMessages.length - 1].role === "assistent"
-        ) {
-          updatedMessages[updatedMessages.length - 1].m = currentMessage; // Update the last message
-        } else {
-          updatedMessages.push({ role: "assistent", m: currentMessage }); // If no assistant message exists, create a new one
-        }
-
-        return updatedMessages;
+    try {
+      messages.map((msg, index) => {
+        chatHistory.set(`${index % 2 == 0 ? "user" : "assistent"}`, msg.m);
       });
-    });
+
+      const res = await fetch("/api/model", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: msg,
+          chatHistory: Object.fromEntries(chatHistory),
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          `Failed to fetch model response: ${res.status} ${res.statusText}`,
+        );
+      }
+
+      if (!res.body) {
+        // Handle case where body is missing
+        throw new Error("Response body is undefined.");
+      }
+
+      const runner = ChatCompletionStream.fromReadableStream(res.body!);
+      let currentMessage = "";
+
+      // in order to steam the response
+      runner.on("content", (delta) => {
+        currentMessage += delta;
+
+        setMessages((prev) => {
+          const updatedMessages = [...prev];
+          if (
+            updatedMessages.length > 0 &&
+            updatedMessages[updatedMessages.length - 1].role === "assistent"
+          ) {
+            updatedMessages[updatedMessages.length - 1].m = currentMessage; // Update the last message
+          } else {
+            updatedMessages.push({ role: "assistent", m: currentMessage }); // If no assistant message exists, create a new one
+          }
+
+          return updatedMessages;
+        });
+      });
+      runner.on("error", (err) => {
+        console.error("Streaming error:", err);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistent",
+            m: "Something went wrong while processing your request.",
+          },
+        ]);
+      });
+    } catch (error) {
+      console.error("Error fetching model response:", error);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistent", m: "An error occurred. Please try again later." },
+      ]);
+    }
   };
 
   const scroll = () => {

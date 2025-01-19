@@ -26,6 +26,15 @@ export async function POST(req: Request) {
     console.log(error);
   }
 
+  if (!data || data.length === 0) {
+    return new Response(
+      JSON.stringify({
+        message: "No relevant documents found. Please try refining your query.",
+      }),
+      { status: 404, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
   const prompt = process.env.MAGIC_PROMPT || "";
   const runner = together.chat.completions.stream({
     model: "Qwen/Qwen2.5-7B-Instruct-Turbo",
