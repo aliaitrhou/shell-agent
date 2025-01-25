@@ -10,6 +10,7 @@ import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import MarkdownRenderer from "./MarkdownRenderer";
 import AimationLayout from "./animation-layout";
 import Image from "next/image";
+import Footer from "./footer";
 
 interface Props {
   setRenderChat: (bar: boolean) => void;
@@ -147,13 +148,13 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
   return (
     <div
-      className={`w-full md:w-[350] sm:min-w-full ${hasMessages ? "px-0 sm:px-4 xl:px-40 space-y-6" : "space-y-6"} flex flex-col  items-center`}
+      className={`w-full sm:min-w-full ${hasMessages ? "px-4 sm:px-6 xl:px-40 space-y-3" : "space-y-6"} flex flex-col  items-center`}
     >
       {hasMessages && user ? (
         <AimationLayout>
           <section
             ref={refContainer}
-            className="relative flex-1 max-h-[800px] overflow-y-auto w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom border-[1px] border-gray-600/30 pb-4"
+            className="relative flex-1 max-h-[720px] sm:max-h-[700px]  mt-0 xl:mt-6 overflow-y-auto  w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom border-[1px] border-gray-600/30 pb-4"
           >
             <TerminalToolBar setMessages={setMessages} />
             {messages
@@ -209,6 +210,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
           onChange={handlChange}
           onSubmit={handleSubmit}
         />
+        <Footer />
       </div>
     </div>
   );

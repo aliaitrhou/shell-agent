@@ -3,7 +3,6 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Header from "./components/hearder";
-import Footer from "./components/footer";
 import { Analytics } from "@vercel/analytics/react";
 
 const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -37,7 +36,6 @@ export default function RootLayout({
           <Header />
           {children}
           <Analytics />
-          <Footer />
         </body>
       </html>
     </ClerkProvider>
