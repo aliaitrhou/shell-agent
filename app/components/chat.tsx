@@ -1,6 +1,12 @@
 "use client";
 
-import React, { FormEvent, useEffect, useRef, useState } from "react";
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { PlaceholdersAndVanishInput } from "./placeholders-and-vanish-input";
 import { useClerk, useUser } from "@clerk/nextjs";
 import TerminalToolBar from "./terminal-topbar";
@@ -16,10 +22,9 @@ interface Props {
   setRenderChat: (bar: boolean) => void;
 }
 
-const chatHistory = new Map();
-
 const Chat: React.FC<Props> = ({ setRenderChat }) => {
   const [msg, setMsg] = useState("");
+  const [chatHistory, setChatHistory] = useState<string[]>([]); // State to manage chat history
   const [messages, setMessages] = useState<message[]>([
     {
       role: "user",
@@ -34,10 +39,10 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
   const { user } = useUser();
   const { openSignIn } = useClerk();
 
-  const handlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const el = e.target as HTMLInputElement;
     setMsg(el.value);
-  };
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,16 +58,12 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
         m: msg,
       },
     ]);
-
+    setChatHistory((prevHistory) => [...prevHistory, `user: ${msg}`]);
     await getModelAnswer();
   };
 
   const getModelAnswer = async () => {
     try {
-      messages.map((msg, index) => {
-        chatHistory.set(`${index % 2 == 0 ? "user" : "assistent"}`, msg.m);
-      });
-
       const res = await fetch("/api/model", {
         method: "POST",
         headers: {
@@ -70,7 +71,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
         },
         body: JSON.stringify({
           message: msg,
-          chatHistory: Object.fromEntries(chatHistory),
+          chatHistory: chatHistory,
         }),
       });
 
@@ -91,7 +92,20 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
       // in order to steam the response
       runner.on("content", (delta) => {
         currentMessage += delta;
+        setChatHistory((prevHistory) => {
+          const updatedHistory = [...prevHistory];
+          if (
+            updatedHistory.length > 0 &&
+            updatedHistory[updatedHistory.length - 1].startsWith("assistent:")
+          ) {
+            updatedHistory[updatedHistory.length - 1] =
+              `assistent: ${currentMessage}`;
+          } else {
+            updatedHistory.push(`assistent: ${currentMessage}`);
+          }
 
+          return updatedHistory;
+        });
         setMessages((prev) => {
           const updatedMessages = [...prev];
           if (
@@ -207,7 +221,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
             "What is the available flags of wc command ?",
             "How to switch between users ?",
           ]}
-          onChange={handlChange}
+          onChange={handleChange}
           onSubmit={handleSubmit}
         />
         <Footer />

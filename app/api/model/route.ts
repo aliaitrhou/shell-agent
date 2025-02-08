@@ -43,7 +43,7 @@ export async function POST(req: Request) {
         role: "system",
         content:
           prompt +
-          `CHAT_HISTORY:${JSON.stringify(chatHistory)}\nCONTEXT: ${data.map((doc: { content: string }) => doc.content)}`,
+          `CHAT_HISTORY:${chatHistory}\nCONTEXT: ${data.map((doc: { content: string }) => doc.content)}`,
       },
       { role: "user", content: message },
     ],
