@@ -12,7 +12,7 @@ import Link from "next/link";
 
 const Header = () => {
   return (
-    <nav className="absolute w-full flex flex-row justify-between items-center px-6 p-4">
+    <nav className="w-full flex flex-row justify-between items-center px-4 py-2">
       <Link href="/">
         <div className="flex flex-row gap-1">
           <Image src={logo} alt="logo" width={35} height={30} />
@@ -27,7 +27,7 @@ const Header = () => {
             appearance={{
               baseTheme: dark,
               elements: {
-                userButtonAvatarBox: "w-8 h-8 sm:w-10 sm:h-10", // Adjust avatar size
+                userButtonAvatarBox: "w-8 h-8 sm:w-10 sm:h-10",
               },
             }}
             afterSignOutUrl="/"

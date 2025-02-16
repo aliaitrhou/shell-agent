@@ -8,6 +8,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        kanit: ["Kanit", "sans-serif"],
+        spaceMono: ["Space Mono", "monospace"],
+      },
       boxShadow: {
         custom: "0px 0px 30px 0px rgba(255, 255, 255, 0.2)",
       },

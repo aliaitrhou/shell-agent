@@ -11,7 +11,6 @@ import { PlaceholdersAndVanishInput } from "./placeholders-and-vanish-input";
 import { useClerk, useUser } from "@clerk/nextjs";
 import TerminalToolBar from "./terminal-topbar";
 import { message } from "@/types";
-import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import MarkdownRenderer from "./MarkdownRenderer";
 import AimationLayout from "./animation-layout";
@@ -162,13 +161,13 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
   return (
     <div
-      className={`w-full sm:min-w-full ${hasMessages ? "px-4 sm:px-6 xl:px-40 space-y-3" : "space-y-6"} flex flex-col  items-center`}
+      className={`h-[90dvh] mt-2 w-full sm:min-w-full ${hasMessages ? "px-2 sm:px-4 space-y-3" : "space-y-6"} flex flex-col items-center shadow-2xl`}
     >
       {hasMessages && user ? (
         <AimationLayout>
           <section
             ref={refContainer}
-            className="relative flex-1 max-h-[720px] sm:max-h-[700px]  mt-0 xl:mt-6 overflow-y-auto  w-full space-y-2 bg-gray-600/30 rounded-xl shadow-custom border-[1px] border-gray-600/30 pb-4"
+            className="relative h-full overflow-y-auto w-full space-y-2 bg-zinc-800/90 rounded-xl shadow-md border-[1px] border-zinc-700 pb-4"
           >
             <TerminalToolBar setMessages={setMessages} />
             {messages
@@ -176,29 +175,29 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
               .map((msg, index) => (
                 <div
                   key={index}
-                  className={`w-full flex gap-0 sm:gap-2 items-center font-mono px-2 sm:px-4`}
+                  className="w-full flex gap-0 sm:gap-2 items-start font-mono px-2 sm:px-3"
                 >
                   {msg.role == "user" && (
-                    <div className=" flex flex-row justify-center items-center self-start">
+                    <div className="flex flex-row justify-start items-center self-start shrink-0">
                       <Image
                         src={user.imageUrl}
                         alt={"user image"}
                         width={20}
                         height={20}
-                        className="rounded-full w-5 h-5 border border-slate-400 mr-2"
+                        className="rounded-full w-5 h-5 border border-slate-400 mr-1"
                       />
-
-                      <p className="text-sm sm:text-md text-light text-slate-400">
-                        {user?.username}/~$
+                      <p className="text-sm sm:text-md text-light text-slate-400 whitespace-nowrap">
+                        /Desktop/~$
                       </p>
-                      <ChevronRightIcon className="w-4 h-4  font-bold text-xl text-slate-400" />
                     </div>
                   )}
                   <div
-                    className={`max-w-full text-sm sm:text-md font-light leading-7 ${msg.role == "assistent" ? "text-green-600" : "text-white"}`}
+                    className={`max-w-full text-sm sm:text-md font-light leading-0 ${
+                      msg.role == "assistent" ? "text-green-500" : "text-white"
+                    } font-spaceMono break-words`}
                   >
                     {msg.role == "user" ? (
-                      <p>{msg.m}</p>
+                      <p className="ml-1 w-full break-words">{msg.m}</p>
                     ) : (
                       <MemoizedMarkdownRenderer>
                         {msg.m}
@@ -210,15 +209,15 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
           </section>
         </AimationLayout>
       ) : (
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold font-mono text-center">
+        <p className="font-kanit text-[1.8rem] sm:text-4xl md:text-[3rem] font-bold text-center md:mb-2">
           What is the mession today?
         </p>
       )}
-      <div className={`w-full mx-auto px-4 ${!hasMessages && "sm:px-8"}`}>
+      <div className={`w-full mx-auto ${hasMessages && "px-0 sm:px-12"}`}>
         <PlaceholdersAndVanishInput
           placeholders={[
-            "How does the ls command works",
-            "What is the available flags of wc command ?",
+            "How does the `awk` command works ?",
+            "What are the flags of `wc` command ?",
             "How to switch between users ?",
           ]}
           onChange={handleChange}

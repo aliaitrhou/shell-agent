@@ -21,22 +21,24 @@ const TerminalToolBar: React.FC<Props> = ({ setMessages }) => {
   };
 
   return (
-    <div className="sticky z-50 top-0 left-0 right-0 w-full bg-zinc-600 h-8 sm:h-10 flex items-center  px-4 justify-between rounded-t-xl">
+    <div className="sticky z-50 top-0 left-0 right-0 w-full bg-zinc-800 h-8 sm:h-10 flex items-center border-b-[1px] border-zinc-700  px-4 justify-between">
       <div className="group flex items-center gap-2">
         <button
           onClick={handleRedButtonClick}
-          className="bg-red-500 w-4 h-4 rounded-full flex items-center justify-center"
+          className="bg-red-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center"
         >
           <XMarkIcon className="w-3 h-3 text-black opacity-0 group-hover:opacity-100 flex justify-center items-center" />
         </button>
-        <button className="bg-yellow-500 w-4 h-4 rounded-full flex items-center justify-center">
+        <button className="bg-yellow-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center">
           <MinusIcon className="w-3 h-3 text-black opacity-0 group-hover:opacity-100" />
         </button>
-        <button className="bg-green-500 w-4 h-4 rounded-full flex items-center justify-center">
+        <button className="bg-green-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center">
           <PlusIcon className="w-3 h-3 text-black opacity-0 group-hover:opacity-100" />
         </button>
       </div>
-      <p className="font-bold text-sm text-gray-100/45 font-mono">Terminal</p>
+      <p className="font-semibold text-xs sm:text-sm text-gray-100/45 font-sans">
+        Terminal
+      </p>
     </div>
   );
 };

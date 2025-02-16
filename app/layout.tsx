@@ -33,6 +33,9 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className="bg-black">
+          <div className="main">
+            <div className="gradient"></div>
+          </div>
           <Header />
           {children}
           <Analytics />

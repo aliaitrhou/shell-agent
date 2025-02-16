@@ -1,6 +1,3 @@
-// HACK: don't push this to github,
-//NOTE: you have vercel issue with the SyntaxHighlighter
-
 "use client";
 
 import React from "react";
@@ -22,8 +19,8 @@ type MarkdownRendererProps = {
 
 const CodeBlock: FC<Props> = memo(({ language, value }) => {
   return (
-    <div className="relative w-full font-sans codeblock bg-zinc-950">
-      <div className="flex items-center justify-between w-full px-6 py-2 pr-4 rounded-t bg-zinc-800 text-zinc-100">
+    <div className="relative w-full codeblock bg-zinc-900 border-[.3px] border-zinc-500 rounded-lg overflow-hidden my-3">
+      <div className="flex items-center justify-between w-full px-3 py-1 pr-4 rounded-t bg-zinc-700 text-zinc-100 border-b-[.3px] border-zinc-500">
         <span className="text-xs lowercase">{language}</span>
       </div>
       <SyntaxHighlighter
@@ -35,11 +32,12 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
           marginTop: "5px",
           background: "transparent",
           padding: "0.6rem 0.6rem",
+          overflowX: "auto",
         }}
         codeTagProps={{
           style: {
             fontSize: "0.8rem",
-            fontFamily: "var(--font-mono)",
+            overflowX: "auto",
           },
         }}
       >
@@ -106,7 +104,10 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
           // If not detected as block code with a language, fallback to inline rendering
           return (
             <code
-              className={className || "bg-gray-700 sm:p-1 rounded"}
+              className={
+                className ||
+                "bg-zinc-700 border border-zinc-600 px-1 py-0 rounded-md text-green-300"
+              }
               {...props}
             >
               {children}
