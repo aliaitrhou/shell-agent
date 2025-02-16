@@ -161,7 +161,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
   return (
     <div
-      className={`w-full ${hasMessages ? "h-full px-2 sm:px-4 space-y-3" : "space-y-6"} flex flex-col items-center shadow-2xl`}
+      className={`w-full ${hasMessages ? "h-full px-2 sm:px-4 space-y-3" : "space-y-6"} flex flex-col items-center`}
     >
       {hasMessages && user ? (
         <AimationLayout>
