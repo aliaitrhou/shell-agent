@@ -27,7 +27,8 @@ const Header = () => {
             appearance={{
               baseTheme: dark,
               elements: {
-                userButtonAvatarBox: "w-8 h-8 sm:w-10 sm:h-10",
+                userButtonAvatarBox:
+                  "w-8 h-8 sm:w-10 sm:h-10 border-[1px] border-zinc-400",
               },
             }}
             afterSignOutUrl="/"
