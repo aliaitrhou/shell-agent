@@ -7,7 +7,7 @@ export default function Home() {
   const [renderChat, setRenderChat] = useState(true);
   return (
     <main
-      className={`h-[90dvh] flex text-white ${renderChat ? "px-0 sm:px-4 md:px-10 lg:px-32 xl:px-52" : "justify-center items-center"}`}
+      className={`h-[80dvh] flex justify-center items-center text-white ${renderChat ? "px-0 sm:px-4 md:px-10 lg:px-32 xl:px-52" : ""}`}
     >
       <Chat setRenderChat={setRenderChat} />
     </main>
