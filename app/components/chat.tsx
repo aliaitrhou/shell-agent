@@ -40,7 +40,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const el = e.target as HTMLInputElement;
-    setMsg(el.value);
+    setMsg(el.value.charAt(0).toUpperCase() + el.value.slice(1));
   }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -161,7 +161,7 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
   return (
     <div
-      className={`h-[90dvh] mt-2 w-full sm:min-w-full ${hasMessages ? "px-2 sm:px-4 space-y-3" : "space-y-6"} flex flex-col items-center shadow-2xl`}
+      className={`w-full ${hasMessages ? "h-full px-2 sm:px-4 space-y-3" : "space-y-6"} flex flex-col items-center shadow-2xl`}
     >
       {hasMessages && user ? (
         <AimationLayout>
