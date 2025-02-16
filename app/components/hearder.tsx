@@ -12,7 +12,7 @@ import Link from "next/link";
 
 const Header = () => {
   return (
-    <nav className="w-full flex flex-row justify-between items-center px-4 py-2">
+    <nav className="w-full flex flex-row justify-between items-center px-4 py-2 sm:px-4 sm:py-4">
       <Link href="/">
         <div className="flex flex-row gap-1">
           <Image src={logo} alt="logo" width={35} height={30} />
