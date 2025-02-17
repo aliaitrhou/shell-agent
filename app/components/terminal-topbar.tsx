@@ -21,7 +21,7 @@ const TerminalToolBar: React.FC<Props> = ({ setMessages }) => {
   };
 
   return (
-    <div className="sticky z-50 top-0 left-0 right-0 w-full bg-zinc-800 h-8 sm:h-10 flex items-center border-b-[1px] border-zinc-700  px-4 justify-between">
+    <div className="sticky z-40 top-0 left-0 right-0 w-full bg-zinc-800 h-8 sm:h-10 flex items-center border-b-[1px] border-zinc-700  px-4 justify-between">
       <div className="group flex items-center gap-2">
         <button
           onClick={handleRedButtonClick}

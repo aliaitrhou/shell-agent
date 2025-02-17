@@ -68,7 +68,7 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
             return <>{childrenArray}</>; // Don't wrap div or pre inside p
           }
 
-          return <p className="sm:my-1 md:my-2 last:mb-0">{childrenArray}</p>;
+          return <p className="sm:mx-1 md:mx-2 last:mb-0">{childrenArray}</p>;
         },
         code({
           inline,

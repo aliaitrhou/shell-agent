@@ -161,13 +161,13 @@ const Chat: React.FC<Props> = ({ setRenderChat }) => {
 
   return (
     <div
-      className={`w-full ${hasMessages ? "h-full px-2 sm:px-4 space-y-3" : "space-y-6"} flex flex-col items-center`}
+      className={`w-full  ${hasMessages ? "h-full px-2 sm:px-4 space-y-3" : "space-y-6"} flex flex-col items-center`}
     >
       {hasMessages && user ? (
         <AimationLayout>
           <section
             ref={refContainer}
-            className="relative h-full overflow-y-auto w-full space-y-2 bg-zinc-800/90 rounded-xl shadow-md border-[1px] border-zinc-700 pb-4"
+            className="relative  h-[80dvh] w-full space-y-2 bg-zinc-800/90 rounded-xl shadow-md border-[1px] border-zinc-700 overflow-y-auto pb-4"
           >
             <TerminalToolBar setMessages={setMessages} />
             {messages
