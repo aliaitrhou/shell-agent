@@ -6,7 +6,7 @@ export async function GET(
   request: Request,
   { params }: { params: { chatId: string } },
 ) {
-  const { chatId } = await params;
+  const { chatId } = params;
 
   // check if the chat exists
   const chat = await prisma.chat.findUnique({
