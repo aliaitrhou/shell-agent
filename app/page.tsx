@@ -15,7 +15,7 @@ export default function Home() {
   const [startInputValue, setStartInputValue] = useState("");
   const [start, setStart] = useState(false);
 
-  const { isSignedIn, user } = useUser();
+  const { user } = useUser();
 
   const { openSignIn } = useClerk();
 
@@ -135,9 +135,7 @@ export default function Home() {
       }
 
       const chatsData = await response.json();
-      console.log("chats are (before) :", chats);
       setChats(chatsData);
-      console.log("chats are (after) :", chats);
 
       //HACK: here i can set the chat that i want to be active
       // when the user opens the app (if they have no chat you should create the "First Chat")
