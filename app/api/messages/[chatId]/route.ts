@@ -2,12 +2,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(
-  request: Request,
-  context: { params: { chatId: string } },
-) {
-  const params = await context.params;
-  const { chatId } = params;
+interface Context {
+  params: {
+    chatId: string;
+  };
+}
+
+export async function GET(request: Request, { params }: Context) {
+  const { chatId } = await params;
 
   // check if the chat exists
   const chat = await prisma.chat.findUnique({
