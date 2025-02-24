@@ -37,7 +37,7 @@ export async function POST(req: Request) {
 
   const prompt = process.env.MAGIC_PROMPT || "";
   const runner = together.chat.completions.stream({
-    model: "Qwen/Qwen2.5-7B-Instruct-Turbo",
+    model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
     messages: [
       {
         role: "system",

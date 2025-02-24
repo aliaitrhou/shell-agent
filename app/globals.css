@@ -8,7 +8,6 @@ body {
   padding: 0;
   background-image: url("/grid.svg");
 }
-
 .main {
   content: "";
   background-image: url("/assets/images/grid.svg");
@@ -24,11 +23,11 @@ body {
   position: absolute;
   background: linear-gradient(
     120deg,
-    transparent 10%,
-    rgba(0, 0, 0, 0.7) 25%,
+    transparent 5%,
+    rgba(0, 0, 0, 0.7) 15%,
     black 50%,
-    rgba(0, 0, 0, 0.7) 75%,
-    transparent 90%
+    rgba(0, 0, 0, 0.7) 85%,
+    transparent 95%
   );
   z-index: 1;
   content: "";
@@ -43,7 +42,7 @@ body {
   width: 300px;
   height: 300px;
   left: 0;
-  top: 0;
+  top: 20%;
   filter: blur(150px) saturate(150%);
   opacity: 0.8;
 }
@@ -54,9 +53,9 @@ body {
   width: 300px;
   height: 300px;
   right: 0;
-  bottom: 0;
+  bottom: 20%;
   filter: blur(150px) saturate(150%);
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 @media screen and (max-width: 740px) {
@@ -64,5 +63,21 @@ body {
     opacity: 0.09;
     right: 0;
     bottom: 0;
+  }
+}
+
+/* for model response loading */
+.loader {
+  width: 25px;
+  aspect-ratio: 4;
+  background: radial-gradient(circle closest-side, green 90%, #0000) 0 /
+    calc(100% / 3) 100% space;
+  clip-path: inset(0 100% 0 0);
+  animation: l1 1s steps(4) infinite;
+}
+
+@keyframes l1 {
+  to {
+    clip-path: inset(0 -34% 0 0);
   }
 }

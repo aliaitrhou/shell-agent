@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import Header from "./components/hearder";
+import Header from "@/components/hearder";
 import { Analytics } from "@vercel/analytics/react";
+import Footer from "@/components/footer";
 
 const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -40,6 +41,7 @@ export default function RootLayout({
           </div>
           <Header />
           {children}
+          <Footer />
           <Analytics />
         </body>
       </html>

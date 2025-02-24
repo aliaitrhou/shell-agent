@@ -209,7 +209,7 @@ export function PlaceholdersAndVanishInput({
       <button
         disabled={!value}
         type="submit"
-        className="absolute right-1 top-1/2 z-50 -translate-y-1/2 h-8 w-8 sm:h-8 sm:w-8 rounded-full border border-zinc-700 bg-zinc-800  transition duration-200 flex items-center justify-center"
+        className="absolute right-1 sm:right-2 top-1/2 z-50 -translate-y-1/2 h-8 w-8 sm:h-8 sm:w-8 rounded-full border border-zinc-700 bg-zinc-800  transition duration-200 flex items-center justify-center"
       >
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"

@@ -19,9 +19,9 @@ type MarkdownRendererProps = {
 
 const CodeBlock: FC<Props> = memo(({ language, value }) => {
   return (
-    <div className="relative w-full codeblock bg-zinc-900 border-[.3px] border-zinc-500 rounded-lg overflow-hidden my-3">
-      <div className="flex items-center justify-between w-full px-3 py-1 pr-4 rounded-t bg-zinc-700 text-zinc-100 border-b-[.3px] border-zinc-500">
-        <span className="text-xs lowercase">{language}</span>
+    <div className="relative w-full sm:w-fit  codeblock bg-zinc-900/60 border-[.3px] border-zinc-600 rounded-md overflow-hidden my-3">
+      <div className="flex items-center justify-between w-full px-3 py-1 pr-4 rounded-t bg-zinc-700/80 text-zinc-100 border-b-[.3px] border-zinc-600">
+        <span className="text-xs lowercase font-spaceMono">{language}</span>
       </div>
       <SyntaxHighlighter
         language={language}
