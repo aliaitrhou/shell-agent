@@ -4,9 +4,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: Request,
-  { params }: { params: { chatId: string } },
+  context: { params: { chatId: string } },
 ) {
-  const { chatId } = params;
+  const { chatId } = context.params;
 
   // check if the chat exists
   const chat = await prisma.chat.findUnique({
