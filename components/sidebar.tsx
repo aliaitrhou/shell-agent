@@ -29,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   return (
     <SidebarWrapper
       key={open.toString()}
-      className="hidden w-36 md:w-40 sm:mt-[39px] self-start  sm:flex  bg-zinc-800 rounded-lg border border-zinc-700  h-[60dvh] text-center"
+      className="hidden w-36 md:w-40 sm:mt-[39px] self-start  sm:flex  bg-zinc-800/80 rounded-lg border border-zinc-700  h-[60dvh] text-center"
     >
       <h3 className="sticky top-0 left-0 right-0 font-semibold font-kanit text-center text-zinc-400 text-sm p-2 border-b border-b-zinc-700">
         Your Chats :)

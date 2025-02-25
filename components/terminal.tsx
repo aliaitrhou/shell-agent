@@ -280,7 +280,7 @@ const Terminal: React.FC<Props> = ({
   return (
     <div className={`w-full h-[80dvh] flex flex-col items-center`}>
       <AimationLayout>
-        <section className="relative w-full h-full  bg-zinc-800/70 rounded-xl  border-[1px] border-zinc-700">
+        <section className="relative w-full h-full  bg-zinc-800/80 rounded-xl  border-[1px] border-zinc-700">
           <TerminalTopBar
             currentChatId={chatId}
             disableDelete={disableRemoveChat}
