@@ -1,29 +1,104 @@
 import { NextRequest } from "next/server";
-import Together from "together-ai";
+import { Together } from "together-ai";
 
-if (!process.env.TOGETHER_API_KEY) throw new Error("Missing Together env var");
+const apiKey = process.env.TOGETHER_API_KEY;
+if (!apiKey) throw new Error("Missing Together env var");
+
+let cwd = "~";
+// TODO: get the command history from the client side
 
 export async function POST(req: NextRequest) {
-  const { command } = await req.json();
+  const { command, commandsHistory } = await req.json();
 
-  const together = new Together();
+  const together = new Together({
+    apiKey,
+  });
 
-  const runner = together.chat.completions.stream({
+  console.log("commands history is:", commandsHistory);
+
+  const commandsString = commandsHistory
+    .map((data: string, idx: number) => {
+      if (idx % 2 === 0) {
+        return `command: ${idx + 1}: ${data} |`;
+      } else {
+        return `command ${idx - 1} output:  ${data} |`;
+      }
+    })
+    .join(" ");
+
+  console.log("the commmand passed to the model are: ", commandsString);
+
+  const systemPrompt = `
+  ROLE: You are an OS simulator. Given [CURRENT_COMMAND], respond only with the raw output of the executed command, like a real terminal.\n
+_______
+  TASKS:
+	1. Execute commands exactly as a shell would—no explanations, no autocorrections.\n
+	2. For cd commands: If the directory user have created it before call change_cwd(new_directory)
+	otherwise, return this --> bash: cd: new_directory: No such file or directory.\n
+	3. For invalid commands, return: bash: xyz: command not found.\n
+	4. For command errors, return the actual shell error message.\n
+	5. No assumptions, no extra output—only strict terminal behavior.\n
+  6. Most important all your outputs should be based on the previous commands and outputs if there are available.
+_______
+STARTING POINT:
+  - ~/: Contains README.txt.
+  - readme file content : "Why do programmers prefer dark mode? Because light attracts bugs!"
+_______
+[PREVIOUS_COMMANDS_WITH_OUTPUT]: ${commandsString}, [CURRENT_CWD]: ${cwd}, [CURRENT_COMMAND]: ${command}
+  `;
+
+  const response = await together.chat.completions.create({
     model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
     messages: [
+      { role: "system", content: systemPrompt },
       {
-        role: "system",
-        content:
-          "You are an OS simulator. You will only respond with the output of terminal commands. Do not answer questions directly or engage in conversations. Only return the command's stdout or indicate if the command is invalid. Example: If asked 'Do you speak Arabic?' reply with an error or prompt as if it's a terminal command like this (bash: do: command not found).",
+        role: "user",
+        content: systemPrompt,
       },
-      { role: "user", content: `[COMMAND]: ${command}` },
     ],
     temperature: 0.7,
     max_tokens: 200,
+    // TODO: add more tools, like a set of commands to do so you can run a desire one.
+    tools: [
+      {
+        type: "function",
+        function: {
+          name: "change_cwd",
+          description: "Change the current working directory.",
+          parameters: {
+            type: "object",
+            properties: {
+              new_cwd: {
+                type: "string",
+                description:
+                  "The new working directory after executing the cd command.",
+              },
+            },
+            required: ["new_cwd"],
+          },
+        },
+      },
+    ],
+    tool_choice: "auto",
   });
 
-  //TODO: don't stream this response
-  return new Response(runner.toReadableStream());
+  // Check if there's a tool call for directory change
+  const toolCall = response.choices[0]?.message?.tool_calls?.[0];
+  if (toolCall?.function?.name === "change_cwd") {
+    const newCwd = JSON.parse(toolCall.function.arguments).new_cwd;
+    cwd = newCwd; // Update cwd
+    console.log(`CWD updated to: ${cwd}`);
+  }
+
+  return new Response(
+    JSON.stringify({
+      cwd: cwd,
+      content: response?.choices[0]?.message?.content || "",
+    }),
+    {
+      headers: { "Content-Type": "application/json" },
+    },
+  );
 }
 
 export const runtime = "nodejs";
