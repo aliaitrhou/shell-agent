@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
-  const { chatId, text, role } = await req.json();
-  if (!chatId || !text || !role)
+  const { chatId, text, role, mode, cwd } = await req.json();
+
+  if (!chatId || !text || !role || !mode || !cwd)
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
   const chat = await prisma.chat.findUnique({ where: { id: chatId } });
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Chat not found" }, { status: 404 });
 
   const message = await prisma.message.create({
-    data: { chatId, role, text },
+    data: { chatId, role, text, mode, cwd },
   });
 
   return NextResponse.json(message);

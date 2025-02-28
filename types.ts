@@ -3,6 +3,8 @@ export type message = {
   createdAt?: string;
   id?: string;
   role: "user" | "assistent";
+  cwd?: string;
+  mode?: Mode;
   text: string;
 };
 

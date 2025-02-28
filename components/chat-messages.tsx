@@ -28,7 +28,7 @@ const ShellPromptUi: React.FC<shellPromptProps> = ({
         <>{children}</>
       ) : (
         <span
-          className={`text-xs font-thin font-mono ${type == "left-side" && content && "text-blue-200"}`}
+          className={`text-xs font-thin font-mono ${type == "left-side" && content ? "text-blue-300" : "w-fit"}`}
         >
           {content}
         </span>
@@ -43,6 +43,7 @@ const ShellPromptUi: React.FC<shellPromptProps> = ({
 interface Props extends React.ComponentPropsWithoutRef<"textarea"> {
   isInput: boolean;
   mode: Mode;
+  pwd: string;
   setModeCallback: React.Dispatch<React.SetStateAction<Mode>>;
   inputValue: string;
   handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -53,6 +54,7 @@ interface Props extends React.ComponentPropsWithoutRef<"textarea"> {
 const ChatMessages: React.FC<Props> = ({
   isInput,
   mode,
+  pwd,
   inputValue,
   setModeCallback,
   messages,
@@ -71,7 +73,6 @@ const ChatMessages: React.FC<Props> = ({
     setModeCallback((prev: Mode) => (prev == "Prompt" ? "Command" : "Prompt"));
   };
 
-  console.log("input value is : ", inputValue);
   const keywords = inputValue.split(" ");
   const currentValueIsCommand =
     mode === "Command" && linuxCommands.includes(keywords[0]);
@@ -82,7 +83,7 @@ const ChatMessages: React.FC<Props> = ({
         // to hightlight commands of every "Command" mode messaege
         const keyword = msg.text.split(" ");
         const command =
-          mode === "Command" && linuxCommands.includes(keyword[0]);
+          msg.mode === "Command" && linuxCommands.includes(keyword[0]);
 
         return (
           <div
@@ -92,8 +93,18 @@ const ChatMessages: React.FC<Props> = ({
             {/* display the shell prompt ui only for user */}
             {msg.role == "user" && (
               <div className="flex flex-row items-center gap-0">
-                <ShellPromptUi type="left-side" content={"prompt"} />
-                <ShellPromptUi type="cwd" content={"~"} />
+                <ShellPromptUi
+                  type="left-side"
+                  content={
+                    msg.mode === "Command" && msg.role === "user"
+                      ? "command"
+                      : "prompt"
+                  }
+                />
+                <ShellPromptUi
+                  type="cwd"
+                  content={index === messages.length - 1 ? pwd : msg.cwd}
+                />
               </div>
             )}
             <div
@@ -117,7 +128,10 @@ const ChatMessages: React.FC<Props> = ({
                   )}
                 </p>
               ) : (
-                <MemoizedMarkdownRenderer>{msg.text}</MemoizedMarkdownRenderer>
+                <MemoizedMarkdownRenderer>
+                  {/* i did this so "cd" command doesn't have an output  */}
+                  {msg.text === "done" ? "" : msg.text}
+                </MemoizedMarkdownRenderer>
               )}
             </div>
           </div>
@@ -136,7 +150,7 @@ const ChatMessages: React.FC<Props> = ({
             </button>
           </ShellPromptUi>
           {/* teh content currnt working directory should be dynamic later: */}
-          <ShellPromptUi type="cwd" content={"~"} />
+          <ShellPromptUi type="cwd" content={pwd} />
           <form
             onSubmit={handleFormSubmit}
             className="relative w-full h-full p-0 flex items-center justify-start"

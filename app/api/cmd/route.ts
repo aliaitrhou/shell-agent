@@ -41,7 +41,7 @@ _______
   6. Most important all your outputs should be based on the previous commands and outputs if there are available.
 _______
 STARTING POINT:
-  - ~/: Contains README.txt.
+  - ~: Contains README.txt.
   - readme file content : "Why do programmers prefer dark mode? Because light attracts bugs!"
 _______
 [PREVIOUS_COMMANDS_WITH_OUTPUT]: ${commandsString}, [CURRENT_CWD]: ${cwd}, [CURRENT_COMMAND]: ${command}

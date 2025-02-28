@@ -28,5 +28,12 @@ model Message {
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   role      String // "user" or "assistant"
   text      String
+  mode      Mode     @default(Prompt) // Enum for "Prompt" or "Command"
+  cwd       String   @default("~") // Current working directory
   createdAt DateTime @default(now())
+}
+
+enum Mode {
+  Prompt
+  Command
 }

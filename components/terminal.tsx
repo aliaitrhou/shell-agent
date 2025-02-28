@@ -39,9 +39,11 @@ const Terminal: React.FC<Props> = ({
   const [msg, setMsg] = useState("");
   const [chatHistory, setChatHistory] = useState<string[]>([]); // State to manage chat history
   const [messages, setMessages] = useState<message[]>([]);
-  const [mode, setMode] = useState<Mode>("Prompt");
   // mode is default to prompt
+  const [mode, setMode] = useState<Mode>("Prompt");
   const [dispayForm, setDispayForm] = useState(true);
+  const [commandsHistory, setCommandsHistory] = useState<string[]>([""]);
+  const [pwd, setPwd] = useState("~");
 
   const [loadingStatus, setLoadingStatus] = useState({
     chats: false,
@@ -56,9 +58,11 @@ const Terminal: React.FC<Props> = ({
     id: string,
     msg: string,
     role: string,
+    mode: Mode,
+    cwd: string,
   ) => {
     // check for valid inputs before making the request
-    if (!id || !msg || !role) {
+    if (!id || !msg || !role || !mode || !cwd) {
       console.error("Missing required fields.");
       return;
     }
@@ -72,6 +76,8 @@ const Terminal: React.FC<Props> = ({
         chatId: id,
         text: msg,
         role: role,
+        mode,
+        cwd,
       }),
     });
 
@@ -80,8 +86,7 @@ const Terminal: React.FC<Props> = ({
       return;
     }
 
-    const result = await response.json();
-    console.log("Message has been inserted! result: ", result);
+    await response.json();
   };
 
   const handleChange = useCallback(
@@ -104,10 +109,13 @@ const Terminal: React.FC<Props> = ({
       {
         role: "user",
         text: msg,
+        mode: mode,
+        cwd: "~",
       },
     ]);
     setChatHistory((prevHistory) => [...prevHistory, `user: ${msg}`]);
-    insertMessagesByChatId(chatId, msg, "user");
+    // insert the user message to database
+    insertMessagesByChatId(chatId, msg, "user", mode, "~");
     if (mode == "Prompt") {
       await getModelAnswer("Prompt");
     } else {
@@ -126,11 +134,8 @@ const Terminal: React.FC<Props> = ({
       setDispayForm(true);
       setMsg("");
     } else {
-      try {
-        let runner;
-
-        if (m == "Command") {
-          // todo : call the cmd endpoint
+      if (m == "Command") {
+        try {
           const res = await fetch("/api/cmd", {
             method: "POST",
             headers: {
@@ -138,6 +143,7 @@ const Terminal: React.FC<Props> = ({
             },
             body: JSON.stringify({
               command: msg,
+              commandsHistory,
             }),
           });
 
@@ -151,8 +157,39 @@ const Terminal: React.FC<Props> = ({
             throw new Error("Response body is undefined.");
           }
 
-          runner = ChatCompletionStream.fromReadableStream(res.body!);
-        } else {
+          const responseData = await res.json();
+
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistent",
+              text: responseData.content || "done",
+              mode: "Command",
+              cwd: responseData.cwd,
+            },
+          ]);
+          setPwd(responseData.cwd);
+
+          insertMessagesByChatId(
+            chatId,
+            responseData.content || "done",
+            "assistant",
+            "Command",
+            responseData.cwd,
+          );
+        } catch (error) {
+          console.error(
+            "There was an error fetching from cmd endpoint!",
+            error,
+          );
+        } finally {
+          setLoadingStatus({ chats: false, modelAnswer: false });
+          // DONE: display the form after the model have respond.
+          setMsg("");
+          setDispayForm(true);
+        }
+      } else {
+        try {
           const res = await fetch("/api/model", {
             method: "POST",
             headers: {
@@ -175,70 +212,89 @@ const Terminal: React.FC<Props> = ({
             throw new Error("Response body is undefined.");
           }
 
-          runner = ChatCompletionStream.fromReadableStream(res.body!);
-        }
-        let currentMessage = "";
+          const runner = ChatCompletionStream.fromReadableStream(res.body!);
+          let currentMessage = "";
 
-        // in order to steam the response
-        runner.on("content", (delta) => {
-          currentMessage += delta;
-          setChatHistory((prevHistory) => {
-            const updatedHistory = [...prevHistory];
-            if (
-              updatedHistory.length > 0 &&
-              updatedHistory[updatedHistory.length - 1].startsWith("assistent:")
-            ) {
-              updatedHistory[updatedHistory.length - 1] =
-                `assistent: ${currentMessage}`;
-            } else {
-              updatedHistory.push(`assistent: ${currentMessage}`);
-            }
+          // in order to steam the response
+          runner.on("content", (delta) => {
+            currentMessage += delta;
+            setChatHistory((prevHistory) => {
+              const updatedHistory = [...prevHistory];
+              if (
+                updatedHistory.length > 0 &&
+                updatedHistory[updatedHistory.length - 1].startsWith(
+                  "assistent:",
+                )
+              ) {
+                updatedHistory[updatedHistory.length - 1] =
+                  `assistent: ${currentMessage}`;
+              } else {
+                updatedHistory.push(`assistent: ${currentMessage}`);
+              }
 
-            return updatedHistory;
+              return updatedHistory;
+            });
+            setMessages((prev) => {
+              const updatedMessages = [...prev];
+              if (
+                updatedMessages.length > 0 &&
+                updatedMessages[updatedMessages.length - 1].role === "assistent"
+              ) {
+                updatedMessages[updatedMessages.length - 1].text =
+                  currentMessage; // Update the last message
+              } else {
+                updatedMessages.push({
+                  role: "assistent",
+                  text: currentMessage,
+                  cwd: prev.length > 0 ? prev[prev.length - 1].cwd : "~", // Get last cwd or default to "~"
+                  mode: "Prompt",
+                }); // If no assistant message exists, create a new one
+              }
+              return updatedMessages;
+            });
           });
-          setMessages((prev) => {
-            const updatedMessages = [...prev];
-            if (
-              updatedMessages.length > 0 &&
-              updatedMessages[updatedMessages.length - 1].role === "assistent"
-            ) {
-              updatedMessages[updatedMessages.length - 1].text = currentMessage; // Update the last message
-            } else {
-              updatedMessages.push({ role: "assistent", text: currentMessage }); // If no assistant message exists, create a new one
-            }
 
-            return updatedMessages;
+          // TODO: change cwd later to be dynamic also
+          // save the model answer
+          runner.on("end", () => {
+            insertMessagesByChatId(
+              chatId,
+              currentMessage,
+              "assistant",
+              "Prompt",
+              "~",
+            );
+            setDispayForm(true);
           });
-        });
 
-        runner.on("end", () => {
-          insertMessagesByChatId(chatId, currentMessage, "assistant");
-          setDispayForm(true);
-        });
-
-        runner.on("error", (err) => {
-          console.error("Streaming error:", err);
+          runner.on("error", (err) => {
+            console.error("Streaming error:", err);
+            setMessages((prev) => [
+              ...prev,
+              {
+                role: "assistent",
+                text: "Something went wrong while processing your request.",
+                cwd: "~",
+                mode: "Prompt",
+              },
+            ]);
+          });
+        } catch (error) {
+          console.error("Error fetching model response:", error);
           setMessages((prev) => [
             ...prev,
             {
               role: "assistent",
-              text: "Something went wrong while processing your request.",
+              text: "An error occurred. Please try again later.",
+              cwd: "~",
+              mode: "Prompt",
             },
           ]);
-        });
-      } catch (error) {
-        console.error("Error fetching model response:", error);
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistent",
-            text: "An error occurred. Please try again later.",
-          },
-        ]);
-      } finally {
-        setLoadingStatus({ chats: false, modelAnswer: false });
-        // DONE: display the form after the model have respond.
-        setMsg("");
+        } finally {
+          setLoadingStatus({ chats: false, modelAnswer: false });
+          // DONE: display the form after the model have respond.
+          setMsg("");
+        }
       }
     }
   };
@@ -261,6 +317,23 @@ const Terminal: React.FC<Props> = ({
       getCurrentChatById(chatId);
     }
   }, [chatId]);
+
+  // this useEffect should run every time the user toggle between chats
+  // so a new chatHistory/commandsHistory created which means that the models
+  // would have a new memory each time.
+  useEffect(() => {
+    const commands = messages
+      .map((m: message) => {
+        if (m.mode == "Command") {
+          const command = m.text;
+          return command;
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    setCommandsHistory(commands);
+  }, [messages]);
 
   const scroll = () => {
     if (refContainer.current) {
@@ -304,6 +377,7 @@ const Terminal: React.FC<Props> = ({
               <>
                 <ChatMessages
                   mode={mode}
+                  pwd={pwd}
                   setModeCallback={setMode}
                   inputValue={msg}
                   isInput={dispayForm}

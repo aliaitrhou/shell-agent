@@ -7,11 +7,20 @@ import Sidebar from "@/components/sidebar";
 import { useClerk, useUser } from "@clerk/clerk-react";
 import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish-input";
 
+// type loadingState = {
+//   loadingChats: boolean;
+//   loadingNewChat: boolean;
+// };
+
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
   const [chats, setChats] = useState<ChatProps[]>([]);
-  const [laodingNewChat, setLoadingNewChat] = useState(false);
+  // const [loading, setLoading] = useState<loadingState>({
+  //   loadingChats: false,
+  //   loadingNewChat: false,
+  // });
   const [currentChatId, setCurrentChatId] = useState("");
+  const [loading, setLoading] = useState(false);
   const [startInputValue, setStartInputValue] = useState("");
   const [start, setStart] = useState(false);
 
@@ -21,16 +30,16 @@ export default function Home() {
 
   // create chat callback
   const handleCreateChat = useCallback(async () => {
-    setLoadingNewChat(true);
+    setLoading(true);
     // to prevent the user from creating a new chat when he already
     // created one and did not used it:
-
-    // const hasUnusedChat = chats.some((chat) => chat.messages?.length === 0);
     //
-    //  if (hasUnusedChat) {
-    //    console.warn("You already have an unused chat. Use it before creating a new one.");
-    //    return;
-    //  }
+    // const hasUnusedChat = chats.some((chat) => chat.messages?.length === 0);
+
+    // if (hasUnusedChat) {
+    //   console.warn("You already have an unused chat. Use it before creating a new one.");
+    //   return;
+    // }
 
     try {
       const response = await fetch("/api/chats", {
@@ -54,7 +63,7 @@ export default function Home() {
       // set new chat as active
       setCurrentChatId(chat.id);
 
-      setLoadingNewChat(false);
+      setLoading(false);
     } catch (error) {
       console.error("Error creating new chat: ", error);
     }
@@ -124,27 +133,35 @@ export default function Home() {
   );
 
   useEffect(() => {
-    // prevent the request if user is not signed in --> for the first render
-
     async function fetchChats() {
-      const response = await fetch("/api/chats");
+      try {
+        const response = await fetch("/api/chats");
 
-      if (!response.ok) {
-        console.log("Failed to fetch chats");
-        return;
-      }
+        if (!response.ok) {
+          console.log("Failed to fetch chats");
+          return;
+        }
 
-      const chatsData = await response.json();
-      setChats(chatsData);
+        const chatsData = await response.json();
+        setChats(chatsData);
 
-      //HACK: here i can set the chat that i want to be active
-      // when the user opens the app (if they have no chat you should create the "First Chat")
-      if (!currentChatId) {
-        setCurrentChatId(chatsData[0].id);
+        //HACK: here i can set the chat that i want to be active
+        // when the user opens the app (if they have no chat you should create the "First Chat")
+        if (!currentChatId) {
+          setCurrentChatId(chatsData[0].id);
+        }
+      } catch (e) {
+        console.log("error: ", e);
       }
     }
-    fetchChats();
-  }, [currentChatId, handleRemoveChat, handleRenameChat, handleCreateChat]);
+    // prevent the request if user is not signed in --> for the first render
+    if (user) {
+      fetchChats();
+    } else {
+      console.log("No user was found");
+      return;
+    }
+  }, [currentChatId, user]);
 
   const handleStartPageInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -158,12 +175,11 @@ export default function Home() {
 
     // send the user to log in if they are not
     if (!user) {
-      openSignIn();
+      return openSignIn();
     }
 
-    console.log("start is: ", start);
     // open the terminal and side bar after the user submit the form with a prompt
-    if (startInputValue) {
+    if (startInputValue && user) {
       setStart(true);
     }
   };
@@ -180,7 +196,8 @@ export default function Home() {
             <Sidebar
               open={openSidebar}
               chats={chats}
-              loadingChat={laodingNewChat}
+              loadingChat={loading}
+              loadingChats={false}
               disableRemoveChat={chats.length === 1}
               setActiveChatId={setCurrentChatId}
               currentChatId={currentChatId}
