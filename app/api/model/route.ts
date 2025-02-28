@@ -1,13 +1,14 @@
-import Together from "together-ai";
+import { Together } from "together-ai";
 import { createClient } from "@supabase/supabase-js";
 
-if (!process.env.TOGETHER_API_KEY) throw new Error("Missing Together env var");
+const apiKey = process.env.TOGETHER_API_KEY;
+if (!apiKey) throw new Error("Missing Together env var");
 const sbApiKey = process.env.SUPABASE_API_KEY || "";
 const sbURL = process.env.SUPABASE_URL || "";
 
 export async function POST(req: Request) {
   const { message, chatHistory } = await req.json();
-  const together = new Together();
+  const together = new Together({ apiKey });
 
   // Get the query embedding for the message using together ai embedding model
   const response = await together.embeddings.create({

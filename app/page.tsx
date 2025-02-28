@@ -197,7 +197,6 @@ export default function Home() {
               open={openSidebar}
               chats={chats}
               loadingChat={loading}
-              loadingChats={false}
               disableRemoveChat={chats.length === 1}
               setActiveChatId={setCurrentChatId}
               currentChatId={currentChatId}
