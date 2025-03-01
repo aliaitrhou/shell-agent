@@ -14,6 +14,8 @@ import { message, Mode } from "@/types";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import AimationLayout from "./animation-layout";
 import ChatMessages from "./chat-messages";
+import ShellPromptUi from "./shell-prompt-ui";
+import { linuxCommands } from "@/constants";
 
 interface Props {
   chatId: string;
@@ -328,11 +330,12 @@ const Terminal: React.FC<Props> = ({
           const command = m.text;
           return command;
         }
-        return null;
+        return "";
       })
       .filter(Boolean);
 
     setCommandsHistory(commands);
+    console.log("commands are : ", commands);
   }, [messages]);
 
   const scroll = () => {
@@ -349,6 +352,23 @@ const Terminal: React.FC<Props> = ({
   useEffect(() => {
     scroll();
   }, [messages]); // rerun scroll whenever messages change
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // focus on the form input
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [messages]);
+
+  const handleToggleModes = () => {
+    setMode((prev: Mode) => (prev === "Prompt" ? "Command" : "Prompt"));
+  };
+
+  const keywords = msg.split(" ");
+  const currentValueIsCommand =
+    mode === "Command" && linuxCommands.includes(keywords[0]);
 
   return (
     <div className={`w-full h-[80dvh] flex flex-col items-center`}>
@@ -375,16 +395,58 @@ const Terminal: React.FC<Props> = ({
               </div>
             ) : (
               <>
-                <ChatMessages
-                  mode={mode}
-                  pwd={pwd}
-                  setModeCallback={setMode}
-                  inputValue={msg}
-                  isInput={dispayForm}
-                  handleInputChange={handleChange}
-                  handleFormSubmit={handleSubmit}
-                  messages={messages}
-                />
+                <ChatMessages pwd={pwd} messages={messages} />
+                {/* command/prompt inserting */}
+                {dispayForm && (
+                  <div className="flex flex-row items-center justify-start h-4">
+                    <ShellPromptUi type="left-side">
+                      <button
+                        onClick={handleToggleModes}
+                        className="text-xs font-bold font-mono text-white"
+                      >
+                        {mode}
+                      </button>
+                    </ShellPromptUi>
+                    {/* teh content currnt working directory should be dynamic later: */}
+                    <ShellPromptUi type="cwd" content={pwd} />
+                    <form
+                      onSubmit={handleSubmit}
+                      className="relative w-full h-full p-0 flex items-center justify-start"
+                    >
+                      {/* this is used to hightlight the first word user types if the current mode is "Command" 
+                        and the that word is included in linux commands array */}
+                      <div className="absolute w-full h-full  font-mono text-xs text-white bg-transparent ml-5 pointer-events-none">
+                        {keywords.map((word, index) => (
+                          <span
+                            key={index}
+                            className={
+                              index === 0 && currentValueIsCommand
+                                ? "text-blue-400"
+                                : ""
+                            }
+                          >
+                            {word}{" "}
+                          </span>
+                        ))}
+                      </div>
+                      <textarea
+                        onChange={handleChange}
+                        maxLength={115}
+                        ref={textareaRef}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            const form = e.currentTarget.form;
+                            if (form) {
+                              form.requestSubmit(); // this will trigger the form's onSubmit handler
+                            }
+                          }
+                        }}
+                        className="w-full h-full font-mono text-xs text-white rounded-none border-none focus:outline-none resize-none bg-zinc-800/5 ml-5"
+                      />
+                    </form>
+                  </div>
+                )}
                 {loadingStatus.modelAnswer && <div className="ml-5 loader" />}
               </>
             )}
