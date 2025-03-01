@@ -8,7 +8,9 @@ const Footer = () => {
       <p className="">
         © {new Date().getFullYear()} By{" "}
         <span className="text-orange-400 font-bold text-xs">
-          <a href="https://aliaitrahou.me">Ali</a>
+          <a href="https://aliaitrahou.me" target="_blank">
+            Ali
+          </a>
         </span>
         , All rights reserved.
       </p>
