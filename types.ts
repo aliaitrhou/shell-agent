@@ -12,6 +12,7 @@ export interface ChatProps {
   id: string;
   createdAt: string;
   name: string;
+  messageCount: number;
 }
 
 export type Mode = "Prompt" | "Command";

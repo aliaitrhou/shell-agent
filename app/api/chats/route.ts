@@ -45,9 +45,21 @@ export async function GET() {
   const updatedChats = await prisma.chat.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
+    include: {
+      _count: {
+        select: { messages: true },
+      },
+    },
   });
 
-  return NextResponse.json(updatedChats);
+  const formattedChats = updatedChats.map((chat) => ({
+    id: chat.id,
+    createdAt: chat.createdAt,
+    name: chat.name,
+    messageCount: chat._count.messages,
+  }));
+
+  return NextResponse.json(formattedChats);
 }
 
 export async function POST(request: NextRequest) {

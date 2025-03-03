@@ -6,7 +6,6 @@ interface Props {
   currentChatId: string;
   openSidebar: boolean;
   disableDelete: boolean;
-  disableAddSession: boolean;
   handleToggleSidebar: () => void;
   handleAddSession: () => void;
   handleDeleteSession: (chatId: string) => void;
@@ -15,7 +14,6 @@ interface Props {
 const TerminalTopBar: React.FC<Props> = ({
   openSidebar,
   disableDelete,
-  disableAddSession,
   handleToggleSidebar,
   handleAddSession,
   currentChatId,
@@ -44,8 +42,7 @@ const TerminalTopBar: React.FC<Props> = ({
         <ButtonHoverEffect desc="Create New Chat">
           <button
             onClick={handleAddSession}
-            disabled={disableAddSession}
-            className={`bg-green-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center ${disableAddSession ? "cursor-not-allowed" : ""}`}
+            className={`bg-green-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center`}
           >
             <PlusIcon className="w-3 h-3 text-black opacity-0 group-hover:opacity-100" />
           </button>

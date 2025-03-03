@@ -7,21 +7,19 @@ import Sidebar from "@/components/sidebar";
 import { useClerk, useUser } from "@clerk/clerk-react";
 import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish-input";
 
-// type loadingState = {
-//   loadingChats: boolean;
-//   loadingNewChat: boolean;
-// };
+type loadingState = {
+  loadingChats: boolean;
+  loadingNewChat: boolean;
+};
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
   const [chats, setChats] = useState<ChatProps[]>([]);
-  // const [loading, setLoading] = useState<loadingState>({
-  //   loadingChats: false,
-  //   loadingNewChat: false,
-  // });
+  const [loading, setLoading] = useState<loadingState>({
+    loadingChats: false,
+    loadingNewChat: false,
+  });
   const [currentChatId, setCurrentChatId] = useState("");
-  const [loadingChat, setLoadingChat] = useState(false);
-  const [loadingChats, setLoadingChats] = useState(false);
   const [startInputValue, setStartInputValue] = useState("");
   const [start, setStart] = useState(false);
 
@@ -31,44 +29,55 @@ export default function Home() {
 
   // create chat callback
   const handleCreateChat = useCallback(async () => {
-    setLoadingChat(true);
     // to prevent the user from creating a new chat when he already
     // created one and did not used it:
-    //
-    // const hasUnusedChat = chats.some((chat) => chat.messages?.length === 0);
+    const unusedChat = chats.find((chat) => chat.messageCount === 0);
+    console.log(unusedChat);
 
-    // if (hasUnusedChat) {
-    //   console.warn("You already have an unused chat. Use it before creating a new one.");
-    //   return;
-    // }
+    if (unusedChat) {
+      setCurrentChatId(unusedChat.id); // Open the unused chat instead of creating a new one
+    } else {
+      setLoading((prev) => ({
+        ...prev,
+        loadingNewChat: true,
+      }));
+      try {
+        const response = await fetch("/api/chats", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: "New Chat",
+          }),
+        });
 
-    try {
-      const response = await fetch("/api/chats", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: "New Chat",
-        }),
-      });
+        if (!response.ok) {
+          console.error("Failed to create chat");
+          return;
+        }
 
-      if (!response.ok) {
-        console.error("Failed to create chat");
-        return;
+        const chat = await response.json();
+        setChats((prev) => [
+          {
+            ...chat,
+            messageCount: 0,
+          },
+          ...prev,
+        ]);
+
+        // set new chat as active
+        setCurrentChatId(chat.id);
+      } catch (error) {
+        console.error("Error creating new chat: ", error);
+      } finally {
+        setLoading((prev) => ({
+          ...prev,
+          loadingNewChat: false,
+        }));
       }
-
-      const chat = await response.json();
-      setChats((prev) => [chat, ...prev]);
-
-      // set new chat as active
-      setCurrentChatId(chat.id);
-    } catch (error) {
-      console.error("Error creating new chat: ", error);
-    } finally {
-      setLoadingChat(false);
     }
-  }, []);
+  }, [chats]);
 
   // remove chat callback
   const handleRemoveChat = useCallback(
@@ -134,7 +143,10 @@ export default function Home() {
   );
 
   const fetchChats = useCallback(async () => {
-    setLoadingChats(true);
+    setLoading((prev) => ({
+      ...prev,
+      loadingChats: true,
+    }));
     try {
       const response = await fetch("/api/chats");
 
@@ -149,12 +161,13 @@ export default function Home() {
       if (!currentChatId && chatsData.length > 0) {
         setCurrentChatId(chatsData[0].id);
       }
-
-      setLoadingChats(false);
     } catch (e) {
       console.log("error: ", e);
     } finally {
-      setLoadingChats(false);
+      setLoading((prev) => ({
+        ...prev,
+        loadingChats: false,
+      }));
     }
   }, [currentChatId]);
 
@@ -170,6 +183,16 @@ export default function Home() {
     const { value } = e.target as HTMLInputElement;
     setStartInputValue(value);
   };
+
+  const handleMessageSent = useCallback((chatId: string) => {
+    setChats((prevChats) =>
+      prevChats.map((chat) =>
+        chat.id === chatId
+          ? { ...chat, messageCount: chat.messageCount + 1 }
+          : chat,
+      ),
+    );
+  }, []);
 
   const handleStartPageFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -197,8 +220,8 @@ export default function Home() {
             <Sidebar
               open={openSidebar}
               chats={chats}
-              loadingChat={loadingChat}
-              loadingChats={loadingChats}
+              loadingChat={loading.loadingNewChat}
+              loadingChats={loading.loadingChats}
               disableRemoveChat={chats.length === 1}
               setActiveChatId={setCurrentChatId}
               currentChatId={currentChatId}
@@ -214,6 +237,7 @@ export default function Home() {
             handleToggleSidebar={handleToggleSidebar}
             handleCreateChat={handleCreateChat}
             handleRemoveChat={handleRemoveChat}
+            onMessageSent={handleMessageSent}
           />
         </>
       ) : (

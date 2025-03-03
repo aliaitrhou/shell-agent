@@ -25,6 +25,7 @@ interface Props {
   handleCreateChat: () => void;
   handleToggleSidebar: () => void;
   handleRemoveChat: (chatId: string) => void;
+  onMessageSent: (chatId: string) => void;
 }
 
 const Terminal: React.FC<Props> = ({
@@ -383,7 +384,6 @@ const Terminal: React.FC<Props> = ({
             handleAddSession={handleCreateChat}
             /* TODO: disable this button also if you have single chat
              * with no messages in the chats array */
-            disableAddSession={messages.length === 0}
           />
           <div
             ref={refContainer}
