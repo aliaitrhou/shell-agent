@@ -10,6 +10,7 @@ interface SidebarProps {
   currentChatId: string;
   chats: ChatProps[];
   loadingChat: boolean;
+  loadingChats: boolean;
   disableRemoveChat: boolean;
   setActiveChatId: (chatId: string) => void;
   handleRenameChat: (chatId: string, newName: string) => void;
@@ -20,6 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   open,
   chats,
   loadingChat,
+  loadingChats,
   currentChatId,
   setActiveChatId,
   disableRemoveChat,
@@ -35,27 +37,33 @@ const Sidebar: React.FC<SidebarProps> = ({
         Your Chats :)
       </h3>
       <div className="flex flex-col gap-2  h-[calc(60dvh-40px)] px-1 py-2">
-        <>
-          {loadingChat && (
-            <div className="w-full rounded-[4px] py-1 px-3 bg-zinc-700/70">
-              <AiOutlineLoading3Quarters className="mx-auto h-4 w-4 rounded-full animate-spin text-zinc-500" />
-            </div>
-          )}
-          {chats.map((chat, index) => (
-            <ChatItemWrapper key={index} idx={index}>
-              {/* i used the index for the chat item animation delay */}
-              <ChatItem
-                active={chat.id === currentChatId}
-                chatId={chat.id}
-                onClick={() => setActiveChatId(chat.id)}
-                handleRenameChat={handleRenameChat}
-                handleDeleteChat={handleRemoveChat}
-                disableDelete={disableRemoveChat}
-                name={chat.name}
-              />
-            </ChatItemWrapper>
-          ))}
-        </>
+        {loadingChats ? (
+          <div className="h-[50%] w-full flex items-center justify-center">
+            <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-500" />
+          </div>
+        ) : (
+          <>
+            {loadingChat && (
+              <div className="w-full rounded-[4px] py-1 px-3 bg-zinc-700/70">
+                <AiOutlineLoading3Quarters className="mx-auto h-4 w-4 rounded-full animate-spin text-zinc-500" />
+              </div>
+            )}
+            {chats.map((chat, index) => (
+              <ChatItemWrapper key={index} idx={index}>
+                {/* i used the index for the chat item animation delay */}
+                <ChatItem
+                  active={chat.id === currentChatId}
+                  chatId={chat.id}
+                  onClick={() => setActiveChatId(chat.id)}
+                  handleRenameChat={handleRenameChat}
+                  handleDeleteChat={handleRemoveChat}
+                  disableDelete={disableRemoveChat}
+                  name={chat.name}
+                />
+              </ChatItemWrapper>
+            ))}
+          </>
+        )}
       </div>
     </SidebarWrapper>
   );

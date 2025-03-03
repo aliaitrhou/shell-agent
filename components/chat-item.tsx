@@ -120,7 +120,7 @@ const ChatItem: React.FC<Props> = ({
         <div className="absolute -right-20 top-3 z-50 bg-zinc-800 border border-zinc-700 rounded-md flex flex-col gap-1 items-center p-1 text-white">
           <button
             onClick={handleRename}
-            className="w-full px-2 py-1 hover:bg-blue-400 rounded-md flex flex-row justify-between items-center gap-2"
+            className="w-full px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center gap-2"
           >
             <span>Rename</span>
             <FiEdit />
@@ -128,7 +128,7 @@ const ChatItem: React.FC<Props> = ({
           <button
             onClick={handleDelete}
             disabled={disableDelete}
-            className={`w-full px-2 py-1 hover:bg-blue-400 rounded-md flex flex-row justify-between items-center gap-2 ${disableDelete && "cursor-not-allowed"}`}
+            className={`w-full px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center gap-2 ${disableDelete && "cursor-not-allowed"}`}
           >
             <span>Delete</span>
             <RiDeleteBinLine />

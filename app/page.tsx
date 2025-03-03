@@ -20,7 +20,8 @@ export default function Home() {
   //   loadingNewChat: false,
   // });
   const [currentChatId, setCurrentChatId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingChat, setLoadingChat] = useState(false);
+  const [loadingChats, setLoadingChats] = useState(false);
   const [startInputValue, setStartInputValue] = useState("");
   const [start, setStart] = useState(false);
 
@@ -30,7 +31,7 @@ export default function Home() {
 
   // create chat callback
   const handleCreateChat = useCallback(async () => {
-    setLoading(true);
+    setLoadingChat(true);
     // to prevent the user from creating a new chat when he already
     // created one and did not used it:
     //
@@ -62,10 +63,10 @@ export default function Home() {
 
       // set new chat as active
       setCurrentChatId(chat.id);
-
-      setLoading(false);
     } catch (error) {
       console.error("Error creating new chat: ", error);
+    } finally {
+      setLoadingChat(false);
     }
   }, []);
 
@@ -103,7 +104,7 @@ export default function Home() {
   );
 
   // toggle sidebar callback
-  const handleToggleSidebar = useCallback(async () => {
+  const handleToggleSidebar = useCallback(() => {
     setOpenSidebar((prev) => !prev);
   }, []);
 
@@ -132,36 +133,36 @@ export default function Home() {
     [],
   );
 
-  useEffect(() => {
-    async function fetchChats() {
-      try {
-        const response = await fetch("/api/chats");
+  const fetchChats = useCallback(async () => {
+    setLoadingChats(true);
+    try {
+      const response = await fetch("/api/chats");
 
-        if (!response.ok) {
-          console.log("Failed to fetch chats");
-          return;
-        }
-
-        const chatsData = await response.json();
-        setChats(chatsData);
-
-        //HACK: here i can set the chat that i want to be active
-        // when the user opens the app (if they have no chat you should create the "First Chat")
-        if (!currentChatId) {
-          setCurrentChatId(chatsData[0].id);
-        }
-      } catch (e) {
-        console.log("error: ", e);
+      if (!response.ok) {
+        console.log("Failed to fetch chats");
+        return;
       }
+
+      const chatsData = await response.json();
+      setChats(chatsData);
+
+      if (!currentChatId && chatsData.length > 0) {
+        setCurrentChatId(chatsData[0].id);
+      }
+
+      setLoadingChats(false);
+    } catch (e) {
+      console.log("error: ", e);
+    } finally {
+      setLoadingChats(false);
     }
-    // prevent the request if user is not signed in --> for the first render
-    if (user) {
+  }, [currentChatId]);
+
+  useEffect(() => {
+    if (user && start) {
       fetchChats();
-    } else {
-      console.log("No user was found");
-      return;
     }
-  }, [currentChatId, user]);
+  }, [user, start]);
 
   const handleStartPageInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -196,7 +197,8 @@ export default function Home() {
             <Sidebar
               open={openSidebar}
               chats={chats}
-              loadingChat={loading}
+              loadingChat={loadingChat}
+              loadingChats={loadingChats}
               disableRemoveChat={chats.length === 1}
               setActiveChatId={setCurrentChatId}
               currentChatId={currentChatId}

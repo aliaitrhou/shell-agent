@@ -431,6 +431,7 @@ const Terminal: React.FC<Props> = ({
                       </div>
                       <textarea
                         onChange={handleChange}
+                        value={msg}
                         maxLength={115}
                         ref={textareaRef}
                         onKeyDown={(e) => {
@@ -442,7 +443,7 @@ const Terminal: React.FC<Props> = ({
                             }
                           }
                         }}
-                        className="w-full h-full font-mono text-xs text-white rounded-none border-none focus:outline-none resize-none bg-zinc-800/5 ml-5"
+                        className="w-full h-full font-mono text-xs test-zinc-50/5 rounded-none border-none focus:outline-none resize-none bg-zinc-800/5 ml-5"
                       />
                     </form>
                   </div>
