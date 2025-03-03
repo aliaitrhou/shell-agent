@@ -5,7 +5,6 @@ const apiKey = process.env.TOGETHER_API_KEY;
 if (!apiKey) throw new Error("Missing Together env var");
 
 let cwd = "~";
-// TODO: get the command history from the client side
 
 export async function POST(req: NextRequest) {
   const { command, commandsHistory } = await req.json();
@@ -19,9 +18,9 @@ export async function POST(req: NextRequest) {
   const commandsString = commandsHistory
     .map((data: string, idx: number) => {
       if (idx % 2 === 0) {
-        return `command: ${idx + 1}: ${data} |`;
+        return `| command ${idx + 1}: ${data}`;
       } else {
-        return `command ${idx - 1} output:  ${data} |`;
+        return `output:  ${data} |`;
       }
     })
     .join(" ");
@@ -33,8 +32,8 @@ export async function POST(req: NextRequest) {
 _______
   TASKS:
 	1. Execute commands exactly as a shell would—no explanations, no autocorrections.\n
-	2. For cd commands: If the directory user have created it before call change_cwd(new_directory)
-	otherwise, return this --> bash: cd: new_directory: No such file or directory.\n
+  2. If the user runs the cd command with a directory that already exists, call change_cwd(new_directory) to switch to that directory. If the directory does not exist, return: bash: cd: new_directory: No such file or directory.\n
+	otherwise, return this -> bash: cd: new_directory: No such file or directory.\n
 	3. For invalid commands, return: bash: xyz: command not found.\n
 	4. For command errors, return the actual shell error message.\n
 	5. No assumptions, no extra output—only strict terminal behavior.\n
@@ -48,7 +47,7 @@ _______
   `;
 
   const response = await together.chat.completions.create({
-    model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
+    model: "Qwen/Qwen2.5-7B-Instruct-Turbo",
     messages: [
       { role: "system", content: systemPrompt },
       {
@@ -89,6 +88,8 @@ _______
     cwd = newCwd; // Update cwd
     console.log(`CWD updated to: ${cwd}`);
   }
+
+  console.log("Current working directory is : ", cwd);
 
   return new Response(
     JSON.stringify({
