@@ -7,17 +7,13 @@ import Sidebar from "@/components/sidebar";
 import { useClerk, useUser } from "@clerk/clerk-react";
 import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish-input";
 
-type loadingState = {
-  loadingChats: boolean;
-  loadingNewChat: boolean;
-};
-
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
   const [chats, setChats] = useState<ChatProps[]>([]);
-  const [loading, setLoading] = useState<loadingState>({
+  const [loading, setLoading] = useState({
     loadingChats: false,
-    loadingNewChat: false,
+    createChat: false,
+    delete: false,
   });
   const [currentChatId, setCurrentChatId] = useState("");
   const [startInputValue, setStartInputValue] = useState("");
@@ -32,14 +28,12 @@ export default function Home() {
     // to prevent the user from creating a new chat when he already
     // created one and did not used it:
     const unusedChat = chats.find((chat) => chat.messageCount === 0);
-    console.log(unusedChat);
-
     if (unusedChat) {
-      setCurrentChatId(unusedChat.id); // Open the unused chat instead of creating a new one
+      setCurrentChatId(unusedChat.id); // open the unused chat instead of creating a new one
     } else {
       setLoading((prev) => ({
         ...prev,
-        loadingNewChat: true,
+        createChat: true,
       }));
       try {
         const response = await fetch("/api/chats", {
@@ -73,7 +67,7 @@ export default function Home() {
       } finally {
         setLoading((prev) => ({
           ...prev,
-          loadingNewChat: false,
+          createChat: false,
         }));
       }
     }
@@ -82,6 +76,11 @@ export default function Home() {
   // remove chat callback
   const handleRemoveChat = useCallback(
     async (chatId: string) => {
+      setLoading((prev) => ({
+        ...prev,
+        delete: true,
+      }));
+
       try {
         const response = await fetch("/api/chats", {
           method: "DELETE",
@@ -107,6 +106,11 @@ export default function Home() {
         });
       } catch (error) {
         console.error("Error deleting chat:", error);
+      } finally {
+        setLoading((prev) => ({
+          ...prev,
+          delete: false,
+        }));
       }
     },
     [currentChatId],
@@ -220,7 +224,7 @@ export default function Home() {
             <Sidebar
               open={openSidebar}
               chats={chats}
-              loadingChat={loading.loadingNewChat}
+              loadingChat={loading.createChat}
               loadingChats={loading.loadingChats}
               disableRemoveChat={chats.length === 1}
               setActiveChatId={setCurrentChatId}
@@ -233,7 +237,9 @@ export default function Home() {
             chatId={currentChatId}
             starterMessage={startInputValue}
             openSidebar={openSidebar}
-            disableRemoveChat={chats.length === 1}
+            disableRemoveChat={chats.length === 1 || loading.delete}
+            // TODO: limit users to 8 chats
+            disableCreateChat={loading.createChat}
             handleToggleSidebar={handleToggleSidebar}
             handleCreateChat={handleCreateChat}
             handleRemoveChat={handleRemoveChat}

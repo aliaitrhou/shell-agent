@@ -22,6 +22,7 @@ interface Props {
   starterMessage: string;
   openSidebar: boolean;
   disableRemoveChat: boolean;
+  disableCreateChat: boolean;
   handleCreateChat: () => void;
   handleToggleSidebar: () => void;
   handleRemoveChat: (chatId: string) => void;
@@ -32,9 +33,11 @@ const Terminal: React.FC<Props> = ({
   openSidebar,
   starterMessage,
   disableRemoveChat,
+  disableCreateChat,
   handleToggleSidebar,
   handleCreateChat,
   handleRemoveChat,
+  onMessageSent,
   chatId,
 }) => {
   console.log("starter message : ", starterMessage);
@@ -106,7 +109,9 @@ const Terminal: React.FC<Props> = ({
     if (!user) {
       openSignIn();
     }
-
+    // this well tell the parent to increment this chat messages count
+    // so user can create a new chat if they want
+    onMessageSent(chatId);
     setMessages((prev) => [
       ...prev,
       {
@@ -378,6 +383,7 @@ const Terminal: React.FC<Props> = ({
           <TerminalTopBar
             currentChatId={chatId}
             disableDelete={disableRemoveChat}
+            disableCreate={disableCreateChat}
             handleDeleteSession={handleRemoveChat}
             handleToggleSidebar={handleToggleSidebar}
             openSidebar={openSidebar}
