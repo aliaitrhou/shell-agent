@@ -6,64 +6,38 @@
 body {
   margin: 0;
   padding: 0;
-  background-image: url("/grid.svg");
-}
-.main {
-  content: "";
-  background-image: url("/assets/images/grid.svg");
-  z-index: -2;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  opacity: 0.8;
 }
 
 .gradient_background {
-  position: absolute;
-  background: linear-gradient(
-    120deg,
-    transparent 5%,
-    rgba(0, 0, 0, 0.7) 15%,
-    black 50%,
-    rgba(0, 0, 0, 0.7) 85%,
-    transparent 95%
-  );
-  z-index: 1;
   content: "";
-  width: 100%;
-  height: 100%;
-}
-
-.gradient {
   position: absolute;
-  background: linear-gradient(120deg, orange, transparent);
-  z-index: -1;
-  width: 300px;
-  height: 300px;
+  top: 0;
   left: 0;
-  top: 20%;
-  filter: blur(150px) saturate(150%);
-  opacity: 0.8;
-}
-.second_gradient {
-  position: absolute;
-  background: linear-gradient(120deg, transparent, yellow);
-  z-index: -2;
-  width: 300px;
-  height: 300px;
   right: 0;
-  bottom: 20%;
-  filter: blur(150px) saturate(150%);
-  opacity: 0.9;
-}
-
-@media screen and (max-width: 740px) {
-  .second_gradient {
-    opacity: 0.09;
-    right: 0;
-    bottom: 0;
-  }
+  bottom: 0;
+  background-image: linear-gradient(
+      0deg,
+      transparent 49%,
+      hsla(0, 0%, 100%, 0.06) 50%,
+      hsla(0, 0%, 100%, 0.06) 51%,
+      transparent 52%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 49%,
+      hsla(0, 0%, 100%, 0.06) 50%,
+      hsla(0, 0%, 100%, 0.06) 51%,
+      transparent 52%,
+      transparent
+    );
+  background-size: 40px 40px;
+  pointer-events: none;
+  mask-image: radial-gradient(circle, #fff 50%, transparent 100%);
+  mask-size: cover;
+  mask-position: center;
+  mask-image: linear-gradient(180deg, #fff 270px, transparent 480px);
+  z-index: -1;
 }
 
 /* for model response loading */

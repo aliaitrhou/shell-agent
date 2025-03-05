@@ -19,7 +19,6 @@ import { linuxCommands } from "@/constants";
 
 interface Props {
   chatId: string;
-  starterMessage: string;
   openSidebar: boolean;
   disableRemoveChat: boolean;
   disableCreateChat: boolean;
@@ -31,7 +30,6 @@ interface Props {
 
 const Terminal: React.FC<Props> = ({
   openSidebar,
-  starterMessage,
   disableRemoveChat,
   disableCreateChat,
   handleToggleSidebar,
@@ -40,8 +38,6 @@ const Terminal: React.FC<Props> = ({
   onMessageSent,
   chatId,
 }) => {
-  console.log("starter message : ", starterMessage);
-
   const [msg, setMsg] = useState("");
   const [chatHistory, setChatHistory] = useState<string[]>([]); // State to manage chat history
   const [messages, setMessages] = useState<message[]>([]);
@@ -397,7 +393,7 @@ const Terminal: React.FC<Props> = ({
           >
             {loadingStatus.chats ? (
               <div className="w-full h-full flex justify-center items-center">
-                <AiOutlineLoading3Quarters className="mx-auto h-7 w-7 rounded-full animate-spin text-zinc-600" />
+                <AiOutlineLoading3Quarters className="mx-auto h-7 w-7 rounded-full animate-spin text-zinc-700" />
               </div>
             ) : (
               <>

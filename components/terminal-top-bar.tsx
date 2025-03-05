@@ -45,7 +45,7 @@ const TerminalTopBar: React.FC<Props> = ({
           <button
             onClick={handleAddSession}
             disabled={disableCreate}
-            className={`bg-green-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center ${disableDelete && "cursor-not-allowed"}`}
+            className={`bg-green-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center`}
           >
             <PlusIcon className="w-3 h-3 text-black opacity-0 group-hover:opacity-100" />
           </button>

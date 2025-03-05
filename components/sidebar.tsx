@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="flex flex-col gap-2  h-[calc(60dvh-40px)] px-1 py-2">
         {loadingChats ? (
           <div className="h-[50%] w-full flex items-center justify-center">
-            <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-500" />
+            <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-600" />
           </div>
         ) : (
           <>

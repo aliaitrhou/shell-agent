@@ -13,8 +13,8 @@ if (!clerkKey) {
 }
 
 export const metadata: Metadata = {
-  title: "AceOS",
-  description: "AI powered OS course",
+  title: "QShell",
+  description: "Learn about OSes with AI",
 };
 
 export default function RootLayout({
@@ -33,12 +33,8 @@ export default function RootLayout({
       publishableKey={clerkKey}
     >
       <html lang="en">
-        <body className="bg-black">
-          <div className="main">
-            <div className="gradient"></div>
-            <div className="gradient_background"></div>
-            <div className="second_gradient"></div>
-          </div>
+        <body className="bg-zinc-950">
+          <div className="gradient_background"></div>
           <Header />
           {children}
           <Footer />

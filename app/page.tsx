@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, FormEvent } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Terminal from "@/components/terminal";
 import { ChatProps } from "@/types";
 import Sidebar from "@/components/sidebar";
 import { useClerk, useUser } from "@clerk/clerk-react";
-import { PlaceholdersAndVanishInput } from "@/components/placeholders-and-vanish-input";
+import Link from "next/link";
+import Instructions from "@/components/instructions";
+import { FaChevronRight } from "react-icons/fa";
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -16,10 +18,10 @@ export default function Home() {
     delete: false,
   });
   const [currentChatId, setCurrentChatId] = useState("");
-  const [startInputValue, setStartInputValue] = useState("");
   const [start, setStart] = useState(false);
+  const [dispayInstructions, setDisplayInstructions] = useState(true);
 
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
 
   const { openSignIn } = useClerk();
 
@@ -181,13 +183,6 @@ export default function Home() {
     }
   }, [user, start]);
 
-  const handleStartPageInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { value } = e.target as HTMLInputElement;
-    setStartInputValue(value);
-  };
-
   const handleMessageSent = useCallback((chatId: string) => {
     setChats((prevChats) =>
       prevChats.map((chat) =>
@@ -198,25 +193,20 @@ export default function Home() {
     );
   }, []);
 
-  const handleStartPageFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleStartButtonClick = () => {
     // send the user to log in if they are not
     if (!user) {
       return openSignIn();
     }
 
-    // open the terminal and side bar after the user submit the form with a prompt
-    if (startInputValue && user) {
+    if (isSignedIn) {
       setStart(true);
     }
   };
 
   return (
     <main
-      className={
-        "text-white h-[85dvh]  flex flex-row justify-center items-center sm:gap-2 md:gap-4 lg:gap-6 px-3 sm:px-4 md:px-8 xl:px-32"
-      }
+      className={`text-white h-[87dvh] flex ${start ? "flex-row justify-center items-center" : "flex-col justify-center space-y-4"} sm:gap-2 md:gap-4 lg:gap-6 px-3 sm:px-4 md:px-8 xl:px-32`}
     >
       {start ? (
         <>
@@ -235,7 +225,6 @@ export default function Home() {
           )}
           <Terminal
             chatId={currentChatId}
-            starterMessage={startInputValue}
             openSidebar={openSidebar}
             disableRemoveChat={chats.length === 1 || loading.delete}
             // TODO: limit users to 8 chats
@@ -247,22 +236,64 @@ export default function Home() {
           />
         </>
       ) : (
-        <section
-          className={`w-full sm:w-[70%] mx-auto flex flex-col items-center gap-4`}
-        >
-          <h3 className="font-kanit text-[1.8rem] sm:text-4xl md:text-[3rem] font-bold text-center md:mb-2">
-            What is the mession today?
-          </h3>
-          <PlaceholdersAndVanishInput
-            placeholders={[
-              "How does the `awk` command works ?",
-              "What are the flags of `wc` command ?",
-              "How to switch between users ?",
-            ]}
-            onChange={handleStartPageInputChange}
-            onSubmit={handleStartPageFormSubmit}
-          />
-        </section>
+        <>
+          <section
+            className={`${!dispayInstructions && "-mt-44"} flex flex-col items-center space-y-4`}
+          >
+            <span className="font-light text-xs md:text-sm font-kanit rounded-full border border-zinc-200 bg-zinc-400 text-zinc-800 px-[2px] py-[1px] sm:px-2 md:px-3 md:py-1 ">
+              Fully open source{" "}
+              <Link
+                className="underline italic font-semibold"
+                target="_blank"
+                href={"https://github.com/aliaitrhou/quantum-shell"}
+              >
+                star it github
+              </Link>
+            </span>
+            <div className="w-full flex flex-col justify-cneter items-center gap-2">
+              <h3 className="max-w-lg sm:max-w-xl md:max-w-3xl text-center text-4xl sm:text-5xl md:text-6xl font-kanit font-bold">
+                Time to{" "}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-blue-500 to-blue-400">
+                  Reboot Your Learning
+                </span>
+                —No More Linux Classes!
+              </h3>
+              <p className="px-3 sm:px-0 max-w-2xl text-center font-kanit text-sm sm:text-md md:text-xl">
+                With a shell that{" "}
+                <span className="font-bold">speaks your language</span> and
+                reduces the complexity of learning about OSes, taking you in an
+                intuitive and interactive learning adventure.
+              </p>
+            </div>
+            <div className="flex flex-col items-center gap-2 sm:space-y-2 md:space-y-4">
+              <div className="flex items-center gap-2">
+                <select className="w-fit font-kanit text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none">
+                  <option>Model of choose</option>
+                  <option>Qwen2.5-7B</option>
+                  <option>Meta-Llama-3.1-70B</option>
+                  <option>Qwen2.5-72B</option>
+                  <option>Meta-Llama-3.1-8B</option>
+                </select>
+                <select className="font-kanit text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none">
+                  <option>Semester</option>
+                  <option>SEMESTER - S3</option>
+                  <option>SEMESTER - S4</option>
+                </select>
+              </div>
+              <button
+                onClick={handleStartButtonClick}
+                className="group font-kanit text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-full shadow-zincShadow hover:shadow-zincShadowHover transition-shadow duration-700 ease-in-out flex gap-2 items-center focus:outline-none focus:border-none"
+              >
+                <span> ⚡ GET STARTED</span>
+
+                <FaChevronRight className="size-3 transition-transform duration-700 group-hover:translate-x-[3px]" />
+              </button>
+            </div>
+          </section>
+          {dispayInstructions && (
+            <Instructions handleClick={() => setDisplayInstructions(false)} />
+          )}
+        </>
       )}
     </main>
   );
