@@ -8,6 +8,8 @@ import { useClerk, useUser } from "@clerk/clerk-react";
 import Link from "next/link";
 import Instructions from "@/components/instructions";
 import { FaChevronRight } from "react-icons/fa";
+import { FiGithub } from "react-icons/fi";
+import { AiFillGithub } from "react-icons/ai";
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -236,64 +238,61 @@ export default function Home() {
           />
         </>
       ) : (
-        <>
-          <section
-            className={`${!dispayInstructions && "-mt-44"} flex flex-col items-center space-y-4`}
-          >
-            <span className="font-light text-xs md:text-sm font-kanit rounded-full border border-zinc-200 bg-zinc-400 text-zinc-800 px-[2px] py-[1px] sm:px-2 md:px-3 md:py-1 ">
-              Fully open source{" "}
-              <Link
-                className="underline italic font-semibold"
-                target="_blank"
-                href={"https://github.com/aliaitrhou/quantum-shell"}
-              >
-                star it github
-              </Link>
-            </span>
-            <div className="w-full flex flex-col justify-cneter items-center gap-2">
-              <h3 className="max-w-lg sm:max-w-xl md:max-w-3xl text-center text-4xl sm:text-5xl md:text-6xl font-kanit font-bold">
-                Time to{" "}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-blue-500 to-blue-400">
-                  Reboot Your Learning
-                </span>
-                —No More Linux Classes!
-              </h3>
-              <p className="px-3 sm:px-0 max-w-2xl text-center font-kanit text-sm sm:text-md md:text-xl">
-                With a shell that{" "}
-                <span className="font-bold">speaks your language</span> and
-                reduces the complexity of learning about OSes, taking you in an
-                intuitive and interactive learning adventure.
-              </p>
+        <section
+          className={`${!dispayInstructions && "-mt-44"} flex flex-col items-center space-y-6`}
+        >
+          <span className="font-light text-xs md:text-sm font-kanit rounded-full border border-zinc-200 bg-zinc-400 text-zinc-800 px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px] ">
+            <Link
+              className="underline italic flex items-center gap-1"
+              target="_blank"
+              href={"https://github.com/aliaitrhou/quantum-shell"}
+            >
+              <span>Star it github</span>
+              <AiFillGithub />
+            </Link>
+          </span>
+          <div className="w-full flex flex-col justify-cneter items-center gap-2 pb-6">
+            <h3 className="max-w-full sm:max-w-2xl md:max-w-4xl text-center text-3xl sm:text-5xl md:text-6xl font-kanit font-bold">
+              It&apos;s Time to{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-blue-500 to-blue-400">
+                Reboot Your Learning
+              </span>
+              -No More Linux Classes!
+            </h3>
+            <p className="px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-sm sm:text-md md:text-xl">
+              With a shell that{" "}
+              <span className="font-bold">speaks your language</span> and
+              reduces the complexity of learning about OSes, taking you in an
+              intuitive and interactive learning adventure.
+            </p>
+          </div>
+          <div className="flex flex-col items-center gap-2 sm:space-y-2 md:space-y-4">
+            <div className="flex items-center gap-2">
+              <select className="w-fit font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none">
+                <option disabled selected>
+                  Choose a model
+                </option>
+                <option value="Qwen2.5-7B">Qwen2.5-7B</option>
+                <option value="Meta-Llama-3.1-70B">Meta-Llama-3.1-70B</option>
+                <option value="Qwen2.5-72B">Qwen2.5-72B</option>
+                <option value="Meta-Llama-3.1-8B">Meta-Llama-3.1-8B</option>
+              </select>
+              <select className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none">
+                <option value="" disabled selected>
+                  Semester
+                </option>
+                <option value="S3">SEMESTER - S3</option>
+                <option value="S4">SEMESTER - S4</option>
+              </select>
             </div>
-            <div className="flex flex-col items-center gap-2 sm:space-y-2 md:space-y-4">
-              <div className="flex items-center gap-2">
-                <select className="w-fit font-kanit text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none">
-                  <option>Model of choose</option>
-                  <option>Qwen2.5-7B</option>
-                  <option>Meta-Llama-3.1-70B</option>
-                  <option>Qwen2.5-72B</option>
-                  <option>Meta-Llama-3.1-8B</option>
-                </select>
-                <select className="font-kanit text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none">
-                  <option>Semester</option>
-                  <option>SEMESTER - S3</option>
-                  <option>SEMESTER - S4</option>
-                </select>
-              </div>
-              <button
-                onClick={handleStartButtonClick}
-                className="group font-kanit text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-full shadow-zincShadow hover:shadow-zincShadowHover transition-shadow duration-700 ease-in-out flex gap-2 items-center focus:outline-none focus:border-none"
-              >
-                <span> ⚡ GET STARTED</span>
-
-                <FaChevronRight className="size-3 transition-transform duration-700 group-hover:translate-x-[3px]" />
-              </button>
-            </div>
-          </section>
-          {dispayInstructions && (
-            <Instructions handleClick={() => setDisplayInstructions(false)} />
-          )}
-        </>
+            <button
+              onClick={handleStartButtonClick}
+              className="group font-kanit text-sm md:text-md px-2 py-2 md:p-3 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md shadow-zincShadow hover:shadow-zincShadowHover transition-shadow duration-700 ease-in-out focus:outline-none focus:border-none"
+            >
+              <span> ⚡ GET STARTED</span>
+            </button>
+          </div>
+        </section>
       )}
     </main>
   );
