@@ -247,7 +247,7 @@ export default function Home() {
               target="_blank"
               href={"https://github.com/aliaitrhou/quantum-shell"}
             >
-              <span>Star it github</span>
+              <span>Star it on github</span>
               <AiFillGithub />
             </Link>
           </span>
@@ -268,8 +268,11 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center gap-2 sm:space-y-2 md:space-y-4">
             <div className="flex items-center gap-2">
-              <select className="w-fit font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none">
-                <option disabled selected>
+              <select
+                defaultValue={"default"}
+                className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
+              >
+                <option value="default" disabled>
                   Choose a model
                 </option>
                 <option value="Qwen2.5-7B">Qwen2.5-7B</option>
@@ -277,8 +280,11 @@ export default function Home() {
                 <option value="Qwen2.5-72B">Qwen2.5-72B</option>
                 <option value="Meta-Llama-3.1-8B">Meta-Llama-3.1-8B</option>
               </select>
-              <select className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none">
-                <option value="" disabled selected>
+              <select
+                defaultValue={"default"}
+                className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
+              >
+                <option value="default" disabled>
                   Semester
                 </option>
                 <option value="S3">SEMESTER - S3</option>
@@ -287,7 +293,7 @@ export default function Home() {
             </div>
             <button
               onClick={handleStartButtonClick}
-              className="group font-kanit text-sm md:text-md px-2 py-2 md:p-3 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md shadow-zincShadow hover:shadow-zincShadowHover transition-shadow duration-700 ease-in-out focus:outline-none focus:border-none"
+              className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 md:p-3 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md shadow-zincShadow hover:shadow-zincShadowHover transition-shadow duration-700 ease-in-out focus:outline-none focus:border-none"
             >
               <span> ⚡ GET STARTED</span>
             </button>

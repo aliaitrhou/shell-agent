@@ -16,6 +16,8 @@ import AimationLayout from "./animation-layout";
 import ChatMessages from "./chat-messages";
 import ShellPromptUi from "./shell-prompt-ui";
 import { linuxCommands } from "@/constants";
+import { IoTriangleSharp } from "react-icons/io5";
+import { FaChevronRight } from "react-icons/fa";
 
 interface Props {
   chatId: string;
@@ -400,54 +402,77 @@ const Terminal: React.FC<Props> = ({
                 <ChatMessages pwd={pwd} messages={messages} />
                 {/* command/prompt inserting */}
                 {dispayForm && (
-                  <div className="flex flex-row items-center justify-start h-4">
-                    <ShellPromptUi type="left-side">
-                      <button
-                        onClick={handleToggleModes}
-                        className="text-xs font-bold font-mono text-white"
-                      >
-                        {mode}
-                      </button>
-                    </ShellPromptUi>
-                    {/* teh content currnt working directory should be dynamic later: */}
-                    <ShellPromptUi type="cwd" content={pwd} />
-                    <form
-                      onSubmit={handleSubmit}
-                      className="relative w-full h-full p-0 flex items-center justify-start"
-                    >
-                      {/* this is used to hightlight the first word user types if the current mode is "Command" 
-                        and the that word is included in linux commands array */}
-                      <div className="absolute w-full h-full  font-mono text-xs text-white bg-transparent ml-5 pointer-events-none">
-                        {keywords.map((word, index) => (
-                          <span
-                            key={index}
-                            className={
-                              index === 0 && currentValueIsCommand
-                                ? "text-blue-400"
-                                : ""
-                            }
+                  <div className="flex flex-col justify-center gap-1">
+                    <div className="flex flex-row items-center justify-between">
+                      <div className="flex flex-row items-center gap-0">
+                        <ShellPromptUi type="left-side">
+                          <button
+                            onClick={handleToggleModes}
+                            className="text-xs font-bold font-mono text-white"
                           >
-                            {word}{" "}
-                          </span>
-                        ))}
+                            {mode}
+                          </button>
+                        </ShellPromptUi>
+                        {/* teh content currnt working directory should be dynamic later: */}
+                        <ShellPromptUi type="cwd" content={pwd} />
                       </div>
-                      <textarea
-                        onChange={handleChange}
-                        value={msg}
-                        maxLength={115}
-                        ref={textareaRef}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            const form = e.currentTarget.form;
-                            if (form) {
-                              form.requestSubmit(); // this will trigger the form's onSubmit handler
+
+                      <div
+                        className={`relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2  rounded-s-full rounded-e-full bg-white mr-1`}
+                      >
+                        <IoTriangleSharp
+                          className={`absolute -left-[11px] z-30 rotate-[269deg] text-white h-4 w-5`}
+                        />
+                        {/*TODO: make the button opens the pdf page used in RAG */}
+                        <button
+                          className={`pl-1 text-xs font-thin font-mono text-black`}
+                        >
+                          page 2
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 px-1">
+                      <FaChevronRight className="self-start size-[15px] text-orange-400 text-bold" />
+                      <form
+                        onSubmit={handleSubmit}
+                        className="relative w-full p-0 flex items-center justify-start"
+                      >
+                        {/* this is used to hightlight the first word user types if the current mode is "Command" 
+                        and the that word is included in linux commands array */}
+                        {mode == "Command" && (
+                          <div className="absolute w-full min-h-[40px] font-mono text-xs text-white bg-transparent pointer-events-none">
+                            {keywords.map((word, index) => (
+                              <span
+                                key={index}
+                                className={
+                                  index === 0 && currentValueIsCommand
+                                    ? "text-blue-400"
+                                    : ""
+                                }
+                              >
+                                {word}{" "}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        <textarea
+                          onChange={handleChange}
+                          value={msg}
+                          maxLength={200}
+                          ref={textareaRef}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault();
+                              const form = e.currentTarget.form;
+                              if (form) {
+                                form.requestSubmit(); // this will trigger the form's onSubmit handler
+                              }
                             }
-                          }
-                        }}
-                        className="w-full h-full font-mono text-xs test-zinc-50/5 rounded-none border-none focus:outline-none resize-none bg-zinc-800/5 ml-5"
-                      />
-                    </form>
+                          }}
+                          className={`min-h-[40px] w-full font-mono text-xs text-white rounded-none border-none focus:outline-none resize-none bg-zinc-800/5 overflow-hidden`}
+                        />
+                      </form>
+                    </div>
                   </div>
                 )}
                 {loadingStatus.modelAnswer && <div className="ml-5 loader" />}
