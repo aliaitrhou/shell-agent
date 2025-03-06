@@ -4,10 +4,10 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="w-full text-center text-gray-400 font-light text-xs sm:text-sm font-mono mx-auto">
-      <p className="">
+    <footer className="w-full text-center text-zinc-500 mx-auto">
+      <p className="font-light text-xs sm:text-sm md:text-md font-kanit">
         © {new Date().getFullYear()} By{" "}
-        <span className="text-orange-400 font-bold text-xs">
+        <span className="text-orange-400/80 font-semibold">
           <a href="https://aliaitrahou.me" target="_blank">
             Ali
           </a>
