@@ -1,12 +1,10 @@
 import React from "react";
-import SidebarWrapper from "./sidebar-wrapper";
 import ChatItem from "./chat-item";
 import { ChatProps } from "@/types";
 import ChatItemWrapper from "./chat-item-wrapper";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface SidebarProps {
-  open: boolean;
   currentChatId: string;
   chats: ChatProps[];
   loadingChat: boolean;
@@ -18,7 +16,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-  open,
   chats,
   loadingChat,
   loadingChats,
@@ -29,43 +26,42 @@ const Sidebar: React.FC<SidebarProps> = ({
   handleRemoveChat,
 }) => {
   return (
-    <SidebarWrapper
-      key={open.toString()}
-      className="hidden w-36 md:w-40 sm:mt-16 self-start  sm:flex  bg-zinc-800/80 rounded-lg border border-zinc-700  h-[60dvh] text-center"
-    >
-      <h3 className="sticky top-0 left-0 right-0 font-semibold font-kanit text-center text-zinc-400 text-sm p-2 border-b border-b-zinc-700">
-        Your Chats :)
-      </h3>
-      <div className="flex flex-col gap-2  h-[calc(60dvh-40px)] px-1 py-2">
-        {loadingChats ? (
-          <div className="h-[50%] w-full flex items-center justify-center">
-            <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-600" />
-          </div>
-        ) : (
-          <>
-            {loadingChat && (
-              <div className="w-full rounded-[4px] py-1 px-3 bg-zinc-700/70">
-                <AiOutlineLoading3Quarters className="mx-auto h-4 w-4 rounded-full animate-spin text-zinc-500" />
-              </div>
-            )}
-            {chats.map((chat, index) => (
-              <ChatItemWrapper key={index} idx={index}>
-                {/* i used the index for the chat item animation delay */}
-                <ChatItem
-                  active={chat.id === currentChatId}
-                  chatId={chat.id}
-                  onClick={() => setActiveChatId(chat.id)}
-                  handleRenameChat={handleRenameChat}
-                  handleDeleteChat={handleRemoveChat}
-                  disableDelete={disableRemoveChat}
-                  name={chat.name}
-                />
-              </ChatItemWrapper>
-            ))}
-          </>
-        )}
+    <div className="hidden  w-36 md:w-40 sm:mt-16 self-start sm:flex bg-zinc-800/90 rounded-lg border border-zinc-700  h-[60dvh] text-center">
+      <div className={`relative w-full h-full whitespace-nowrap`}>
+        <h3 className="sticky top-0 left-0 right-0 font-semibold font-kanit text-center text-zinc-400 text-sm p-2 border-b border-b-zinc-700">
+          Your Chats :)
+        </h3>
+        <div className="flex flex-col gap-2  h-[calc(60dvh-40px)] px-1 py-2">
+          {loadingChats ? (
+            <div className="h-[50%] w-full flex items-center justify-center">
+              <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-600" />
+            </div>
+          ) : (
+            <>
+              {loadingChat && (
+                <div className="w-full rounded-[4px] py-1 px-3 bg-zinc-700/70">
+                  <AiOutlineLoading3Quarters className="mx-auto h-4 w-4 rounded-full animate-spin text-zinc-500" />
+                </div>
+              )}
+              {chats.map((chat, index) => (
+                <ChatItemWrapper key={index} idx={index}>
+                  {/* i used the index for the chat item animation delay */}
+                  <ChatItem
+                    active={chat.id === currentChatId}
+                    chatId={chat.id}
+                    onClick={() => setActiveChatId(chat.id)}
+                    handleRenameChat={handleRenameChat}
+                    handleDeleteChat={handleRemoveChat}
+                    disableDelete={disableRemoveChat}
+                    name={chat.name}
+                  />
+                </ChatItemWrapper>
+              ))}
+            </>
+          )}
+        </div>
       </div>
-    </SidebarWrapper>
+    </div>
   );
 };
 
