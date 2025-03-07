@@ -7,9 +7,10 @@ import Sidebar from "@/components/sidebar";
 import { useClerk, useUser } from "@clerk/clerk-react";
 import Link from "next/link";
 import Instructions from "@/components/instructions";
-import { FaChevronRight } from "react-icons/fa";
-import { FiGithub } from "react-icons/fi";
 import { AiFillGithub } from "react-icons/ai";
+import Header from "@/components/hearder";
+import { StatusAlert } from "@/components/alert";
+import Footer from "@/components/footer";
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -19,9 +20,12 @@ export default function Home() {
     createChat: false,
     delete: false,
   });
+  const [responseStatus, setResponseStatus] = useState({
+    message: "",
+    status: "",
+  });
   const [currentChatId, setCurrentChatId] = useState("");
   const [start, setStart] = useState(false);
-  const [dispayInstructions, setDisplayInstructions] = useState(true);
 
   const { user, isSignedIn } = useUser();
 
@@ -29,7 +33,7 @@ export default function Home() {
 
   // create chat callback
   const handleCreateChat = useCallback(async () => {
-    // to prevent the user from creating a new chat when he already
+    // to prevent users from creating a new chat when they already
     // created one and did not used it:
     const unusedChat = chats.find((chat) => chat.messageCount === 0);
     if (unusedChat) {
@@ -55,7 +59,13 @@ export default function Home() {
           return;
         }
 
-        const chat = await response.json();
+        const { message, status, chat } = await response.json();
+
+        setResponseStatus({
+          message,
+          status,
+        });
+
         setChats((prev) => [
           {
             ...chat,
@@ -67,12 +77,23 @@ export default function Home() {
         // set new chat as active
         setCurrentChatId(chat.id);
       } catch (error) {
-        console.error("Error creating new chat: ", error);
+        console.error(error);
+
+        setResponseStatus({
+          message: "Error while creating new Chat",
+          status: "error",
+        });
       } finally {
         setLoading((prev) => ({
           ...prev,
           createChat: false,
         }));
+        setTimeout(() => {
+          setResponseStatus({
+            message: "",
+            status: "",
+          });
+        }, 4000);
       }
     }
   }, [chats]);
@@ -98,6 +119,13 @@ export default function Home() {
           throw new Error("Failed to delete chat");
         }
 
+        const { message, status } = await response.json();
+
+        setResponseStatus({
+          message,
+          status,
+        });
+
         // update state
         setChats((prevChats) => {
           const updatedChats = prevChats.filter((chat) => chat.id !== chatId);
@@ -105,16 +133,25 @@ export default function Home() {
           if (currentChatId === chatId) {
             setCurrentChatId(updatedChats.length > 0 ? updatedChats[0].id : "");
           }
-
           return updatedChats;
         });
       } catch (error) {
+        setResponseStatus({
+          message: "Error while deleting chat",
+          status: "error",
+        });
         console.error("Error deleting chat:", error);
       } finally {
         setLoading((prev) => ({
           ...prev,
           delete: false,
         }));
+        setTimeout(() => {
+          setResponseStatus({
+            message: "",
+            status: "",
+          });
+        }, 4000);
       }
     },
     [currentChatId],
@@ -207,99 +244,109 @@ export default function Home() {
   };
 
   return (
-    <main
-      className={`text-white h-[87dvh] flex ${start ? "flex-row justify-center items-center" : "flex-col justify-center space-y-4"} sm:gap-2 md:gap-4 lg:gap-6 px-3 sm:px-4 md:px-8 xl:px-32`}
-    >
-      {start ? (
-        <>
-          {openSidebar && (
-            <Sidebar
-              open={openSidebar}
-              chats={chats}
-              loadingChat={loading.createChat}
-              loadingChats={loading.loadingChats}
-              disableRemoveChat={chats.length === 1}
-              setActiveChatId={setCurrentChatId}
-              currentChatId={currentChatId}
-              handleRenameChat={handleRenameChat}
-              handleRemoveChat={handleRemoveChat}
-            />
-          )}
-          <Terminal
-            chatId={currentChatId}
-            openSidebar={openSidebar}
-            disableRemoveChat={chats.length === 1 || loading.delete}
-            // TODO: limit users to 8 chats
-            disableCreateChat={loading.createChat}
-            handleToggleSidebar={handleToggleSidebar}
-            handleCreateChat={handleCreateChat}
-            handleRemoveChat={handleRemoveChat}
-            onMessageSent={handleMessageSent}
+    <>
+      {start && responseStatus.message && (
+        <div className="absolute w-full  flex justify-center pt-8">
+          <StatusAlert
+            message={responseStatus.message}
+            type={responseStatus.status}
           />
-        </>
-      ) : (
-        <section
-          className={`${!dispayInstructions && "-mt-44"} flex flex-col items-center space-y-6`}
-        >
-          <span className="font-light text-xs md:text-sm font-kanit rounded-full border border-zinc-200 bg-zinc-400 text-zinc-800 px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px] ">
-            <Link
-              className="underline italic flex items-center gap-1"
-              target="_blank"
-              href={"https://github.com/aliaitrhou/quantum-shell"}
-            >
-              <span>Star it on github</span>
-              <AiFillGithub />
-            </Link>
-          </span>
-          <div className="w-full flex flex-col justify-cneter items-center gap-2 pb-6">
-            <h3 className="max-w-full sm:max-w-2xl md:max-w-4xl text-center text-3xl sm:text-5xl md:text-6xl font-kanit font-bold">
-              It&apos;s Time to{" "}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-blue-500 to-blue-400">
-                Reboot Your Learning
-              </span>
-              -No More Linux Classes!
-            </h3>
-            <p className="px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-sm sm:text-md md:text-xl">
-              With a shell that{" "}
-              <span className="font-bold">speaks your language</span> and
-              reduces the complexity of learning about OSes, taking you in an
-              intuitive and interactive learning adventure.
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-2 sm:space-y-2 md:space-y-4">
-            <div className="flex items-center gap-2">
-              <select
-                defaultValue={"default"}
-                className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
-              >
-                <option value="default" disabled>
-                  Choose a model
-                </option>
-                <option value="Qwen2.5-7B">Qwen2.5-7B</option>
-                <option value="Meta-Llama-3.1-70B">Meta-Llama-3.1-70B</option>
-                <option value="Qwen2.5-72B">Qwen2.5-72B</option>
-                <option value="Meta-Llama-3.1-8B">Meta-Llama-3.1-8B</option>
-              </select>
-              <select
-                defaultValue={"default"}
-                className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
-              >
-                <option value="default" disabled>
-                  Semester
-                </option>
-                <option value="S3">SEMESTER - S3</option>
-                <option value="S4">SEMESTER - S4</option>
-              </select>
-            </div>
-            <button
-              onClick={handleStartButtonClick}
-              className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 md:p-3 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md shadow-zincShadow hover:shadow-zincShadowHover transition-shadow duration-700 ease-in-out focus:outline-none focus:border-none"
-            >
-              <span> ⚡ GET STARTED</span>
-            </button>
-          </div>
-        </section>
+        </div>
       )}
-    </main>
+      <Header />
+      <main
+        className={`text-white h-[87dvh] flex ${start ? "flex-row justify-center items-center" : "flex-col justify-center space-y-4"} sm:gap-2 md:gap-4 lg:gap-6 px-3 sm:px-4 md:px-8 xl:px-32`}
+      >
+        {start ? (
+          <>
+            {openSidebar && (
+              <Sidebar
+                chats={chats}
+                loadingChat={loading.createChat}
+                loadingChats={loading.loadingChats}
+                disableRemoveChat={chats.length === 1}
+                setActiveChatId={setCurrentChatId}
+                currentChatId={currentChatId}
+                handleRenameChat={handleRenameChat}
+                handleRemoveChat={handleRemoveChat}
+              />
+            )}
+            <Terminal
+              chatId={currentChatId}
+              openSidebar={openSidebar}
+              disableRemoveChat={chats.length === 1 || loading.delete}
+              // TODO: limit users to 8 chats
+              disableCreateChat={loading.createChat}
+              handleToggleSidebar={handleToggleSidebar}
+              handleCreateChat={handleCreateChat}
+              handleRemoveChat={handleRemoveChat}
+              onMessageSent={handleMessageSent}
+            />
+          </>
+        ) : (
+          <section className={`flex flex-col items-center space-y-6 -mt-16`}>
+            <span className="font-light text-xs font-kanit rounded-full border border-zinc-300 bg-zinc-400/90 text-white px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]">
+              <Link
+                target="_blank"
+                className="hover:underline italic flex items-center gap-1 text-zinc-800"
+                href={"https://github.com/aliaitrhou/quantum-shell"}
+              >
+                <span>Star it on Github</span>
+                <AiFillGithub />
+              </Link>
+            </span>
+            <div className="w-full flex flex-col justify-cneter items-center gap-2 pb-6">
+              <h3 className="max-w-full sm:max-w-2xl md:max-w-4xl text-center text-3xl sm:text-5xl md:text-6xl font-kanit font-bold">
+                It&apos;s Time to{" "}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-blue-500 to-blue-400">
+                  Reboot Your Learning
+                </span>
+                -No More Linux Classes!
+              </h3>
+              <p className="text-zinc-300 font-light px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-sm sm:text-md md:text-xl">
+                A shell that{" "}
+                <span className="font-semibold">speaks your language</span> and
+                reduces the complexity of learning about OSes, taking you in an
+                intuitive and interactive learning adventure.
+              </p>
+            </div>
+            <div className="flex flex-col items-center gap-2 sm:space-y-2 md:space-y-4">
+              <div className="flex items-center gap-2">
+                <select
+                  defaultValue={"default"}
+                  className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
+                >
+                  <option value="default" disabled>
+                    Choose a model
+                  </option>
+                  <option value="Qwen2.5-7B">Qwen2.5-7B</option>
+                  <option value="Meta-Llama-3.1-70B">Meta-Llama-3.1-70B</option>
+                  <option value="Qwen2.5-72B">Qwen2.5-72B</option>
+                  <option value="Meta-Llama-3.1-8B">Meta-Llama-3.1-8B</option>
+                </select>
+                <select
+                  defaultValue={"default"}
+                  className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
+                >
+                  <option value="default" disabled>
+                    Semester
+                  </option>
+                  <option value="S3">SEMESTER - S3</option>
+                  <option value="S4">SEMESTER - S4</option>
+                </select>
+              </div>
+              <button
+                onClick={handleStartButtonClick}
+                className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 md:p-3 text-zinc-400  bg-zinc-700/60 border border-zinc-700 rounded-full shadow-zincShadow hover:shadow-zincShadowHover transition-shadow duration-700 ease-in-out focus:outline-none"
+              >
+                <span>⚡ GET STARTED</span>
+              </button>
+            </div>
+            <Instructions />
+          </section>
+        )}
+      </main>
+      {!start && <Footer />}
+    </>
   );
 }

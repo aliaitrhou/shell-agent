@@ -87,12 +87,15 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  return NextResponse.json(chat);
+  return NextResponse.json({
+    message: "Chat created successfully.",
+    status: "success",
+    chat,
+  });
 }
 
 // Delete a chat by id
 export async function DELETE(request: NextRequest) {
-  console.log("Delete method function handler is runing!!");
   const { chatId } = await request.json();
 
   if (!chatId) {
@@ -104,8 +107,6 @@ export async function DELETE(request: NextRequest) {
   if (!clerkId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  console.log("Delelte chat API Route - chatID is: ", chatId);
 
   const user = await prisma.user.findUnique({ where: { clerkId } });
 
@@ -123,8 +124,10 @@ export async function DELETE(request: NextRequest) {
   }
 
   await prisma.chat.delete({ where: { id: chatId } });
-
-  return NextResponse.json({ message: "Chat deleted successfully" });
+  return NextResponse.json({
+    message: "Chat deleted successfully.",
+    status: "success",
+  });
 }
 
 export async function PATCH(request: NextRequest) {

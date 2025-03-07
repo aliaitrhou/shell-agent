@@ -12,7 +12,6 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import TerminalTopBar from "./terminal-top-bar";
 import { message, Mode } from "@/types";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
-import AimationLayout from "./animation-layout";
 import ChatMessages from "./chat-messages";
 import ShellPromptUi from "./shell-prompt-ui";
 import { linuxCommands } from "@/constants";
@@ -339,7 +338,8 @@ const Terminal: React.FC<Props> = ({
       .filter(Boolean);
 
     setCommandsHistory(commands);
-    console.log("commands are : ", commands);
+
+    // TODO: add the prompt chat history here
   }, [messages]);
 
   const scroll = () => {
@@ -376,8 +376,8 @@ const Terminal: React.FC<Props> = ({
 
   return (
     <div className={`w-full h-[80dvh] flex flex-col items-center`}>
-      <AimationLayout>
-        <section className="relative w-full h-full  bg-zinc-800/80 rounded-xl  border-[1px] border-zinc-700">
+      <div className="w-full h-full flex flex-col items-center justify-center">
+        <section className="relative w-full h-full  bg-zinc-800/90 rounded-xl  border-[1px] border-zinc-700">
           <TerminalTopBar
             currentChatId={chatId}
             disableDelete={disableRemoveChat}
@@ -408,7 +408,7 @@ const Terminal: React.FC<Props> = ({
                         <ShellPromptUi type="left-side">
                           <button
                             onClick={handleToggleModes}
-                            className="text-xs font-bold font-mono text-white"
+                            className="text-xs font-bold font-mono text-white focus:outline-none"
                           >
                             {mode}
                           </button>
@@ -425,14 +425,14 @@ const Terminal: React.FC<Props> = ({
                         />
                         {/*TODO: make the button opens the pdf page used in RAG */}
                         <button
-                          className={`pl-1 text-xs font-thin font-mono text-black`}
+                          className={`pl-1 text-xs font-thin font-mono text-black focus:outline-none`}
                         >
                           page 2
                         </button>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 px-1">
-                      <FaChevronRight className="self-start size-[15px] text-orange-400 text-bold" />
+                      <FaChevronRight className="self-start size-[15px] text-blue-400/80 text-bold" />
                       <form
                         onSubmit={handleSubmit}
                         className="relative w-full p-0 flex items-center justify-start"
@@ -446,7 +446,7 @@ const Terminal: React.FC<Props> = ({
                                 key={index}
                                 className={
                                   index === 0 && currentValueIsCommand
-                                    ? "text-blue-400"
+                                    ? "text-emerald-500"
                                     : ""
                                 }
                               >
@@ -480,7 +480,7 @@ const Terminal: React.FC<Props> = ({
             )}
           </div>
         </section>
-      </AimationLayout>
+      </div>
     </div>
   );
 };
