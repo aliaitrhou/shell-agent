@@ -7,7 +7,6 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 interface SidebarProps {
   currentChatId: string;
   chats: ChatProps[];
-  loadingChat: boolean;
   loadingChats: boolean;
   disableRemoveChat: boolean;
   setActiveChatId: (chatId: string) => void;
@@ -17,7 +16,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({
   chats,
-  loadingChat,
   loadingChats,
   currentChatId,
   setActiveChatId,
@@ -38,11 +36,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
           ) : (
             <>
-              {loadingChat && (
-                <div className="w-full rounded-[4px] py-1 px-3 bg-zinc-700/70">
-                  <AiOutlineLoading3Quarters className="mx-auto h-4 w-4 rounded-full animate-spin text-zinc-500" />
-                </div>
-              )}
               {chats.map((chat, index) => (
                 <ChatItemWrapper key={index} idx={index}>
                   {/* i used the index for the chat item animation delay */}

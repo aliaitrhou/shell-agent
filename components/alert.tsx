@@ -4,6 +4,7 @@ import React from "react";
 import { AiFillCheckCircle } from "react-icons/ai";
 import { IoIosWarning } from "react-icons/io";
 import { MdError } from "react-icons/md";
+import { CgSpinner } from "react-icons/cg";
 import { motion } from "framer-motion";
 
 interface AlertProps {
@@ -38,12 +39,12 @@ export const StatusAlert: React.FC<AlertProps> = ({ type, message }) => {
         translateY: 0,
       }}
       transition={{ duration: 0.5 }}
-      //@ts-expect-error  className
       className={`hidden border rounded-md border-zinc-700 bg-zinc-700/70 ${textColor} sm:flex items-center gap-2 px-4 py-2`}
     >
       {type === "success" && <AiFillCheckCircle />}
       {type === "error" && <IoIosWarning />}
       {type === "warning" && <MdError />}
+      {type === "loading" && <CgSpinner className="animate-spin" />}
       <span className="text-xs font-kanit">{message}</span>
     </motion.div>
   );

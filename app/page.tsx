@@ -15,11 +15,7 @@ import Footer from "@/components/footer";
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
   const [chats, setChats] = useState<ChatProps[]>([]);
-  const [loading, setLoading] = useState({
-    loadingChats: false,
-    createChat: false,
-    delete: false,
-  });
+  const [loadingChats, setLoadingChats] = useState(false);
   const [responseStatus, setResponseStatus] = useState({
     message: "",
     status: "",
@@ -39,10 +35,10 @@ export default function Home() {
     if (unusedChat) {
       setCurrentChatId(unusedChat.id); // open the unused chat instead of creating a new one
     } else {
-      setLoading((prev) => ({
-        ...prev,
-        createChat: true,
-      }));
+      setResponseStatus({
+        message: `Creating New chat..`,
+        status: "loading",
+      });
       try {
         const response = await fetch("/api/chats", {
           method: "POST",
@@ -78,16 +74,11 @@ export default function Home() {
         setCurrentChatId(chat.id);
       } catch (error) {
         console.error(error);
-
         setResponseStatus({
-          message: "Error while creating new Chat",
+          message: "Failed to create New Chat!",
           status: "error",
         });
       } finally {
-        setLoading((prev) => ({
-          ...prev,
-          createChat: false,
-        }));
         setTimeout(() => {
           setResponseStatus({
             message: "",
@@ -101,11 +92,10 @@ export default function Home() {
   // remove chat callback
   const handleRemoveChat = useCallback(
     async (chatId: string) => {
-      setLoading((prev) => ({
-        ...prev,
-        delete: true,
-      }));
-
+      setResponseStatus({
+        message: `Deleting chat..`,
+        status: "loading",
+      });
       try {
         const response = await fetch("/api/chats", {
           method: "DELETE",
@@ -116,7 +106,7 @@ export default function Home() {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to delete chat");
+          throw new Error("Failed to delete chat!");
         }
 
         const { message, status } = await response.json();
@@ -142,10 +132,6 @@ export default function Home() {
         });
         console.error("Error deleting chat:", error);
       } finally {
-        setLoading((prev) => ({
-          ...prev,
-          delete: false,
-        }));
         setTimeout(() => {
           setResponseStatus({
             message: "",
@@ -188,15 +174,16 @@ export default function Home() {
   );
 
   const fetchChats = useCallback(async () => {
-    setLoading((prev) => ({
-      ...prev,
-      loadingChats: true,
-    }));
+    setLoadingChats(true);
     try {
       const response = await fetch("/api/chats");
 
       if (!response.ok) {
         console.log("Failed to fetch chats");
+        setResponseStatus({
+          message: "Failed to fetch chats!",
+          status: "error",
+        });
         return;
       }
 
@@ -209,10 +196,13 @@ export default function Home() {
     } catch (e) {
       console.log("error: ", e);
     } finally {
-      setLoading((prev) => ({
-        ...prev,
-        loadingChats: false,
-      }));
+      setLoadingChats(false);
+      setTimeout(() => {
+        setResponseStatus({
+          message: "",
+          status: "",
+        });
+      }, 4000);
     }
   }, [currentChatId]);
 
@@ -262,8 +252,7 @@ export default function Home() {
             {openSidebar && (
               <Sidebar
                 chats={chats}
-                loadingChat={loading.createChat}
-                loadingChats={loading.loadingChats}
+                loadingChats={loadingChats}
                 disableRemoveChat={chats.length === 1}
                 setActiveChatId={setCurrentChatId}
                 currentChatId={currentChatId}
@@ -274,9 +263,11 @@ export default function Home() {
             <Terminal
               chatId={currentChatId}
               openSidebar={openSidebar}
-              disableRemoveChat={chats.length === 1 || loading.delete}
+              disableRemoveChat={
+                chats.length === 1 || responseStatus.status === "loading"
+              }
               // TODO: limit users to 8 chats
-              disableCreateChat={loading.createChat}
+              disableCreateChat={responseStatus.status === "loading"}
               handleToggleSidebar={handleToggleSidebar}
               handleCreateChat={handleCreateChat}
               handleRemoveChat={handleRemoveChat}

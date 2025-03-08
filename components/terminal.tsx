@@ -432,7 +432,7 @@ const Terminal: React.FC<Props> = ({
                       </div>
                     </div>
                     <div className="flex items-center gap-1 px-1">
-                      <FaChevronRight className="self-start size-[15px] text-blue-400/80 text-bold" />
+                      <FaChevronRight className="self-start size-[15px] sm:size-4 sm:mt-[2px] text-blue-400/80 text-bold" />
                       <form
                         onSubmit={handleSubmit}
                         className="relative w-full p-0 flex items-center justify-start"
@@ -440,13 +440,13 @@ const Terminal: React.FC<Props> = ({
                         {/* this is used to hightlight the first word user types if the current mode is "Command" 
                         and the that word is included in linux commands array */}
                         {mode == "Command" && (
-                          <div className="absolute w-full min-h-[40px] font-mono text-xs text-white bg-transparent pointer-events-none">
+                          <div className="absolute w-full min-h-[40px] font-spaceMono text-xs sm:text-sm text-white bg-transparent pointer-events-none">
                             {keywords.map((word, index) => (
                               <span
                                 key={index}
                                 className={
                                   index === 0 && currentValueIsCommand
-                                    ? "text-emerald-500"
+                                    ? "text-yellow-400"
                                     : ""
                                 }
                               >
@@ -469,13 +469,13 @@ const Terminal: React.FC<Props> = ({
                               }
                             }
                           }}
-                          className={`min-h-[40px] w-full font-mono text-xs text-white rounded-none border-none focus:outline-none resize-none bg-zinc-800/5 overflow-hidden`}
+                          className={`min-h-[40px] w-full font-spaceMono text-xs sm:text-sm text-white rounded-none border-none focus:outline-none resize-none bg-zinc-800/5  overflow-hidden`}
                         />
                       </form>
                     </div>
                   </div>
                 )}
-                {loadingStatus.modelAnswer && <div className="ml-5 loader" />}
+                {loadingStatus.modelAnswer && <div className="ml-2 loader" />}
               </>
             )}
           </div>

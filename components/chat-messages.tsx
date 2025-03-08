@@ -67,19 +67,19 @@ const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
             <div
               className={`max-w-full  sm:text-md font-light  ${
                 msg?.role !== "user"
-                  ? "font-spaceMono text-sm text-green-500/80"
-                  : "text-xs text-white font-mono ml-1"
+                  ? "font-spaceMono text-xs sm:text-sm text-green-500/80"
+                  : "text-xs sm:text-sm text-white font-mono ml-1"
               }  break-words`}
             >
               {msg?.role == "user" ? (
                 <div className="flex items-center gap-1 font-spaceMono">
-                  <FaChevronRight className="self-start size-[15px] text-blue-400/80 text-bold" />
+                  <FaChevronRight className="self-start size-[15px] sm:size-4 sm:mt-[2px] text-blue-400/80 text-bold" />
                   <p className="w-full break-words">
                     {/* this might look tricky, i used this to hightlight the first word 
                     if it is a commnd*/}
                     {command ? (
                       <>
-                        <span className="text-green-500">{keyword[0]}</span>{" "}
+                        <span className="text-yellow-400">{keyword[0]}</span>{" "}
                         {msg.text.slice(keyword[0].length)}
                       </>
                     ) : (
