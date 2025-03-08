@@ -94,8 +94,8 @@ const ChatItem: React.FC<Props> = ({
       ref={menuRef}
       className={`relative w-full  rounded-[4px] py-1 px-3 ${
         active
-          ? "bg-zinc-700/80 border border-zinc-600"
-          : "bg-zinc-800 hover:bg-zinc-700/30 border border-zinc-700"
+          ? "bg-zinc-800/70 border border-zinc-700"
+          : "hover:bg-zinc-800/30 border border-zinc-800"
       } text-zinc-300 text-xs flex flex-row justify-between items-center`}
     >
       {openInput ? (

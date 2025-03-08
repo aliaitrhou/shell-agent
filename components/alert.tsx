@@ -39,13 +39,13 @@ export const StatusAlert: React.FC<AlertProps> = ({ type, message }) => {
         translateY: 0,
       }}
       transition={{ duration: 0.5 }}
-      className={`hidden border rounded-md border-zinc-700 bg-zinc-700/70 ${textColor} sm:flex items-center gap-2 px-4 py-2`}
+      className={`border rounded-md border-zinc-700 bg-zinc-800 ${textColor} flex items-center gap-2 px-4 py-2 text-xs`}
     >
       {type === "success" && <AiFillCheckCircle />}
-      {type === "error" && <IoIosWarning />}
-      {type === "warning" && <MdError />}
+      {type === "error" && <MdError />}
+      {type === "warning" && <IoIosWarning />}
       {type === "loading" && <CgSpinner className="animate-spin" />}
-      <span className="text-xs font-kanit">{message}</span>
+      <span className="font-kanit">{message}</span>
     </motion.div>
   );
 };

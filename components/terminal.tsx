@@ -17,6 +17,7 @@ import ShellPromptUi from "./shell-prompt-ui";
 import { linuxCommands } from "@/constants";
 import { IoTriangleSharp } from "react-icons/io5";
 import { FaChevronRight } from "react-icons/fa";
+import { BsArrow90DegDown, BsArrow90DegRight } from "react-icons/bs";
 
 interface Props {
   chatId: string;
@@ -401,7 +402,7 @@ const Terminal: React.FC<Props> = ({
   return (
     <div className={`w-full h-[80dvh] flex flex-col items-center`}>
       <div className="w-full h-full flex flex-col items-center justify-center">
-        <section className="relative w-full h-full  bg-zinc-800/90 rounded-xl  border-[1px] border-zinc-700">
+        <section className="relative w-full h-full  bg-zinc-900/90 rounded-xl  border-[1px] border-zinc-800">
           <TerminalTopBar
             currentChatId={chatId}
             disableDelete={disableRemoveChat}
@@ -415,7 +416,7 @@ const Terminal: React.FC<Props> = ({
           />
           <div
             ref={refContainer}
-            className="w-full h-full overflow-y-scroll pt-12 pb-3 rounded-xl"
+            className="w-full h-full overflow-y-scroll pl-3 pr-0 pt-12 pb-3 rounded-xl"
           >
             {loadingStatus.chats ? (
               <div className="w-full h-full flex justify-center items-center">
@@ -428,7 +429,7 @@ const Terminal: React.FC<Props> = ({
                 {dispayForm && (
                   <div className="flex flex-col justify-center gap-1">
                     <div className="flex flex-row items-center justify-between">
-                      <div className="flex flex-row items-center gap-0">
+                      <div className="relative flex flex-row items-center gap-0">
                         <ShellPromptUi type="left-side">
                           <button
                             onClick={handleToggleModes}
@@ -437,8 +438,9 @@ const Terminal: React.FC<Props> = ({
                             {mode}
                           </button>
                         </ShellPromptUi>
-                        {/* teh content currnt working directory should be dynamic later: */}
                         <ShellPromptUi type="cwd" content={pwd} />
+                        <BsArrow90DegRight className="absolute -left-2 -bottom-[6px] size-5 text-blue-400" />
+                        <BsArrow90DegDown className="absolute -left-2 -bottom-[19px] size-5 text-blue-400 rotate-[271deg]" />
                       </div>
 
                       <div
@@ -449,22 +451,21 @@ const Terminal: React.FC<Props> = ({
                         />
                         {/*TODO: make the button opens the pdf page used in RAG */}
                         <button
-                          className={`pl-1 text-xs font-thin font-mono text-black focus:outline-none`}
+                          className={`text-xs font-thin font-mono text-black focus:outline-none`}
                         >
                           page 2
                         </button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 px-1">
-                      <FaChevronRight className="self-start size-[15px] sm:size-4 sm:mt-[2px] text-blue-400/80 text-bold" />
+                    <div className="flex items-center gap-1 pl-4 pr-1">
                       <form
                         onSubmit={handleSubmit}
-                        className="relative w-full p-0 flex items-center justify-start"
+                        className="relative w-full p-0 flex items-center justify-start mt-[1px]"
                       >
                         {/* this is used to hightlight the first word user types if the current mode is "Command" 
                         and the that word is included in linux commands array */}
                         {mode == "Command" && (
-                          <div className="absolute w-full min-h-[40px] font-spaceMono text-xs sm:text-sm text-white bg-transparent pointer-events-none">
+                          <div className="absolute w-full min-h-[40px] font-spaceMono text-xs text-white bg-transparent pointer-events-none">
                             {keywords.map((word, index) => (
                               <span
                                 key={index}
@@ -493,13 +494,13 @@ const Terminal: React.FC<Props> = ({
                               }
                             }
                           }}
-                          className={`min-h-[40px] w-full font-spaceMono text-xs sm:text-sm text-white rounded-none border-none focus:outline-none resize-none bg-zinc-800/5  overflow-hidden`}
+                          className={`min-h-[40px] w-full font-spaceMono text-xs text-white rounded-none border-none focus:outline-none resize-none bg-zinc-900/5  overflow-hidden`}
                         />
                       </form>
                     </div>
                   </div>
                 )}
-                {loadingStatus.modelAnswer && <div className="ml-2 loader" />}
+                {loadingStatus.modelAnswer && <div className="loader" />}
               </>
             )}
           </div>

@@ -22,7 +22,7 @@ const TerminalTopBar: React.FC<Props> = ({
   handleDeleteSession,
 }) => {
   return (
-    <div className="absolute z-40 top-0 left-0 right-0 w-full bg-zinc-800 h-8 sm:h-10 flex items-center border-b-[1px] border-b-zinc-700  px-4 justify-between rounded-t-xl">
+    <div className="absolute z-40 top-0 left-0 right-0 w-full bg-zinc-900 h-8 sm:h-10 flex items-center border-b-[1px] border-b-zinc-800  px-4 justify-between rounded-t-xl">
       <div className="group flex items-center gap-2">
         <ButtonHoverEffect desc="Remove current chat">
           <button

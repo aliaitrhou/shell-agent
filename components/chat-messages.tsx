@@ -5,7 +5,7 @@ import React from "react";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { linuxCommands } from "@/constants";
 import ShellPromptUi from "./shell-prompt-ui";
-import { FaChevronRight } from "react-icons/fa";
+import { BsArrow90DegDown, BsArrow90DegRight } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
 
 // the model returns a markdown so i use this component render it as html
@@ -35,19 +35,22 @@ const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
             {/* display the shell prompt ui only for user */}
             {msg.role == "user" && (
               <div className="flex flex-row items-center justify-between">
-                <div className="flex flex-row items-center gap-0">
+                <div className="relative flex flex-row items-center gap-0">
                   <ShellPromptUi
                     type="left-side"
                     content={
                       msg.mode === "Command" && msg.role === "user"
-                        ? "command"
-                        : "prompt"
+                        ? "Command"
+                        : "Prompt"
                     }
                   />
                   <ShellPromptUi
                     type="cwd"
                     content={index === messages.length - 1 ? pwd : msg.cwd}
                   />
+
+                  <BsArrow90DegRight className="absolute -left-2 -bottom-[6px] size-5 text-blue-400" />
+                  <BsArrow90DegDown className="absolute -left-2 -bottom-[19px] size-5 text-blue-400 rotate-[271deg]" />
                 </div>
                 <div
                   className={`relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2  rounded-s-full rounded-e-full bg-white mr-1`}
@@ -65,16 +68,15 @@ const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
               </div>
             )}
             <div
-              className={`max-w-full  sm:text-md font-light  ${
+              className={`max-w-full font-light  ${
                 msg?.role !== "user"
                   ? "font-spaceMono text-xs sm:text-sm text-green-500/80"
-                  : "text-xs sm:text-sm text-white font-mono ml-1"
+                  : "text-xs text-white font-mono mt-[1px]"
               }  break-words`}
             >
               {msg?.role == "user" ? (
-                <div className="flex items-center gap-1 font-spaceMono">
-                  <FaChevronRight className="self-start size-[15px] sm:size-4 sm:mt-[2px] text-blue-400/80 text-bold" />
-                  <p className="w-full break-words">
+                <>
+                  <p className="pl-4 w-full break-words font-spaceMono">
                     {/* this might look tricky, i used this to hightlight the first word 
                     if it is a commnd*/}
                     {command ? (
@@ -86,7 +88,7 @@ const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
                       msg.text
                     )}
                   </p>
-                </div>
+                </>
               ) : (
                 <MemoizedMarkdownRenderer>
                   {/* i did this so "cd" command doesn't have an output  */}

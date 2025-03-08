@@ -4,13 +4,13 @@ import { GiOpenBook } from "react-icons/gi";
 const Instructions = () => {
   return (
     <div className="max-w-md sm:max-w-lg md:max-w-xl mx-auto px-4 pt-2 pb-3 space-y-1">
-      <div className="pl-2 text-md sm:text-2xl md:text-3xl flex items-center gap-2 sm:gap-3 ">
+      <div className="pl-2 text-lg sm:text-2xl md:text-3xl flex items-center gap-2 sm:gap-3 ">
         <GiOpenBook />
         <span className="font-kanit">Instructions</span>
       </div>
       <ul
         role="list"
-        className="list-disc font-light text-xs sm:text-sm md:text-md lg:text-lg font-kanit text-zinc-400 pl-2 sm:pl-3 md:pl-4"
+        className="list-disc font-light text-sm sm:text-lg  font-kanit text-zinc-400 pl-2 sm:pl-3 md:pl-4"
       >
         <li>
           You are represanted with two modes{" "}

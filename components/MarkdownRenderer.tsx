@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { FC, memo } from "react";
-import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -23,9 +23,6 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyCode = (text: string) => {
-    console.log("text to copy is : ", text);
-    console.log("copy!");
-
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => {
@@ -34,7 +31,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
   };
 
   return (
-    <div className="relative w-full sm:w-fit ml-2  codeblock bg-zinc-900/60 border-[.3px] border-zinc-600 rounded-md overflow-hidden my-3">
+    <div className="relative w-full sm:w-fit ml-2  codeblock bg-zinc-900/60 border-[.3px] border-zinc-600 rounded-md overflow-hidden my-3 text-xs">
       <div className="flex items-center justify-between w-full text-xs px-3 py-1 rounded-t bg-zinc-900/40 text-zinc-400 border-b-[.3px] border-zinc-600">
         <span className="lowercase font-spaceMono ">{language}</span>
         <button
@@ -127,7 +124,7 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
             <code
               className={
                 className ||
-                "text-xs  bg-zinc-700 border border-zinc-600 px-1 rounded-md text-zinc-300"
+                "text-xs  bg-zinc-700 border border-zinc-600 px-1 rounded-md text-green-500"
               }
               {...props}
             >

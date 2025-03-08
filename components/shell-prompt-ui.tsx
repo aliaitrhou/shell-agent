@@ -14,13 +14,13 @@ const ShellPromptUi: React.FC<shellPromptProps> = ({
 }) => {
   return (
     <div
-      className={`relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2 ${type != "cwd" ? "rounded-s-full bg-blue-400/80 ml-1" : "bg-orange-400/80 pl-4"}  rounded-e-sm`}
+      className={`relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2 ${type != "cwd" ? "rounded-s-full bg-blue-400 z-20" : "bg-orange-400/80 pl-4"}  rounded-e-sm`}
     >
       {children ? (
         <>{children}</>
       ) : (
         <span
-          className={`text-xs font-thin font-mono ${type == "left-side" && content ? "text-blue-300" : "w-fit"}`}
+          className={`text-xs font-thin font-mono ${type == "left-side" && content ? "text-blue-200 z-30" : "w-fit"}`}
         >
           {content}
         </span>
