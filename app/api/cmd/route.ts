@@ -7,13 +7,11 @@ if (!apiKey) throw new Error("Missing Together env var");
 let cwd = "~";
 
 export async function POST(req: NextRequest) {
-  const { command, commandsHistory } = await req.json();
+  const { command, commandsHistory, model } = await req.json();
 
   const together = new Together({
     apiKey,
   });
-
-  console.log("commands history is:", commandsHistory);
 
   const commandsString = commandsHistory
     .map((data: string, idx: number) => {
@@ -47,7 +45,7 @@ _______
   `;
 
   const response = await together.chat.completions.create({
-    model: "Qwen/Qwen2.5-7B-Instruct-Turbo",
+    model,
     messages: [
       { role: "system", content: systemPrompt },
       {

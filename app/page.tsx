@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
 import Terminal from "@/components/terminal";
 import { ChatProps } from "@/types";
 import Sidebar from "@/components/sidebar";
@@ -21,6 +21,10 @@ export default function Home() {
     status: "",
   });
   const [currentChatId, setCurrentChatId] = useState("");
+  const [selectData, setSelectData] = useState({
+    model: "",
+    semester: "",
+  });
   const [start, setStart] = useState(false);
 
   const { user, isSignedIn } = useUser();
@@ -222,21 +226,42 @@ export default function Home() {
     );
   }, []);
 
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { value, name } = e.target as HTMLSelectElement;
+    setSelectData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleStartButtonClick = () => {
     // send the user to log in if they are not
     if (!user) {
       return openSignIn();
     }
 
-    if (isSignedIn) {
+    if (!selectData.model || !selectData.semester) {
+      setResponseStatus({
+        message: "Must select model and semester!",
+        status: "warning",
+      });
+      return setTimeout(() => {
+        setResponseStatus({
+          message: "",
+          status: "",
+        });
+      }, 2000);
+    }
+
+    if (isSignedIn && selectData.model && selectData.semester) {
       setStart(true);
     }
   };
 
   return (
     <>
-      {start && responseStatus.message && (
-        <div className="absolute w-full  flex justify-center pt-8">
+      {responseStatus.message && (
+        <div className="absolute w-full  flex justify-center pt-6 sm:pt-10">
           <StatusAlert
             message={responseStatus.message}
             type={responseStatus.status}
@@ -263,6 +288,8 @@ export default function Home() {
             <Terminal
               chatId={currentChatId}
               openSidebar={openSidebar}
+              closeTerminal={() => setStart(false)}
+              selectData={selectData}
               disableRemoveChat={
                 chats.length === 1 || responseStatus.status === "loading"
               }
@@ -275,7 +302,7 @@ export default function Home() {
             />
           </>
         ) : (
-          <section className={`flex flex-col items-center space-y-6 -mt-16`}>
+          <section className={`flex flex-col items-center space-y-6`}>
             <span className="font-light text-xs font-kanit rounded-full border border-zinc-300 bg-zinc-400/90 text-white px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]">
               <Link
                 target="_blank"
@@ -294,7 +321,7 @@ export default function Home() {
                 </span>
                 -No More Linux Classes!
               </h3>
-              <p className="text-zinc-300 font-light px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-sm sm:text-md md:text-xl">
+              <p className="text-zinc-300 font-light px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-sm sm:text-lg md:text-xl">
                 A shell that{" "}
                 <span className="font-semibold">speaks your language</span> and
                 reduces the complexity of learning about OSes, taking you in an
@@ -304,19 +331,31 @@ export default function Home() {
             <div className="flex flex-col items-center gap-2 sm:space-y-2 md:space-y-4">
               <div className="flex items-center gap-2">
                 <select
+                  name="model"
                   defaultValue={"default"}
+                  onChange={handleSelectChange}
                   className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
                 >
                   <option value="default" disabled>
                     Choose a model
                   </option>
-                  <option value="Qwen2.5-7B">Qwen2.5-7B</option>
-                  <option value="Meta-Llama-3.1-70B">Meta-Llama-3.1-70B</option>
-                  <option value="Qwen2.5-72B">Qwen2.5-72B</option>
-                  <option value="Meta-Llama-3.1-8B">Meta-Llama-3.1-8B</option>
+                  <option value="Qwen/Qwen2.5-7B-Instruct-Turbo">
+                    Qwen2.5-7B
+                  </option>
+                  <option value="meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo">
+                    Meta-Llama-3.1-405B
+                  </option>
+                  <option value="Qwen/Qwen2.5-72B-Instruct-Turbo">
+                    Qwen2.5-72B
+                  </option>
+                  <option value="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo">
+                    Meta-Llama-3.1-8B
+                  </option>
                 </select>
                 <select
+                  name="semester"
                   defaultValue={"default"}
+                  onChange={handleSelectChange}
                   className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
                 >
                   <option value="default" disabled>

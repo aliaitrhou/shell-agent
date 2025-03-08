@@ -21,6 +21,11 @@ import { FaChevronRight } from "react-icons/fa";
 interface Props {
   chatId: string;
   openSidebar: boolean;
+  selectData: {
+    model: string;
+    semester: string;
+  };
+  closeTerminal: () => void;
   disableRemoveChat: boolean;
   disableCreateChat: boolean;
   handleCreateChat: () => void;
@@ -31,6 +36,8 @@ interface Props {
 
 const Terminal: React.FC<Props> = ({
   openSidebar,
+  selectData,
+  closeTerminal,
   disableRemoveChat,
   disableCreateChat,
   handleToggleSidebar,
@@ -124,7 +131,22 @@ const Terminal: React.FC<Props> = ({
     if (mode == "Prompt") {
       await getModelAnswer("Prompt");
     } else {
-      await getModelAnswer("Command");
+      // with command mode
+      switch (msg.toLowerCase()) {
+        case "clear":
+          setMessages([]);
+          setLoadingStatus({ chats: false, modelAnswer: false });
+          setDispayForm(true);
+          setMsg("");
+          break;
+        case "exit":
+          // close the terminal
+          closeTerminal();
+          setMsg("");
+          break;
+        default:
+          await getModelAnswer("Command");
+      }
     }
   };
 
@@ -149,6 +171,7 @@ const Terminal: React.FC<Props> = ({
             body: JSON.stringify({
               command: msg,
               commandsHistory,
+              model: selectData.model,
             }),
           });
 
@@ -203,6 +226,7 @@ const Terminal: React.FC<Props> = ({
             body: JSON.stringify({
               message: msg,
               chatHistory: chatHistory,
+              model: selectData.model,
             }),
           });
 

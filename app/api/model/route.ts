@@ -7,7 +7,7 @@ const sbApiKey = process.env.SUPABASE_API_KEY || "";
 const sbURL = process.env.SUPABASE_URL || "";
 
 export async function POST(req: Request) {
-  const { message, chatHistory } = await req.json();
+  const { message, chatHistory, model } = await req.json();
   const together = new Together({ apiKey });
 
   // Get the query embedding for the message using together ai embedding model
@@ -16,6 +16,7 @@ export async function POST(req: Request) {
     input: message,
   });
 
+  // TODO: switch to neon victore daatabase
   const supabase = createClient(sbURL, sbApiKey);
 
   const { data, error } = await supabase.rpc("match_documents", {
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
 
   const prompt = process.env.MAGIC_PROMPT || "";
   const runner = together.chat.completions.stream({
-    model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
+    model,
     messages: [
       {
         role: "system",
