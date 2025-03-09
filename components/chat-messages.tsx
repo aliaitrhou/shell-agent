@@ -56,7 +56,7 @@ const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
                   className={`relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2  rounded-s-full rounded-e-full bg-white mr-1`}
                 >
                   <IoTriangleSharp
-                    className={`absolute -left-[11px] z-30 rotate-[269deg] text-white h-4 w-5`}
+                    className={`absolute -left-[11px] z-20 rotate-[269deg] text-white h-4 w-5`}
                   />
                   {/*TODO: make the button opens the pdf page used in RAG */}
                   <button

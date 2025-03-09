@@ -32,7 +32,7 @@ const Header = () => {
     <nav className="mx-auto flex flex-row justify-between items-center px-4 py-2 sm:px-6 sm:py-3 xl:py-5">
       <Link href="/">
         <div className="flex flex-row items-center gap-1">
-          <TbBrandPowershell className="font-bold text-orange-600 w-9 h-9 sm:w-10 sm:h-10" />
+          <TbBrandPowershell className="font-bold text-orange-600  w-9 h-9 sm:w-10 sm:h-10" />
           <p className="text-xl sm:text-2xl italic font-kanit font-bold bg-gradient-to-r from-orange-600  to-yellow-500 bg-clip-text text-transparent">
             ShellAgent
           </p>
@@ -43,7 +43,7 @@ const Header = () => {
           <>
             <div className="flex items-center gap-2 md:gap-4">
               {user && (
-                <p className="text-zinc-400 font-kanit text-sm sm:text-md">
+                <p className="text-zinc-400 font-kanit text-xs sm:text-sm sm:text-md">
                   {getGreeting()} {user?.firstName}
                 </p>
               )}

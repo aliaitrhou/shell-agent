@@ -26,7 +26,7 @@ const ShellPromptUi: React.FC<shellPromptProps> = ({
         </span>
       )}
       <IoTriangleSharp
-        className={`absolute -right-4 z-30 rotate-90 ${type != "cwd" ? "text-blue-400/80" : "text-orange-400/80"}  h-4 w-5`}
+        className={`absolute -right-4 z-20 rotate-90 ${type != "cwd" ? "text-blue-400/80" : "text-orange-400/80"}  h-4 w-5`}
       />
     </div>
   );

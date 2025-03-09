@@ -11,6 +11,7 @@ import { AiFillGithub } from "react-icons/ai";
 import Header from "@/components/hearder";
 import { StatusAlert } from "@/components/alert";
 import Footer from "@/components/footer";
+import MobileSidebar from "@/components/mobileSidebar";
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -56,6 +57,10 @@ export default function Home() {
 
         if (!response.ok) {
           console.error("Failed to create chat");
+          setResponseStatus({
+            message: "Failed to create New chat!",
+            status: "error",
+          });
           return;
         }
 
@@ -261,7 +266,7 @@ export default function Home() {
   return (
     <>
       {responseStatus.message && (
-        <div className="absolute w-full  flex justify-center pt-6 sm:pt-10">
+        <div className="absolute w-full flex justify-center pt-10 sm:pt-12">
           <StatusAlert
             message={responseStatus.message}
             type={responseStatus.status}
@@ -270,20 +275,31 @@ export default function Home() {
       )}
       <Header />
       <main
-        className={`text-white h-[87dvh] flex ${start ? "flex-row justify-center items-center" : "flex-col justify-center space-y-4"} sm:gap-2 md:gap-4 lg:gap-6 px-3 sm:px-4 md:px-8 xl:px-32`}
+        className={`text-white h-[90vh] py-4 flex ${start ? "flex-row justify-center items-center" : "flex-col justify-center space-y-4"} sm:gap-2 md:gap-4 lg:gap-6 px-3 sm:px-4 md:px-8 xl:px-32`}
       >
         {start ? (
           <>
             {openSidebar && (
-              <Sidebar
-                chats={chats}
-                loadingChats={loadingChats}
-                disableRemoveChat={chats.length === 1}
-                setActiveChatId={setCurrentChatId}
-                currentChatId={currentChatId}
-                handleRenameChat={handleRenameChat}
-                handleRemoveChat={handleRemoveChat}
-              />
+              <>
+                <Sidebar
+                  chats={chats}
+                  loadingChats={loadingChats}
+                  disableRemoveChat={chats.length === 1}
+                  setActiveChatId={setCurrentChatId}
+                  currentChatId={currentChatId}
+                  handleRenameChat={handleRenameChat}
+                  handleRemoveChat={handleRemoveChat}
+                />
+                <MobileSidebar
+                  chats={chats}
+                  closeSidebar={handleToggleSidebar}
+                  disableRemoveChat={chats.length === 1}
+                  setActiveChatId={setCurrentChatId}
+                  currentChatId={currentChatId}
+                  handleRenameChat={handleRenameChat}
+                  handleRemoveChat={handleRemoveChat}
+                />
+              </>
             )}
             <Terminal
               chatId={currentChatId}

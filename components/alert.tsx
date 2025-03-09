@@ -39,7 +39,7 @@ export const StatusAlert: React.FC<AlertProps> = ({ type, message }) => {
         translateY: 0,
       }}
       transition={{ duration: 0.5 }}
-      className={`border rounded-md border-zinc-700 bg-zinc-800 ${textColor} flex items-center gap-2 px-4 py-2 text-xs`}
+      className={`border rounded-md z-50 border-zinc-700 bg-zinc-800 ${textColor} flex items-center gap-2 px-4 py-2 text-xs`}
     >
       {type === "success" && <AiFillCheckCircle />}
       {type === "error" && <MdError />}

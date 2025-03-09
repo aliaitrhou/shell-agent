@@ -16,7 +16,6 @@ import ChatMessages from "./chat-messages";
 import ShellPromptUi from "./shell-prompt-ui";
 import { linuxCommands } from "@/constants";
 import { IoTriangleSharp } from "react-icons/io5";
-import { FaChevronRight } from "react-icons/fa";
 import { BsArrow90DegDown, BsArrow90DegRight } from "react-icons/bs";
 
 interface Props {
@@ -143,6 +142,10 @@ const Terminal: React.FC<Props> = ({
         case "exit":
           // close the terminal
           closeTerminal();
+          selectData = {
+            model: "",
+            semester: "",
+          };
           setMsg("");
           break;
         default:
@@ -400,9 +403,9 @@ const Terminal: React.FC<Props> = ({
     mode === "Command" && linuxCommands.includes(keywords[0]);
 
   return (
-    <div className={`w-full h-[80dvh] flex flex-col items-center`}>
+    <div className={`w-full h-full flex flex-col items-center`}>
       <div className="w-full h-full flex flex-col items-center justify-center">
-        <section className="relative w-full h-full  bg-zinc-900/90 rounded-xl  border-[1px] border-zinc-800">
+        <section className="relative w-full h-full  bg-zinc-800/90 rounded-xl  border-[1px] border-zinc-700">
           <TerminalTopBar
             currentChatId={chatId}
             disableDelete={disableRemoveChat}
@@ -447,7 +450,7 @@ const Terminal: React.FC<Props> = ({
                         className={`relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2  rounded-s-full rounded-e-full bg-white mr-1`}
                       >
                         <IoTriangleSharp
-                          className={`absolute -left-[11px] z-30 rotate-[269deg] text-white h-4 w-5`}
+                          className={`absolute -left-[11px] z-20 rotate-[269deg] text-white h-4 w-5`}
                         />
                         {/*TODO: make the button opens the pdf page used in RAG */}
                         <button

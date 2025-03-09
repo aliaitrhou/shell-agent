@@ -24,10 +24,10 @@ const Sidebar: React.FC<SidebarProps> = ({
   handleRemoveChat,
 }) => {
   return (
-    <div className="hidden  w-36 md:w-40 sm:mt-16 self-start sm:flex bg-zinc-900/90 rounded-lg border border-zinc-800  h-[60dvh] text-center">
+    <section className="hidden w-36 md:w-40 sm:mt-16 self-start sm:flex bg-zinc-800/90 rounded-lg border border-zinc-700  h-[60dvh] text-center">
       <div className={`relative w-full h-full whitespace-nowrap`}>
-        <h3 className="sticky top-0 left-0 right-0 font-semibold font-kanit text-center text-zinc-500 text-sm p-2 border-b border-b-zinc-800">
-          Your Chats :)
+        <h3 className="sticky top-0 left-0 right-0 font-semibold font-kanit text-center text-zinc-400 text-sm p-2 border-b border-b-zinc-700">
+          Your Chats
         </h3>
         <div className="flex flex-col gap-2  h-[calc(60dvh-40px)] px-1 py-2">
           {loadingChats ? (
@@ -54,7 +54,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
