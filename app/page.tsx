@@ -8,7 +8,7 @@ import { useClerk, useUser } from "@clerk/clerk-react";
 import Link from "next/link";
 import Instructions from "@/components/instructions";
 import { AiFillGithub } from "react-icons/ai";
-import Header from "@/components/hearder";
+import Header from "@/components/header";
 import { StatusAlert } from "@/components/alert";
 import Footer from "@/components/footer";
 import MobileSidebar from "@/components/mobileSidebar";
@@ -327,7 +327,7 @@ export default function Home() {
           <section
             className={`flex flex-col items-center space-y-2 md:space-y-4 lg:space-y-6`}
           >
-            <span className="font-light text-xs font-kanit rounded-full border border-zinc-300 bg-zinc-400/90 text-white px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]">
+            <span className="font-light text-xs font-kanit rounded-full border border-zinc-200 bg-zinc-400/90 text-white px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]">
               <Link
                 target="_blank"
                 className="hover:underline italic flex items-center gap-1 text-zinc-800"

@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import TerminalTopBar from "./terminal-top-bar";
@@ -540,22 +534,13 @@ const Terminal: React.FC<Props> = ({
                             }
                           }}
                           onInput={textareaAutoGrow}
-                          className={`w-full font-spaceMono text-xs text-white rounded-none border-none focus:outline-none resize-none bg-zinc-800/5 border`}
+                          className={`w-full font-spaceMono text-xs rounded-none border-none focus:outline-none resize-none bg-zinc-800/5`}
                         />
                       </form>
                     </div>
                   </div>
                 )}
-                {loadingStatus.modelAnswer && (
-                  <div className="flex items-center">
-                    <span className="text-xs font-spaceMono text-green-600">
-                      {mode === "Prompt" ? "Thinking" : "Running"}
-                    </span>
-                    <div className="self-end mb-1 w-fit">
-                      <div className="loader" />
-                    </div>
-                  </div>
-                )}
+                {loadingStatus.modelAnswer && <div className="loader" />}
               </>
             )}
           </div>
