@@ -61,6 +61,8 @@ const Terminal: React.FC<Props> = ({
   });
 
   const refContainer = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const { user } = useUser();
   const { openSignIn } = useClerk();
 
@@ -99,13 +101,15 @@ const Terminal: React.FC<Props> = ({
     await response.json();
   };
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const el = e.target as HTMLTextAreaElement;
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const el = e.target as HTMLTextAreaElement;
+    if (mode === "Prompt") {
+      const value = el.value.charAt(0).toUpperCase() + el.value.slice(1);
+      setMsg(value);
+    } else {
       setMsg(el.value);
-    },
-    [],
-  );
+    }
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -126,10 +130,26 @@ const Terminal: React.FC<Props> = ({
       },
     ]);
     setChatHistory((prevHistory) => [...prevHistory, `user: ${msg}`]);
-    // insert the user message to database
-    insertMessagesByChatId(chatId, msg, "user", mode, "~");
+
+    // insert non empty user message to db
+    if (msg) {
+      insertMessagesByChatId(chatId, msg || "done", "user", mode, "~");
+    }
+
     if (mode == "Prompt") {
-      await getModelAnswer("Prompt");
+      if (msg === "") {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistent",
+            text: "done",
+            mode: "Command",
+            cwd: "~",
+          },
+        ]);
+      } else {
+        await getModelAnswer("Prompt");
+      }
     } else {
       // with command mode
       switch (msg.toLowerCase()) {
@@ -147,6 +167,18 @@ const Terminal: React.FC<Props> = ({
             semester: "",
           };
           setMsg("");
+          break;
+        case "":
+          // done indicate that input is empty
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistent",
+              text: "done",
+              mode: "Command",
+              cwd: "~",
+            },
+          ]);
           break;
         default:
           await getModelAnswer("Command");
@@ -202,6 +234,7 @@ const Terminal: React.FC<Props> = ({
           ]);
           setPwd(responseData.cwd);
 
+          // done indicate that input is empty
           insertMessagesByChatId(
             chatId,
             responseData.content || "done",
@@ -312,6 +345,7 @@ const Terminal: React.FC<Props> = ({
               },
             ]);
           });
+          setDispayForm(true);
         } catch (error) {
           console.error("Error fetching model response:", error);
           setMessages((prev) => [
@@ -323,6 +357,7 @@ const Terminal: React.FC<Props> = ({
               mode: "Prompt",
             },
           ]);
+          setDispayForm(true);
         } finally {
           setLoadingStatus({ chats: false, modelAnswer: false });
           // DONE: display the form after the model have respond.
@@ -385,8 +420,6 @@ const Terminal: React.FC<Props> = ({
     scroll();
   }, [messages]); // rerun scroll whenever messages change
 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
   // focus on the form input
   useEffect(() => {
     if (textareaRef.current) {
@@ -402,10 +435,19 @@ const Terminal: React.FC<Props> = ({
   const currentValueIsCommand =
     mode === "Command" && linuxCommands.includes(keywords[0]);
 
+  //  auto height for textarea element as user types
+  const textareaAutoGrow = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "4px"; // initial size
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+    }
+  };
+
   return (
     <div className={`w-full h-full flex flex-col items-center`}>
       <div className="w-full h-full flex flex-col items-center justify-center">
-        <section className="relative w-full h-full  bg-zinc-800/90 rounded-xl  border-[1px] border-zinc-700">
+        <section className="relative w-full h-full pt-10  bg-zinc-800/90 rounded-xl  border-[1px] border-zinc-700">
           <TerminalTopBar
             currentChatId={chatId}
             disableDelete={disableRemoveChat}
@@ -419,7 +461,7 @@ const Terminal: React.FC<Props> = ({
           />
           <div
             ref={refContainer}
-            className="w-full h-full overflow-y-scroll pl-3 pr-0 pt-12 pb-3 rounded-xl"
+            className="w-full h-full overflow-y-scroll pl-3 py-2"
           >
             {loadingStatus.chats ? (
               <div className="w-full h-full flex justify-center items-center">
@@ -468,7 +510,7 @@ const Terminal: React.FC<Props> = ({
                         {/* this is used to hightlight the first word user types if the current mode is "Command" 
                         and the that word is included in linux commands array */}
                         {mode == "Command" && (
-                          <div className="absolute w-full min-h-[40px] font-spaceMono text-xs text-white bg-transparent pointer-events-none">
+                          <div className="absolute w-full font-spaceMono text-xs text-white bg-transparent pointer-events-none">
                             {keywords.map((word, index) => (
                               <span
                                 key={index}
@@ -486,7 +528,7 @@ const Terminal: React.FC<Props> = ({
                         <textarea
                           onChange={handleChange}
                           value={msg}
-                          maxLength={200}
+                          maxLength={250}
                           ref={textareaRef}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" && !e.shiftKey) {
@@ -497,13 +539,23 @@ const Terminal: React.FC<Props> = ({
                               }
                             }
                           }}
-                          className={`min-h-[40px] w-full font-spaceMono text-xs text-white rounded-none border-none focus:outline-none resize-none bg-zinc-900/5  overflow-hidden`}
+                          onInput={textareaAutoGrow}
+                          className={`w-full font-spaceMono text-xs text-white rounded-none border-none focus:outline-none resize-none bg-zinc-800/5 border`}
                         />
                       </form>
                     </div>
                   </div>
                 )}
-                {loadingStatus.modelAnswer && <div className="loader" />}
+                {loadingStatus.modelAnswer && (
+                  <div className="flex items-center">
+                    <span className="text-xs font-spaceMono text-green-600">
+                      {mode === "Prompt" ? "Thinking" : "Running"}
+                    </span>
+                    <div className="self-end mb-1 w-fit">
+                      <div className="loader" />
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>

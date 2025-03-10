@@ -42,9 +42,9 @@ body {
 
 /* for model response loading */
 .loader {
-  width: 25px;
+  width: 15px;
   aspect-ratio: 4;
-  background: radial-gradient(circle closest-side, green 90%, #0000) 0 /
+  background: radial-gradient(circle closest-side, #16a34a 90%, #0000) 0 /
     calc(100% / 3) 100% space;
   clip-path: inset(0 100% 0 0);
   animation: l1 1s steps(4) infinite;

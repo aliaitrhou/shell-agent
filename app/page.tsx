@@ -12,6 +12,8 @@ import Header from "@/components/hearder";
 import { StatusAlert } from "@/components/alert";
 import Footer from "@/components/footer";
 import MobileSidebar from "@/components/mobileSidebar";
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
+import { AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -266,7 +268,7 @@ export default function Home() {
   return (
     <>
       {responseStatus.message && (
-        <div className="absolute w-full flex justify-center pt-10 sm:pt-12">
+        <div className="absolute w-full flex justify-center pt-10 sm:pt-8">
           <StatusAlert
             message={responseStatus.message}
             type={responseStatus.status}
@@ -275,22 +277,26 @@ export default function Home() {
       )}
       <Header />
       <main
-        className={`text-white h-[90vh] py-4 flex ${start ? "flex-row justify-center items-center" : "flex-col justify-center space-y-4"} sm:gap-2 md:gap-4 lg:gap-6 px-3 sm:px-4 md:px-8 xl:px-32`}
+        className={`text-white h-[90vh] py-4 flex ${start ? "flex-row justify-center items-center" : "justify-center space-y-4"} sm:gap-2 md:gap-4 lg:gap-6 px-3 sm:px-4 md:px-8 xl:px-32`}
       >
         {start ? (
           <>
             {openSidebar && (
-              <>
-                <Sidebar
-                  chats={chats}
-                  loadingChats={loadingChats}
-                  disableRemoveChat={chats.length === 1}
-                  setActiveChatId={setCurrentChatId}
-                  currentChatId={currentChatId}
-                  handleRenameChat={handleRenameChat}
-                  handleRemoveChat={handleRemoveChat}
-                />
+              <Sidebar
+                chats={chats}
+                loadingChats={loadingChats}
+                disableRemoveChat={chats.length === 1}
+                setActiveChatId={setCurrentChatId}
+                currentChatId={currentChatId}
+                handleRenameChat={handleRenameChat}
+                handleRemoveChat={handleRemoveChat}
+              />
+            )}
+            {/* i don't want the sidebar to be open for mobile when the user first opens the terminal*/}
+            <AnimatePresence>
+              {!openSidebar && (
                 <MobileSidebar
+                  key={openSidebar.toString()}
                   chats={chats}
                   closeSidebar={handleToggleSidebar}
                   disableRemoveChat={chats.length === 1}
@@ -299,8 +305,8 @@ export default function Home() {
                   handleRenameChat={handleRenameChat}
                   handleRemoveChat={handleRemoveChat}
                 />
-              </>
-            )}
+              )}
+            </AnimatePresence>
             <Terminal
               chatId={currentChatId}
               openSidebar={openSidebar}
@@ -332,10 +338,10 @@ export default function Home() {
               </Link>
             </span>
             <div className="w-full flex flex-col justify-cneter items-center gap-2 pb-6">
-              <h3 className="max-w-full sm:max-w-2xl md:max-w-4xl text-center text-3xl sm:text-5xl md:text-6xl font-kanit font-bold">
+              <h3 className="max-w-full sm:max-w-2xl md:max-w-3xl text-center text-3xl sm:text-5xl md:text-6xl font-kanit font-bold">
                 It&apos;s Time to{" "}
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-blue-500 to-blue-400">
-                  Reboot Your Learning
+                  Reboot Your Systems
                 </span>
                 -No More Linux Classes!
               </h3>
@@ -343,49 +349,56 @@ export default function Home() {
                 A shell that{" "}
                 <span className="font-semibold">speaks your language</span> and
                 reduces the complexity of learning about OSes, taking you in an
-                intuitive and interactive learning adventure.
+                intuitive and interactive learning experience.
               </p>
             </div>
-            <div className="flex flex-col items-center gap-2 sm:space-y-2 md:space-y-4">
-              <div className="flex items-center gap-2">
-                <select
-                  name="model"
-                  defaultValue={"default"}
-                  onChange={handleSelectChange}
-                  className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
-                >
-                  <option value="default" disabled>
-                    Choose a model
-                  </option>
-                  <option value="Qwen/Qwen2.5-7B-Instruct-Turbo">
-                    Qwen2.5-7B
-                  </option>
-                  <option value="meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo">
-                    Meta-Llama-3.1-405B
-                  </option>
-                  <option value="Qwen/Qwen2.5-72B-Instruct-Turbo">
-                    Qwen2.5-72B
-                  </option>
-                  <option value="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo">
-                    Meta-Llama-3.1-8B
-                  </option>
-                </select>
-                <select
-                  name="semester"
-                  defaultValue={"default"}
-                  onChange={handleSelectChange}
-                  className="font-kanit text-xs sm:text-sm md:text-md p-1 md:p-2 text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none"
-                >
-                  <option value="default" disabled>
-                    Semester
-                  </option>
-                  <option value="S3">SEMESTER - S3</option>
-                  <option value="S4">SEMESTER - S4</option>
-                </select>
+            <div className="flex flex-col items-center gap-1 sm:gap-2 md:gap-3">
+              <div className="flex items-center">
+                <div className="relative">
+                  <select
+                    name="model"
+                    aria-label="Models"
+                    defaultValue={"default"}
+                    onChange={handleSelectChange}
+                    className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-800 p-2 sm:p-3 border border-r-0 border-zinc-700 rounded-s-full pr-8 sm:pr-10"
+                  >
+                    <option value="default" disabled>
+                      Choose a model
+                    </option>
+                    <option value="Qwen/Qwen2.5-7B-Instruct-Turbo">
+                      Qwen2.5-7B
+                    </option>
+                    <option value="meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo">
+                      Llama-3.1-405B
+                    </option>
+                    <option value="Qwen/Qwen2.5-72B-Instruct-Turbo">
+                      Qwen2.5-72B
+                    </option>
+                    <option value="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo">
+                      Llama-3.1-8B
+                    </option>
+                  </select>
+                  <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px]  size-4 text-zinc-400" />
+                </div>
+                <div className="relative">
+                  <select
+                    name="semester"
+                    defaultValue={"default"}
+                    onChange={handleSelectChange}
+                    className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-800 p-2 sm:p-3 border border-zinc-700 rounded-e-full  pr-8 sm:pr-10"
+                  >
+                    <option value="default" disabled>
+                      Semester
+                    </option>
+                    <option value="S3">SEMESTER - S3</option>
+                    <option value="S4">SEMESTER - S4</option>
+                  </select>
+                  <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px] size-4 text-zinc-400" />
+                </div>
               </div>
               <button
                 onClick={handleStartButtonClick}
-                className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 md:p-3 text-zinc-400  bg-zinc-700/60 border border-zinc-700 rounded-full shadow-zincShadow hover:shadow-zincShadowHover transition-shadow duration-700 ease-in-out focus:outline-none"
+                className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 md:p-3 text-zinc-400  bg-zinc-700/60 border border-zinc-700 rounded-full hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none"
               >
                 <span>⚡ GET STARTED</span>
               </button>

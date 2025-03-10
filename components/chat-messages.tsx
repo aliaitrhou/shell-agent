@@ -70,9 +70,9 @@ const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
             <div
               className={`max-w-full font-light  ${
                 msg?.role !== "user"
-                  ? "font-spaceMono text-xs sm:text-sm text-green-500/80"
+                  ? "font-spaceMono text-xs sm:text-sm text-green-600"
                   : "text-xs text-white font-mono mt-[1px]"
-              }  break-words`}
+              }  break-words ${msg.text === "done" && "mb-2"}`}
             >
               {msg?.role == "user" ? (
                 <>
@@ -85,13 +85,13 @@ const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
                         {msg.text.slice(keyword[0].length)}
                       </>
                     ) : (
-                      msg.text
+                      <>{msg.text === "done" ? "" : msg.text}</>
                     )}
                   </p>
                 </>
               ) : (
                 <MemoizedMarkdownRenderer>
-                  {/* i did this so "cd" command doesn't have an output  */}
+                  {/* done indicate that input is empty so render nothing */}
                   {msg.text === "done" ? "" : msg.text}
                 </MemoizedMarkdownRenderer>
               )}

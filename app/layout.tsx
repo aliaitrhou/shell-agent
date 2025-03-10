@@ -11,8 +11,8 @@ if (!clerkKey) {
 }
 
 export const metadata: Metadata = {
-  title: "QShell",
-  description: "Learn about OSes with AI",
+  title: "ShellAgent",
+  description: "Learn about OSes in the Proper way",
 };
 
 export default function RootLayout({
@@ -31,7 +31,7 @@ export default function RootLayout({
       publishableKey={clerkKey}
     >
       <html lang="en">
-        <body className="bg-zinc-950">
+        <body className="bg-zinc-950 min-h-screen">
           <div className="gradient_background"></div>
           {children}
           <Analytics />

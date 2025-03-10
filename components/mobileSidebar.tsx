@@ -2,7 +2,6 @@
 
 import React from "react";
 import { ChatProps } from "@/types";
-import ChatItemWrapper from "./chat-item-wrapper";
 import ChatItem from "./chat-item";
 import { motion } from "framer-motion";
 
@@ -26,12 +25,15 @@ const Wrapper = ({
   return (
     <motion.section
       initial={{
-        translateX: 100,
+        translateX: 200,
       }}
       animate={{
         translateX: 0,
       }}
-      transition={{ duration: 0.4 }}
+      exit={{
+        translateX: 200,
+      }}
+      transition={{ duration: 0.5 }}
       className={classNames}
     >
       {children}

@@ -117,21 +117,21 @@ const ChatItem: React.FC<Props> = ({
       )}
 
       {openMenu && (
-        <div className="absolute -right-20 top-3 z-50 bg-zinc-800 border border-zinc-700 rounded-md flex flex-col gap-1 items-center p-1 text-white">
+        <div className="absolute right-0 top-[27px] z-50 bg-zinc-600/50 backdrop-blur-[2px] border border-zinc-600 rounded-md flex flex-col gap-1 items-center p-1 text-white">
           <button
             onClick={handleRename}
             className="w-full px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center gap-2"
           >
             <span>Rename</span>
-            <FiEdit />
+            <FiEdit className="text-zinc-300" />
           </button>
           <button
             onClick={handleDelete}
             disabled={disableDelete}
-            className={`w-full px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center gap-2 ${disableDelete && "cursor-not-allowed"}`}
+            className={`w-full px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center ${disableDelete && "cursor-not-allowed"} gap-2`}
           >
             <span>Delete</span>
-            <RiDeleteBinLine />
+            <RiDeleteBinLine className="text-zinc-300" />
           </button>
         </div>
       )}

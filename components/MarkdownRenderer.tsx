@@ -8,6 +8,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import { FaRegCopy } from "react-icons/fa6";
+import { BsCopy } from "react-icons/bs";
 import { FaCheck } from "react-icons/fa6";
 
 interface Props {
@@ -31,14 +32,18 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
   };
 
   return (
-    <div className="relative w-full sm:w-fit ml-2  codeblock bg-zinc-900/60 border-[.3px] border-zinc-600 rounded-md overflow-hidden my-3 text-xs">
+    <div className="relative w-fit max-w-xs sm:max-w-xl md:max-w-2xl ml-2  codeblock bg-zinc-900/60 border-[.3px] border-zinc-600 rounded-md overflow-hidden my-3 text-xs">
       <div className="flex items-center justify-between w-full text-xs px-3 py-1 rounded-t bg-zinc-900/40 text-zinc-400 border-b-[.3px] border-zinc-600">
         <span className="lowercase font-spaceMono ">{language}</span>
         <button
           className="focus:outline-none"
           onClick={() => handleCopyCode(value)}
         >
-          {copied ? <FaCheck /> : <FaRegCopy className="hover:text-zinc-200" />}
+          {copied ? (
+            <FaCheck className="size-[10px]" />
+          ) : (
+            <BsCopy className="size-[10px] hover:text-zinc-200" />
+          )}
         </button>
       </div>
       <SyntaxHighlighter
