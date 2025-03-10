@@ -60,16 +60,18 @@ const Header = () => {
               </SignedIn>
             </div>
             <SignedOut>
-              <SignInButton mode="modal">
-                <button className="text-orange-500 font-bold text-sm font-mono border border-orange-500 hover:text-orange-300 hover:bg-[#ff7a064a] py-2 px-4 rounded-full transition duration-300 ease-in-out">
-                  Sign in
-                </button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="bg-white text-black font-spaceMono text-sm font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out">
-                  Sign up
-                </button>
-              </SignUpButton>
+              <div className="flex flex-row gap-1 sm:gap-2 font-mono">
+                <SignInButton mode="modal">
+                  <button className="text-orange-500 font-bold text-xs sm:text-sm border border-orange-500 hover:text-orange-300 hover:bg-[#ff7a064a] py-1 px-3 sm:py-2 sm:px-4 rounded-md transition duration-300 ease-in-out">
+                    Sign in
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="bg-white text-black text-xs sm:text-sm font-bold py-1 px-3 sm:py-2 sm:px-4 rounded-md transition duration-300 ease-in-out">
+                    Sign up
+                  </button>
+                </SignUpButton>
+              </div>
             </SignedOut>
           </>
         )}
