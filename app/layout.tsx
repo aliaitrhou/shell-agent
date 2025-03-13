@@ -31,7 +31,7 @@ export default function RootLayout({
       publishableKey={clerkKey}
     >
       <html lang="en">
-        <body className="bg-zinc-950 min-h-screen">
+        <body className="bg-zinc-900 min-h-screen">
           <div className="gradient_background"></div>
           {children}
           <Analytics />

@@ -24,35 +24,33 @@ const Sidebar: React.FC<SidebarProps> = ({
   handleRemoveChat,
 }) => {
   return (
-    <section className="hidden w-36 md:w-44 mt-10 self-start sm:flex bg-zinc-800/90 rounded-lg border border-zinc-700  h-[60dvh] text-center">
+    <section className="hidden h-[85dvh] w-36 md:w-44 self-start sm:flex bg-zinc-800/90 rounded-lg border border-zinc-700  text-center">
       <div className={`relative w-full h-full whitespace-nowrap`}>
-        <h3 className="sticky top-0 left-0 right-0 font-semibold font-kanit text-center text-zinc-400 text-sm p-2 border-b border-b-zinc-700">
+        <h3 className="py-2 font-kanit text-zinc-500 text-md border-b border-b-zinc-700">
           Your Chats
         </h3>
-        <div className="flex flex-col gap-2  h-[calc(60dvh-40px)] px-1 py-2 md:px-2">
-          {loadingChats ? (
-            <div className="h-[50%] w-full flex items-center justify-center">
-              <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-600" />
-            </div>
-          ) : (
-            <>
-              {chats.map((chat, index) => (
-                <ChatItemWrapper key={index} idx={index}>
-                  {/* i used the index for the chat item animation delay */}
-                  <ChatItem
-                    active={chat.id === currentChatId}
-                    chatId={chat.id}
-                    onClick={() => setActiveChatId(chat.id)}
-                    handleRenameChat={handleRenameChat}
-                    handleDeleteChat={handleRemoveChat}
-                    disableDelete={disableRemoveChat}
-                    name={chat.name}
-                  />
-                </ChatItemWrapper>
-              ))}
-            </>
-          )}
-        </div>
+        {loadingChats ? (
+          <div className="h-[50%] w-full flex items-center justify-center">
+            <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-600" />
+          </div>
+        ) : (
+          <div className="w-full h-full flex flex-col gap-2 px-1 py-2 md:px-2 overflow-y-auto">
+            {chats.map((chat, index) => (
+              <ChatItemWrapper key={index} idx={index}>
+                {/* i used the index for the chat item animation delay */}
+                <ChatItem
+                  active={chat.id === currentChatId}
+                  chatId={chat.id}
+                  onClick={() => setActiveChatId(chat.id)}
+                  handleRenameChat={handleRenameChat}
+                  handleDeleteChat={handleRemoveChat}
+                  disableDelete={disableRemoveChat}
+                  name={chat.name}
+                />
+              </ChatItemWrapper>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

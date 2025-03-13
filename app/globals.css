@@ -18,16 +18,16 @@ body {
   background-image: linear-gradient(
       0deg,
       transparent 49%,
-      hsla(0, 0%, 100%, 0.06) 50%,
-      hsla(0, 0%, 100%, 0.06) 51%,
+      hsla(0, 0%, 100%, 0.04) 50%,
+      hsla(0, 0%, 100%, 0.04) 51%,
       transparent 52%,
       transparent
     ),
     linear-gradient(
       90deg,
       transparent 49%,
-      hsla(0, 0%, 100%, 0.06) 50%,
-      hsla(0, 0%, 100%, 0.06) 51%,
+      hsla(0, 0%, 100%, 0.04) 50%,
+      hsla(0, 0%, 100%, 0.04) 51%,
       transparent 52%,
       transparent
     );
@@ -44,7 +44,7 @@ body {
 .loader {
   width: 20px;
   aspect-ratio: 4;
-  background: radial-gradient(circle closest-side, #16a34a 90%, #0000) 0 /
+  background: radial-gradient(circle closest-side, #046c4e 90%, #0000) 0 /
     calc(100% / 3) 100% space;
   clip-path: inset(0 100% 0 0);
   animation: l1 1s steps(4) infinite;

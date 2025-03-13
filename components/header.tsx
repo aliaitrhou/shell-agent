@@ -29,11 +29,11 @@ const Header = () => {
   }
 
   return (
-    <nav className="mx-auto flex flex-row justify-between items-center px-4 py-2 sm:px-6 sm:py-3 xl:py-5">
+    <nav className="mx-auto flex flex-row justify-between items-center px-2 py-2 sm:px-2 md:px-4 lg:px-6 sm:py-3">
       <Link href="/">
         <div className="flex flex-row items-center gap-1">
-          <TbBrandPowershell className="font-bold text-orange-600  w-9 h-9 sm:w-10 sm:h-10" />
-          <p className="text-xl sm:text-2xl italic font-kanit font-bold bg-gradient-to-r from-orange-600  to-yellow-500 bg-clip-text text-transparent">
+          <TbBrandPowershell className="font-bold text-orange-600  w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12" />
+          <p className="text-xl sm:text-2xl lg:text-3xl italic font-kanit font-bold bg-gradient-to-r from-orange-600  to-yellow-500 bg-clip-text text-transparent">
             ShellAgent
           </p>
         </div>
@@ -67,7 +67,7 @@ const Header = () => {
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="bg-white text-black text-xs sm:text-sm font-bold py-1 px-3 sm:py-2 sm:px-4 rounded-md transition duration-300 ease-in-out">
+                  <button className="bg-zinc-300 hover:bg-zinc-300/90 border border-zinc-100 text-black text-xs sm:text-sm font-bold py-1 px-3 sm:py-2 sm:px-4 rounded-md transition duration-300 ease-in-out">
                     Sign up
                   </button>
                 </SignUpButton>

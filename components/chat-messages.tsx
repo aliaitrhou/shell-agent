@@ -8,15 +8,16 @@ import ShellPromptUi from "./shell-prompt-ui";
 import { BsArrow90DegDown, BsArrow90DegRight } from "react-icons/bs";
 import { IoTriangleSharp } from "react-icons/io5";
 
-// the model returns a markdown so i use this component render it as html
+// the model returns a markdown so i use this component to render it as html
 const MemoizedMarkdownRenderer = React.memo(MarkdownRenderer);
 
 interface Props extends React.ComponentPropsWithoutRef<"textarea"> {
   pwd: string;
+  // handlePageNumberClick: (pageNumber: number) => void;
   messages: message[];
 }
 
-const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
+const ChatMessages: React.FC<Props> = React.memo(({ pwd, messages }) => {
   console.log("chat messages component mounts");
 
   return (
@@ -62,7 +63,7 @@ const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
                   <button
                     className={`pl-1 text-xs font-thin font-mono text-black`}
                   >
-                    page 2
+                    page {index + 1}
                   </button>
                 </div>
               </div>
@@ -101,6 +102,8 @@ const ChatMessages: React.FC<Props> = ({ pwd, messages }) => {
       })}
     </>
   );
-};
+});
+
+ChatMessages.displayName = "ChatMessages";
 
 export default ChatMessages;

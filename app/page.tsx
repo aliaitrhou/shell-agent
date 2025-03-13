@@ -277,7 +277,7 @@ export default function Home() {
       )}
       <Header />
       <main
-        className={`text-white h-[90vh] py-4 flex ${start ? "flex-row justify-center items-center" : "justify-center space-y-4"} sm:gap-2 md:gap-4 lg:gap-6 px-3 sm:px-4 md:px-8 xl:px-32`}
+        className={`text-white py-4 flex ${start ? "h-full flex-row justify-center items-center px-1 sm:px-2 md:px-4 xl:px-32" : " h-[90dvh] justify-center space-y-4"} sm:gap-2 md:gap-3 lg:gap-4 px-3 sm:px-4 xl:px-8`}
       >
         {start ? (
           <>
@@ -325,9 +325,9 @@ export default function Home() {
           </>
         ) : (
           <section
-            className={`flex flex-col items-center space-y-2 md:space-y-4 lg:space-y-6`}
+            className={`flex flex-col justify-center items-center space-y-2 md:space-y-4 lg:space-y-6`}
           >
-            <span className="font-light text-xs font-kanit rounded-full border border-zinc-200 bg-zinc-400/90 text-white px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]">
+            <span className="font-light text-xs font-kanit rounded-full border border-white bg-zinc-300 text-white px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]">
               <Link
                 target="_blank"
                 className="hover:underline italic flex items-center gap-1 text-zinc-800"
@@ -337,19 +337,18 @@ export default function Home() {
                 <AiFillGithub />
               </Link>
             </span>
-            <div className="w-full flex flex-col justify-cneter items-center gap-2 pb-6">
+            <div className="w-full flex flex-col justify-cneter items-center gap-2">
               <h3 className="max-w-full sm:max-w-2xl md:max-w-3xl text-center text-3xl sm:text-5xl md:text-6xl font-kanit font-bold">
-                It&apos;s Time to{" "}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-blue-500 to-blue-400">
-                  Reboot Your Systems
-                </span>
-                -No More Linux Classes!
+                Turn Unix{" "}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-yellow-400">
+                  Commands
+                </span>{" "}
+                Into Enjoyable Experiences
               </h3>
               <p className="text-zinc-300 font-light px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-sm sm:text-lg md:text-xl">
-                A shell that{" "}
+                With A shell that{" "}
                 <span className="font-semibold">speaks your language</span> and
-                reduces the complexity of learning about OSes, taking you in an
-                intuitive and interactive learning experience.
+                reduces the complexity of learning about OSes.
               </p>
             </div>
             <div className="flex flex-col items-center gap-1 sm:gap-2 md:gap-3">
@@ -368,14 +367,14 @@ export default function Home() {
                     <option value="Qwen/Qwen2.5-7B-Instruct-Turbo">
                       Qwen2.5-7B
                     </option>
-                    <option value="meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo">
-                      Llama-3.1-405B
-                    </option>
                     <option value="Qwen/Qwen2.5-72B-Instruct-Turbo">
                       Qwen2.5-72B
                     </option>
                     <option value="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo">
                       Llama-3.1-8B
+                    </option>
+                    <option value="meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo">
+                      Llama-3.1-405B
                     </option>
                   </select>
                   <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px]  size-4 text-zinc-400" />
@@ -398,7 +397,7 @@ export default function Home() {
               </div>
               <button
                 onClick={handleStartButtonClick}
-                className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 md:p-3 text-zinc-400  bg-zinc-700/60 border border-zinc-700 rounded-full hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none"
+                className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 sm:p-3 md:px-4 md:py-3  text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-full hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none"
               >
                 <span>⚡ GET STARTED</span>
               </button>
@@ -407,7 +406,7 @@ export default function Home() {
           </section>
         )}
       </main>
-      {!start && <Footer />}
+      <Footer />
     </>
   );
 }

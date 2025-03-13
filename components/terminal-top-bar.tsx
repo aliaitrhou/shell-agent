@@ -28,7 +28,7 @@ const TerminalTopBar: React.FC<Props> = ({
           <button
             onClick={() => handleDeleteSession(currentChatId)}
             disabled={disableDelete}
-            className={`bg-red-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center ${disableDelete && "cursor-not-allowed"}`}
+            className={`bg-red-500 w-4 h-4 rounded-full flex items-center justify-center ${disableDelete && "cursor-not-allowed"}`}
           >
             <XMarkIcon className="w-3 h-3 text-black sm:opacity-0 group-hover:opacity-100 flex justify-center items-center" />
           </button>
@@ -36,7 +36,7 @@ const TerminalTopBar: React.FC<Props> = ({
         <ButtonHoverEffect desc={`${openSidebar ? "Close" : "Open"} Sidebar`}>
           <button
             onClick={handleToggleSidebar}
-            className="bg-yellow-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center"
+            className="bg-yellow-500 w-4 h-4 rounded-full flex items-center justify-center"
           >
             <MinusIcon className="w-3 h-3 text-black sm:opacity-0 group-hover:opacity-100" />
           </button>
@@ -45,15 +45,13 @@ const TerminalTopBar: React.FC<Props> = ({
           <button
             onClick={handleAddSession}
             disabled={disableCreate}
-            className={`bg-green-500 w-3 h-3 md:w-4 md:h-4 rounded-full flex items-center justify-center`}
+            className={`bg-green-500 w-4 h-4 rounded-full flex items-center justify-center`}
           >
             <PlusIcon className="w-3 h-3 text-black sm:opacity-0 group-hover:opacity-100" />
           </button>
         </ButtonHoverEffect>
       </div>
-      <p className="font-semibold text-xs sm:text-sm text-zinc-500 font-mono">
-        Terminal
-      </p>
+      <p className="text-sm text-zinc-500 font-kanit">Terminal</p>
     </div>
   );
 };
