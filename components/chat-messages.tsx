@@ -4,20 +4,17 @@ import { message } from "@/types";
 import React from "react";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { linuxCommands } from "@/constants";
-import ShellPromptUi from "./shell-prompt-ui";
-import { BsArrow90DegDown, BsArrow90DegRight } from "react-icons/bs";
-import { IoTriangleSharp } from "react-icons/io5";
+import TerminalPrompt from "./terminal-prompt";
 
 // the model returns a markdown so i use this component to render it as html
 const MemoizedMarkdownRenderer = React.memo(MarkdownRenderer);
 
 interface Props extends React.ComponentPropsWithoutRef<"textarea"> {
-  pwd: string;
   // handlePageNumberClick: (pageNumber: number) => void;
   messages: message[];
 }
 
-const ChatMessages: React.FC<Props> = React.memo(({ pwd, messages }) => {
+const ChatMessages: React.FC<Props> = React.memo(({ messages }) => {
   console.log("chat messages component mounts");
 
   return (
@@ -33,40 +30,13 @@ const ChatMessages: React.FC<Props> = React.memo(({ pwd, messages }) => {
             key={index}
             className={`w-full font-mono ${msg.role != "user" ? "flex gap-0 sm:gap-2 items-start" : "flex flex-col justify-center gap-1"} mb-2`}
           >
-            {/* display the shell prompt ui only for user */}
             {msg.role == "user" && (
-              <div className="flex flex-row items-center justify-between">
-                <div className="relative flex flex-row items-center gap-0">
-                  <ShellPromptUi
-                    type="left-side"
-                    content={
-                      msg.mode === "Command" && msg.role === "user"
-                        ? "Command"
-                        : "Prompt"
-                    }
-                  />
-                  <ShellPromptUi
-                    type="cwd"
-                    content={index === messages.length - 1 ? pwd : msg.cwd}
-                  />
-
-                  <BsArrow90DegRight className="absolute -left-2 -bottom-[6px] size-5 text-blue-400" />
-                  <BsArrow90DegDown className="absolute -left-2 -bottom-[19px] size-5 text-blue-400 rotate-[271deg]" />
-                </div>
-                <div
-                  className={`relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2  rounded-s-full rounded-e-full bg-white mr-1`}
-                >
-                  <IoTriangleSharp
-                    className={`absolute -left-[11px] z-20 rotate-[269deg] text-white h-4 w-5`}
-                  />
-                  {/*TODO: make the button opens the pdf page used in RAG */}
-                  <button
-                    className={`pl-1 text-xs font-thin font-mono text-black`}
-                  >
-                    page {index + 1}
-                  </button>
-                </div>
-              </div>
+              <TerminalPrompt
+                mode={msg.mode || "Command"}
+                pwd={msg.cwd || "~"}
+                pageNumber={index + 1}
+                handleOpenPage={() => console.log("hello, world")}
+              />
             )}
             <div
               className={`max-w-full font-light  ${
@@ -92,7 +62,7 @@ const ChatMessages: React.FC<Props> = React.memo(({ pwd, messages }) => {
                 </>
               ) : (
                 <MemoizedMarkdownRenderer>
-                  {/* done indicate that input is empty so render nothing */}
+                  {/* "done" indicate that input is empty so render nothing */}
                   {msg.text === "done" ? "" : msg.text}
                 </MemoizedMarkdownRenderer>
               )}

@@ -7,10 +7,8 @@ import TerminalTopBar from "./terminal-top-bar";
 import { message, Mode } from "@/types";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import ChatMessages from "./chat-messages";
-import ShellPromptUi from "./shell-prompt-ui";
+import TerminalPrompt from "./terminal-prompt";
 import { linuxCommands } from "@/constants";
-import { IoTriangleSharp } from "react-icons/io5";
-import { BsArrow90DegDown, BsArrow90DegRight } from "react-icons/bs";
 
 interface Props {
   chatId: string;
@@ -25,6 +23,7 @@ interface Props {
   handleCreateChat: () => void;
   handleToggleSidebar: () => void;
   handleRemoveChat: (chatId: string) => void;
+  // openPdfPreview: () => void;
   onMessageSent: (chatId: string) => void;
 }
 
@@ -37,6 +36,7 @@ const Terminal: React.FC<Props> = ({
   handleToggleSidebar,
   handleCreateChat,
   handleRemoveChat,
+  // openPdfPreview,
   onMessageSent,
   chatId,
 }) => {
@@ -45,9 +45,8 @@ const Terminal: React.FC<Props> = ({
   const [messages, setMessages] = useState<message[]>([]);
   // mode is default to prompt
   const [mode, setMode] = useState<Mode>("Prompt");
-  const [openPdf, setOpenPdf] = useState(false);
-  const [loadingPdf, setLoadingPdf] = useState(false);
-  const [pageToOpen, setPageToOpen] = useState(1);
+  // const [loadingPdf, setLoadingPdf] = useState(false);
+  // const [pageToOpen, setPageToOpen] = useState(1);
   const [dispayForm, setDispayForm] = useState(true);
   const [commandsHistory, setCommandsHistory] = useState<string[]>([""]);
   const [pwd, setPwd] = useState("~");
@@ -123,13 +122,14 @@ const Terminal: React.FC<Props> = ({
     ]);
     setChatHistory((prevHistory) => [...prevHistory, `user: ${msg}`]);
 
+    console.log("message is : ", msg);
     // insert non empty user message to db
-    if (msg) {
+    if (msg && msg.trim() !== "") {
       insertMessagesByChatId(chatId, msg || "done", "user", mode, "~");
     }
 
     if (mode == "Prompt") {
-      if (msg === "") {
+      if (msg.trim() === "") {
         setMessages((prev) => [
           ...prev,
           {
@@ -139,12 +139,13 @@ const Terminal: React.FC<Props> = ({
             cwd: "~",
           },
         ]);
+        setMsg("");
       } else {
         await getModelAnswer("Prompt");
       }
     } else {
       // with command mode
-      switch (msg.toLowerCase()) {
+      switch (msg.trim().toLowerCase()) {
         case "clear":
           setMessages([]);
           setLoadingStatus({ chats: false, modelAnswer: false });
@@ -435,157 +436,86 @@ const Terminal: React.FC<Props> = ({
   };
 
   return (
-    <div
-      className={`w-full h-full flex flex-col lg:flex-row items-center gap-4`}
+    <section
+      className={`relative w-full h-[80dvh] pt-10 bg-zinc-800 rounded-xl  border-[1px] border-zinc-700/60`}
     >
-      <section
-        className={`relative w-full h-[85dvh] border ${openPdf && "lg:w-1/2"} pt-10  bg-zinc-800 rounded-xl  border-[1px] border-zinc-700`}
+      <TerminalTopBar
+        currentChatId={chatId}
+        disableDelete={disableRemoveChat}
+        disableCreate={disableCreateChat}
+        handleDeleteSession={handleRemoveChat}
+        handleToggleSidebar={handleToggleSidebar}
+        openSidebar={openSidebar}
+        handleAddSession={handleCreateChat}
+      />
+      <div
+        ref={refContainer}
+        className="w-full h-full overflow-y-scroll pl-3 py-2"
       >
-        <TerminalTopBar
-          currentChatId={chatId}
-          disableDelete={disableRemoveChat}
-          disableCreate={disableCreateChat}
-          handleDeleteSession={handleRemoveChat}
-          handleToggleSidebar={handleToggleSidebar}
-          openSidebar={openSidebar}
-          handleAddSession={handleCreateChat}
-        />
-        <div
-          ref={refContainer}
-          className="w-full h-full overflow-y-scroll pl-3 py-2"
-        >
-          {loadingStatus.chats ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <AiOutlineLoading3Quarters className="mx-auto h-7 w-7 rounded-full animate-spin text-zinc-700" />
-            </div>
-          ) : (
-            <>
-              <ChatMessages pwd={pwd} messages={messages} />
-              {/* command/prompt inserting */}
-              {dispayForm && (
-                <div className="flex flex-col justify-center gap-1">
-                  <div className="flex flex-row items-center justify-between">
-                    <div className="relative flex flex-row items-center gap-0">
-                      <ShellPromptUi type="left-side">
-                        <button
-                          onClick={handleToggleModes}
-                          className="text-xs font-bold font-mono text-white focus:outline-none"
-                        >
-                          {mode}
-                        </button>
-                      </ShellPromptUi>
-                      <ShellPromptUi type="cwd" content={pwd} />
-                      <BsArrow90DegRight className="absolute -left-2 -bottom-[6px] size-5 text-blue-400" />
-                      <BsArrow90DegDown className="absolute -left-2 -bottom-[19px] size-5 text-blue-400 rotate-[271deg]" />
-                    </div>
-
-                    <div
-                      className={`relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2  rounded-s-full rounded-e-full bg-white mr-1`}
-                    >
-                      <IoTriangleSharp
-                        className={`absolute -left-[11px] z-20 rotate-[269deg] text-white h-4 w-5`}
-                      />
-                      {/*TODO: make the button opens the pdf page used in RAG */}
-                      <button
-                        onClick={() => {
-                          setOpenPdf(true);
-                          setLoadingPdf(true);
-                          setPageToOpen(pageToOpen + 1);
-                          console.log("page to open: ", pageToOpen);
-                        }}
-                        className={`text-xs font-thin font-mono text-black focus:outline-none`}
-                      >
-                        page 8
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 pl-4 pr-1">
-                    <form
-                      onSubmit={handleSubmit}
-                      className="relative w-full p-0 flex items-center justify-start mt-[1px]"
-                    >
-                      {/* this is used to hightlight the first word user types if the current mode is "Command" 
+        {loadingStatus.chats ? (
+          <div className="w-full h-full flex justify-center items-center">
+            <AiOutlineLoading3Quarters className="mx-auto h-7 w-7 rounded-full animate-spin text-zinc-700" />
+          </div>
+        ) : (
+          <>
+            <ChatMessages messages={messages} />
+            {/* command/prompt inserting */}
+            {dispayForm && (
+              <TerminalPrompt
+                mode={mode}
+                pwd={pwd}
+                handleToggleModes={handleToggleModes}
+                handleOpenPage={() => console.log("Hello, World!")}
+              >
+                <div className="flex items-center gap-1 pl-4 pr-1">
+                  <form
+                    onSubmit={handleSubmit}
+                    className="relative w-full p-0 flex items-center justify-start mt-[1px]"
+                  >
+                    {/* this is used to hightlight the first word user types if the current mode is "Command" 
                         if that word is included in linux commands array */}
-                      {mode == "Command" && (
-                        <div className="absolute w-full font-spaceMono text-xs text-white bg-transparent pointer-events-none">
-                          {keywords.map((word, index) => (
-                            <span
-                              key={index}
-                              className={
-                                index === 0 && currentValueIsCommand
-                                  ? "text-yellow-400"
-                                  : ""
-                              }
-                            >
-                              {word}{" "}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      <textarea
-                        onChange={handleChange}
-                        value={msg}
-                        maxLength={250}
-                        ref={textareaRef}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            const form = e.currentTarget.form;
-                            if (form) {
-                              form.requestSubmit(); // this will trigger the form's onSubmit handler
+                    {mode == "Command" && (
+                      <div className="absolute w-full font-spaceMono text-xs text-white bg-transparent pointer-events-none">
+                        {keywords.map((word, index) => (
+                          <span
+                            key={index}
+                            className={
+                              index === 0 && currentValueIsCommand
+                                ? "text-yellow-400"
+                                : ""
                             }
+                          >
+                            {word}{" "}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <textarea
+                      onChange={handleChange}
+                      value={msg}
+                      maxLength={250}
+                      ref={textareaRef}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          const form = e.currentTarget.form;
+                          if (form) {
+                            form.requestSubmit(); // this will trigger the form's onSubmit handler
                           }
-                        }}
-                        onInput={textareaAutoGrow}
-                        className={`w-full font-spaceMono text-xs text-white border-none focus:outline-none resize-none bg-zinc-800/5 `}
-                      />
-                    </form>
-                  </div>
+                        }
+                      }}
+                      onInput={textareaAutoGrow}
+                      className={`w-full font-spaceMono text-xs text-white border-none focus:outline-none resize-none bg-zinc-800/5`}
+                    />
+                  </form>
                 </div>
-              )}
-              {loadingStatus.modelAnswer && <div className="ml-2 loader" />}
-            </>
-          )}
-        </div>
-      </section>
-      {openPdf && (
-        <div
-          className={`relative h-[60dvh] lg:h-[85dvh] w-full lg:w-1/2 bg-zinc-800 rounded-xl border border-zinc-700 overflow-hidden`}
-        >
-          <div className="h-8 sm:h-10 px-4 bg-zinc-800 border-b-[1px] border-b-zinc-700 flex items-center justify-between font-kanit text-sm text-zinc-500 ">
-            <span className="">Operating Systems 1</span>
-            <span className="">Chapter 1</span>
-          </div>
-          {loadingPdf && (
-            <div className="w-full h-full flex items-center justify-center">
-              <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-600" />
-            </div>
-          )}
-          {/* Key attribute forces iframe to re-render when page changes */}
-          <iframe
-            key={`pdf-frame-${pageToOpen}`}
-            className="h-full w-full pt-[2px]"
-            src={`/course-s3/chap1.pdf#page=${pageToOpen}&toolbar=0&view=FitH&scrollbar=0&statusbar=0&navpanes=0&background=#27272a&zoom=90`}
-            width="800"
-            height="500"
-            onLoad={() => setLoadingPdf(false)}
-          ></iframe>
-          <div className="absolute bottom-2 right-3 w-full flex flex-row justify-between items-center pl-6 font-spaceMono text-sm">
-            <span className="px-2 sm:px-3 py-0  bg-zinc-700/80 backdrop-blur-sm border-2 border-zinc-700 text-zinc-300 focus:outline-none rounded-full">
-              Auther name
-            </span>
-            <button
-              onClick={() => {
-                setOpenPdf(false);
-              }}
-              className="px-2 sm:px-3 py-0 bg-zinc-700/80 backdrop-blur-sm border-2 border-zinc-700 text-zinc-300 focus:outline-none rounded-full"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+              </TerminalPrompt>
+            )}
+            {loadingStatus.modelAnswer && <div className="ml-2 loader" />}
+          </>
+        )}
+      </div>
+    </section>
   );
 };
 

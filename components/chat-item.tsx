@@ -92,27 +92,26 @@ const ChatItem: React.FC<Props> = ({
   return (
     <div
       ref={menuRef}
-      className={`relative w-full rounded-[4px] py-1 px-3 ${
+      className={`relative w-full rounded-[4px] py-1 px-2 ${
         active
-          ? "bg-zinc-700/70 border border-zinc-600"
-          : "hover:bg-zinc-700/30 border border-zinc-700"
+          ? "bg-zinc-700/50 border border-zinc-600/40"
+          : "hover:bg-zinc-700/20 border border-zinc-700/40"
       } text-zinc-300 text-xs flex flex-row justify-between items-center`}
     >
       {openInput ? (
         <input
           ref={inputRef}
-          className={`w-full rounded-sm  ${active ? "bg-zinc-600" : "bg-zinc-700/70"} text-white focus:outline-none focus:ring-2 focus:ring-blue-400`}
+          className={`w-full rounded-sm font-kanit  ${active ? "bg-zinc-600" : "bg-zinc-700/70"} text-white focus:outline-none focus:ring-2 focus:ring-blue-400`}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onBlur={saveNewName}
           value={newName}
         />
       ) : (
-        <div
-          onClick={onClick}
-          className="w-full text-start cursor-pointer  overflow-y-auto"
-        >
-          <span className="text-xs font-kanit w-full">{newName}</span>
+        <div onClick={onClick} className="w-full text-start cursor-pointer">
+          <span className="text-xs font-kanit w-full text-zinc-400">
+            {newName}
+          </span>
         </div>
       )}
 
@@ -136,7 +135,10 @@ const ChatItem: React.FC<Props> = ({
         </div>
       )}
 
-      <button className="ml-2" onClick={handleThreeDotsClick}>
+      <button
+        className="ml-2 focus:outline-none border-none text-zinc-400"
+        onClick={handleThreeDotsClick}
+      >
         <BsThreeDots />
       </button>
     </div>

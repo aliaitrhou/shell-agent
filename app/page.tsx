@@ -8,30 +8,32 @@ import { useClerk, useUser } from "@clerk/clerk-react";
 import Link from "next/link";
 import Instructions from "@/components/instructions";
 import { AiFillGithub } from "react-icons/ai";
-import Header from "@/components/header";
-import { StatusAlert } from "@/components/alert";
-import Footer from "@/components/footer";
 import MobileSidebar from "@/components/mobileSidebar";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { AnimatePresence } from "framer-motion";
+import PageWrapper from "@/components/page-wrapper";
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
   const [chats, setChats] = useState<ChatProps[]>([]);
   const [loadingChats, setLoadingChats] = useState(false);
+  const [start, setStart] = useState(false);
+  const [currentChatId, setCurrentChatId] = useState("");
   const [responseStatus, setResponseStatus] = useState({
     message: "",
     status: "",
   });
-  const [currentChatId, setCurrentChatId] = useState("");
   const [selectData, setSelectData] = useState({
     model: "",
     semester: "",
   });
-  const [start, setStart] = useState(false);
+  const [pdfPreviewStatus, setPdfPreviewStatus] = useState({
+    openPdf: false,
+    loading: false,
+    page: 0,
+  });
 
   const { user, isSignedIn } = useUser();
-
   const { openSignIn } = useClerk();
 
   // create chat callback
@@ -266,25 +268,34 @@ export default function Home() {
   };
 
   return (
-    <>
-      {responseStatus.message && (
-        <div className="absolute w-full flex justify-center pt-10 sm:pt-8">
-          <StatusAlert
-            message={responseStatus.message}
-            type={responseStatus.status}
-          />
-        </div>
-      )}
-      <Header />
-      <main
-        className={`text-white py-4 flex ${start ? "h-full flex-row justify-center items-center px-1 sm:px-2 md:px-4 xl:px-32" : " h-[90dvh] justify-center space-y-4"} sm:gap-2 md:gap-3 lg:gap-4 px-3 sm:px-4 xl:px-8`}
-      >
-        {start ? (
-          <>
-            {openSidebar && (
-              <Sidebar
+    <PageWrapper
+      classNames={
+        "text-white h-fit sm:h-[92%] flex justify-center items-center"
+      }
+      start={start}
+      message={responseStatus.message}
+      status={responseStatus.status}
+    >
+      {start ? (
+        <div className="w-full md:w-[95%] lg:w-[80%] mx-auto flex flex-row justify-center items-center px-1 sm:px-2 md:px-4 sm:gap-2 md:gap-3 lg:gap-4 xl:px-8">
+          {openSidebar && (
+            <Sidebar
+              chats={chats}
+              loadingChats={loadingChats}
+              disableRemoveChat={chats.length === 1}
+              setActiveChatId={setCurrentChatId}
+              currentChatId={currentChatId}
+              handleRenameChat={handleRenameChat}
+              handleRemoveChat={handleRemoveChat}
+            />
+          )}
+          {/* i don't want the sidebar to be open for mobile when user first opens the terminal*/}
+          <AnimatePresence>
+            {!openSidebar && (
+              <MobileSidebar
+                key={openSidebar.toString()}
                 chats={chats}
-                loadingChats={loadingChats}
+                closeSidebar={handleToggleSidebar}
                 disableRemoveChat={chats.length === 1}
                 setActiveChatId={setCurrentChatId}
                 currentChatId={currentChatId}
@@ -292,121 +303,106 @@ export default function Home() {
                 handleRemoveChat={handleRemoveChat}
               />
             )}
-            {/* i don't want the sidebar to be open for mobile when the user first opens the terminal*/}
-            <AnimatePresence>
-              {!openSidebar && (
-                <MobileSidebar
-                  key={openSidebar.toString()}
-                  chats={chats}
-                  closeSidebar={handleToggleSidebar}
-                  disableRemoveChat={chats.length === 1}
-                  setActiveChatId={setCurrentChatId}
-                  currentChatId={currentChatId}
-                  handleRenameChat={handleRenameChat}
-                  handleRemoveChat={handleRemoveChat}
-                />
-              )}
-            </AnimatePresence>
-            <Terminal
-              chatId={currentChatId}
-              openSidebar={openSidebar}
-              closeTerminal={() => setStart(false)}
-              selectData={selectData}
-              disableRemoveChat={
-                chats.length === 1 || responseStatus.status === "loading"
-              }
-              // TODO: limit users to 8 chats
-              disableCreateChat={responseStatus.status === "loading"}
-              handleToggleSidebar={handleToggleSidebar}
-              handleCreateChat={handleCreateChat}
-              handleRemoveChat={handleRemoveChat}
-              onMessageSent={handleMessageSent}
-            />
-          </>
-        ) : (
-          <section
-            className={`flex flex-col justify-center items-center space-y-2 md:space-y-4 lg:space-y-6`}
-          >
-            <span className="font-light text-xs font-kanit rounded-full border border-white bg-zinc-300 text-white px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]">
-              <Link
-                target="_blank"
-                className="hover:underline italic flex items-center gap-1 text-zinc-800"
-                href={"https://github.com/aliaitrhou/quantum-shell"}
-              >
-                <span>Star it on Github</span>
-                <AiFillGithub />
-              </Link>
-            </span>
-            <div className="w-full flex flex-col justify-cneter items-center gap-2">
-              <h3 className="max-w-full sm:max-w-2xl md:max-w-3xl text-center text-3xl sm:text-5xl md:text-6xl font-kanit font-bold">
-                Turn Unix{" "}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-yellow-400">
-                  Commands
-                </span>{" "}
-                Into Enjoyable Experiences
-              </h3>
-              <p className="text-zinc-300 font-light px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-sm sm:text-lg md:text-xl">
-                With A shell that{" "}
-                <span className="font-semibold">speaks your language</span> and
-                reduces the complexity of learning about OSes.
-              </p>
-            </div>
-            <div className="flex flex-col items-center gap-1 sm:gap-2 md:gap-3">
-              <div className="flex items-center">
-                <div className="relative">
-                  <select
-                    name="model"
-                    aria-label="Models"
-                    defaultValue={"default"}
-                    onChange={handleSelectChange}
-                    className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-800 p-2 sm:p-3 border border-r-0 border-zinc-700 rounded-s-full pr-8 sm:pr-10"
-                  >
-                    <option value="default" disabled>
-                      Choose a model
-                    </option>
-                    <option value="Qwen/Qwen2.5-7B-Instruct-Turbo">
-                      Qwen2.5-7B
-                    </option>
-                    <option value="Qwen/Qwen2.5-72B-Instruct-Turbo">
-                      Qwen2.5-72B
-                    </option>
-                    <option value="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo">
-                      Llama-3.1-8B
-                    </option>
-                    <option value="meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo">
-                      Llama-3.1-405B
-                    </option>
-                  </select>
-                  <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px]  size-4 text-zinc-400" />
-                </div>
-                <div className="relative">
-                  <select
-                    name="semester"
-                    defaultValue={"default"}
-                    onChange={handleSelectChange}
-                    className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-800 p-2 sm:p-3 border border-zinc-700 rounded-e-full  pr-8 sm:pr-10"
-                  >
-                    <option value="default" disabled>
-                      Semester
-                    </option>
-                    <option value="S3">SEMESTER - S3</option>
-                    <option value="S4">SEMESTER - S4</option>
-                  </select>
-                  <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px] size-4 text-zinc-400" />
-                </div>
+          </AnimatePresence>
+          <Terminal
+            chatId={currentChatId}
+            openSidebar={openSidebar}
+            closeTerminal={() => setStart(false)}
+            selectData={selectData}
+            disableRemoveChat={
+              chats.length === 1 || responseStatus.status === "loading"
+            }
+            // TODO: limit users to 8 chats
+            disableCreateChat={responseStatus.status === "loading"}
+            handleToggleSidebar={handleToggleSidebar}
+            handleCreateChat={handleCreateChat}
+            handleRemoveChat={handleRemoveChat}
+            onMessageSent={handleMessageSent}
+            // openPdfPreview={() => setPdfPreviewStatus(prev => {...prev, laoding})}
+          />
+        </div>
+      ) : (
+        <section
+          className={`flex flex-col justify-center items-center space-y-2 md:space-y-4 lg:space-y-6`}
+        >
+          <span className="font-light text-xs font-kanit rounded-full border border-white bg-zinc-300 text-white px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]">
+            <Link
+              target="_blank"
+              className="hover:underline italic flex items-center gap-1 text-zinc-800"
+              href={"https://github.com/aliaitrhou/quantum-shell"}
+            >
+              <span>Star it on Github</span>
+              <AiFillGithub />
+            </Link>
+          </span>
+          <div className="w-full flex flex-col justify-cneter items-center gap-2">
+            <h3 className="max-w-full sm:max-w-2xl md:max-w-3xl text-center text-3xl sm:text-5xl md:text-6xl font-kanit font-bold">
+              Turn{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-br from-violet-500 via-blue-400 to-blue-200">
+                Unix Commands
+              </span>{" "}
+              Into Enjoyable Experiences
+            </h3>
+            <p className="text-zinc-300 font-light px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-sm sm:text-lg md:text-xl">
+              With A shell that{" "}
+              <span className="font-semibold">speaks your language</span> and
+              reduces the complexity of learning about OSes.
+            </p>
+          </div>
+          <div className="flex flex-col items-center gap-1 sm:gap-2 md:gap-3">
+            <div className="flex items-center">
+              <div className="relative">
+                <select
+                  name="model"
+                  aria-label="Models"
+                  defaultValue={"default"}
+                  onChange={handleSelectChange}
+                  className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400 bg-zinc-800  border-[1px] border-zinc-700/40 border-r-0 rounded-s-full p-2 sm:p-3 pr-8 sm:pr-10"
+                >
+                  <option value="default" disabled>
+                    Choose a model
+                  </option>
+                  <option value="Qwen/Qwen2.5-7B-Instruct-Turbo">
+                    Qwen2.5-7B
+                  </option>
+                  <option value="Qwen/Qwen2.5-72B-Instruct-Turbo">
+                    Qwen2.5-72B
+                  </option>
+                  <option value="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo">
+                    Llama-3.1-8B
+                  </option>
+                  <option value="meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo">
+                    Llama-3.1-405B
+                  </option>
+                </select>
+                <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px]  size-4 text-zinc-500" />
               </div>
-              <button
-                onClick={handleStartButtonClick}
-                className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 sm:p-3 md:px-4 md:py-3  text-zinc-400  bg-zinc-800 border border-zinc-700 rounded-full hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none"
-              >
-                <span>⚡ GET STARTED</span>
-              </button>
+              <div className="relative">
+                <select
+                  name="semester"
+                  defaultValue={"default"}
+                  onChange={handleSelectChange}
+                  className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-800  border-[1px] border-zinc-700/40 rounded-e-full p-2 sm:p-3 pr-8 sm:pr-10"
+                >
+                  <option value="default" disabled>
+                    Semester
+                  </option>
+                  <option value="S3">SEMESTER - S3</option>
+                  <option value="S4">SEMESTER - S4</option>
+                </select>
+                <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px]  size-4 text-zinc-500" />
+              </div>
             </div>
-            <Instructions />
-          </section>
-        )}
-      </main>
-      <Footer />
-    </>
+            <button
+              onClick={handleStartButtonClick}
+              className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 sm:p-3 md:px-4 md:py-3  text-zinc-400  bg-zinc-800  border-[1px] border-zinc-700/40 rounded-full hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none"
+            >
+              <span>⚡ GET STARTED</span>
+            </button>
+          </div>
+          <Instructions />
+        </section>
+      )}
+    </PageWrapper>
   );
 }

@@ -9,8 +9,8 @@ import {
 } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Link from "next/link";
-import { TbBrandPowershell } from "react-icons/tb";
 import { useUser } from "@clerk/nextjs";
+import { MdLocalFireDepartment } from "react-icons/md";
 
 const Header = () => {
   const [isClient, setIsClient] = useState(false);
@@ -29,11 +29,12 @@ const Header = () => {
   }
 
   return (
-    <nav className="mx-auto flex flex-row justify-between items-center px-2 py-2 sm:px-2 md:px-4 lg:px-6 sm:py-3">
+    <nav className="hidden sm:flex flex-row justify-between items-center px-2 py-2 sm:px-2 md:px-4 lg:px-6 sm:py-3">
       <Link href="/">
         <div className="flex flex-row items-center gap-1">
-          <TbBrandPowershell className="font-bold text-orange-600  w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12" />
-          <p className="text-xl sm:text-2xl lg:text-3xl italic font-kanit font-bold bg-gradient-to-r from-orange-600  to-yellow-500 bg-clip-text text-transparent">
+          <MdLocalFireDepartment className="font-bold text-orange-600  size-9 sm:size-10 lg:size-10" />
+
+          <p className="text-xl sm:text-2xl lg:text-3xl italic font-kanit font-bold bg-gradient-to-br from-orange-600 via-orange-500 to-white bg-clip-text text-transparent">
             ShellAgent
           </p>
         </div>

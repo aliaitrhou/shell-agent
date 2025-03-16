@@ -22,13 +22,13 @@ const TerminalTopBar: React.FC<Props> = ({
   handleDeleteSession,
 }) => {
   return (
-    <div className="absolute z-30 top-0 left-0 right-0 w-full bg-zinc-800 h-8 sm:h-10 flex items-center border-b-[1px] border-b-zinc-700 px-4 justify-between rounded-t-xl">
+    <div className="absolute z-30 top-0 left-0 right-0 w-full bg-zinc-800 h-8 sm:h-10 flex items-center border-b-[1px] border-b-zinc-700/60 px-4 justify-between rounded-t-xl">
       <div className="group flex items-center gap-2">
         <ButtonHoverEffect desc="Remove current chat">
           <button
             onClick={() => handleDeleteSession(currentChatId)}
             disabled={disableDelete}
-            className={`bg-red-500 w-4 h-4 rounded-full flex items-center justify-center ${disableDelete && "cursor-not-allowed"}`}
+            className={`bg-red-500 w-4 h-4 rounded-full flex items-center justify-center focus:outline-none  ${disableDelete && "cursor-not-allowed"}`}
           >
             <XMarkIcon className="w-3 h-3 text-black sm:opacity-0 group-hover:opacity-100 flex justify-center items-center" />
           </button>
@@ -36,7 +36,7 @@ const TerminalTopBar: React.FC<Props> = ({
         <ButtonHoverEffect desc={`${openSidebar ? "Close" : "Open"} Sidebar`}>
           <button
             onClick={handleToggleSidebar}
-            className="bg-yellow-500 w-4 h-4 rounded-full flex items-center justify-center"
+            className="bg-yellow-500 w-4 h-4 rounded-full flex items-center justify-center  focus:outline-none"
           >
             <MinusIcon className="w-3 h-3 text-black sm:opacity-0 group-hover:opacity-100" />
           </button>
@@ -45,7 +45,7 @@ const TerminalTopBar: React.FC<Props> = ({
           <button
             onClick={handleAddSession}
             disabled={disableCreate}
-            className={`bg-green-500 w-4 h-4 rounded-full flex items-center justify-center`}
+            className={`bg-green-500 w-4 h-4 rounded-full flex items-center justify-center  focus:outline-none`}
           >
             <PlusIcon className="w-3 h-3 text-black sm:opacity-0 group-hover:opacity-100" />
           </button>
