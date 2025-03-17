@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   handleRemoveChat,
 }) => {
   return (
-    <section className="hidden h-[72dvh] w-36 md:w-44 sm:flex bg-zinc-800/90 rounded-lg border border-zinc-700/60  text-center">
+    <section className="hidden h-[72dvh] w-36 md:w-44 sm:flex bg-zinc-800/90 rounded-lg border border-zinc-700/60  text-center shadow-2xl">
       <div className={`relative w-full h-full whitespace-nowrap`}>
         <div className="h-8 sm:h-10 border-b border-b-zinc-700/60 flex items-center justify-center">
           <h3 className="font-kanit text-zinc-500 text-md">Your Chats</h3>

@@ -12,6 +12,8 @@ import MobileSidebar from "@/components/mobileSidebar";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/page-wrapper";
+import PdfPreview from "@/components/pdf-preview";
+import Footer from "@/components/footer";
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -29,7 +31,6 @@ export default function Home() {
   });
   const [pdfPreviewStatus, setPdfPreviewStatus] = useState({
     openPdf: false,
-    loading: false,
     page: 0,
   });
 
@@ -318,8 +319,24 @@ export default function Home() {
             handleCreateChat={handleCreateChat}
             handleRemoveChat={handleRemoveChat}
             onMessageSent={handleMessageSent}
-            // openPdfPreview={() => setPdfPreviewStatus(prev => {...prev, laoding})}
+            openPdfPreview={(n) =>
+              setPdfPreviewStatus({
+                openPdf: true,
+                page: n,
+              })
+            }
           />
+          {pdfPreviewStatus.openPdf && (
+            <PdfPreview
+              pageToOpen={pdfPreviewStatus.page}
+              handleClosePdf={() =>
+                setPdfPreviewStatus((prev) => ({
+                  ...prev,
+                  openPdf: false,
+                }))
+              }
+            />
+          )}
         </div>
       ) : (
         <section
@@ -401,6 +418,7 @@ export default function Home() {
             </button>
           </div>
           <Instructions />
+          <Footer />
         </section>
       )}
     </PageWrapper>

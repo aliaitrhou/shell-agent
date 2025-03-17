@@ -38,7 +38,7 @@ interface TerminalPromptProps {
   mode: Mode;
   children?: React.ReactNode;
   handleToggleModes?: () => void;
-  handleOpenPage?: () => void;
+  handleOpenPage?: (n: number) => void;
   pageNumber?: number;
   pwd: string;
 }
@@ -81,11 +81,11 @@ const TerminalPrompt: React.FC<TerminalPromptProps> = ({
           <IoTriangleSharp
             className={`absolute -left-[11px] z-20 rotate-[269deg] text-white h-4 w-5`}
           />
-          {/*todo: make the button opens the pdf page used in rag */}
-          {pageNumber ? (
+          {/*TODO: make the button opens the pdf page used in rag */}
+          {pageNumber && handleOpenPage ? (
             <button
               onClick={() => {
-                console.log("Hello, World!");
+                handleOpenPage(pageNumber);
               }}
               className={`text-xs font-thin text-zinc-700 focus:outline-none`}
             >

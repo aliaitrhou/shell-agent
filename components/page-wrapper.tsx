@@ -1,5 +1,6 @@
 import React from "react";
 import { StatusAlert } from "./alert";
+import Footer from "./footer";
 // import Footer from "./footer";
 
 interface WrapperProps {
@@ -26,7 +27,6 @@ const PageWrapper: React.FC<WrapperProps> = ({
         </div>
       )}
       {children}
-      {/* <Footer /> */}
     </main>
   );
 };

@@ -23,7 +23,7 @@ interface Props {
   handleCreateChat: () => void;
   handleToggleSidebar: () => void;
   handleRemoveChat: (chatId: string) => void;
-  // openPdfPreview: () => void;
+  openPdfPreview: (n: number) => void;
   onMessageSent: (chatId: string) => void;
 }
 
@@ -36,7 +36,7 @@ const Terminal: React.FC<Props> = ({
   handleToggleSidebar,
   handleCreateChat,
   handleRemoveChat,
-  // openPdfPreview,
+  openPdfPreview,
   onMessageSent,
   chatId,
 }) => {
@@ -46,8 +46,8 @@ const Terminal: React.FC<Props> = ({
   // mode is default to prompt
   const [mode, setMode] = useState<Mode>("Prompt");
   // const [loadingPdf, setLoadingPdf] = useState(false);
-  // const [pageToOpen, setPageToOpen] = useState(1);
-  const [dispayForm, setDispayForm] = useState(true);
+  // const [pageToOpen, setPageToOpen] = useState(0);
+  const [displayForm, setDisplayForm] = useState(true);
   const [commandsHistory, setCommandsHistory] = useState<string[]>([""]);
   const [pwd, setPwd] = useState("~");
 
@@ -149,7 +149,7 @@ const Terminal: React.FC<Props> = ({
         case "clear":
           setMessages([]);
           setLoadingStatus({ chats: false, modelAnswer: false });
-          setDispayForm(true);
+          setDisplayForm(true);
           setMsg("");
           break;
         case "exit":
@@ -181,13 +181,13 @@ const Terminal: React.FC<Props> = ({
 
   const getModelAnswer = async (m: Mode) => {
     setLoadingStatus({ chats: false, modelAnswer: true });
-    setDispayForm(false);
+    setDisplayForm(false);
 
     // if the input is "clear" and current mode is "command" clean the terminal (reset the state)
     if (msg.toLowerCase() === "clear" && m == "Command") {
       setMessages([]);
       setLoadingStatus({ chats: false, modelAnswer: false });
-      setDispayForm(true);
+      setDisplayForm(true);
       setMsg("");
     } else {
       if (m == "Command") {
@@ -244,7 +244,7 @@ const Terminal: React.FC<Props> = ({
           setLoadingStatus({ chats: false, modelAnswer: false });
           // DONE: display the form after the model have respond.
           setMsg("");
-          setDispayForm(true);
+          setDisplayForm(true);
         }
       } else {
         try {
@@ -323,6 +323,10 @@ const Terminal: React.FC<Props> = ({
               "Prompt",
               "~",
             );
+
+            // DONE: display the form after the model have respond.
+            setDisplayForm(true);
+            setMsg("");
           });
 
           runner.on("error", (err) => {
@@ -350,9 +354,6 @@ const Terminal: React.FC<Props> = ({
           ]);
         } finally {
           setLoadingStatus({ chats: false, modelAnswer: false });
-          // DONE: display the form after the model have respond.
-          setDispayForm(true);
-          setMsg("");
         }
       }
     }
@@ -437,7 +438,7 @@ const Terminal: React.FC<Props> = ({
 
   return (
     <section
-      className={`relative w-full h-[80dvh] pt-10 bg-zinc-800 rounded-xl  border-[1px] border-zinc-700/60`}
+      className={`relative w-full h-[80dvh] pt-10 bg-zinc-800 rounded-xl border-[1px] border-zinc-700/60 shadow-2xl`}
     >
       <TerminalTopBar
         currentChatId={chatId}
@@ -458,14 +459,13 @@ const Terminal: React.FC<Props> = ({
           </div>
         ) : (
           <>
-            <ChatMessages messages={messages} />
+            <ChatMessages messages={messages} handleClick={openPdfPreview} />
             {/* command/prompt inserting */}
-            {dispayForm && (
+            {displayForm && (
               <TerminalPrompt
                 mode={mode}
                 pwd={pwd}
                 handleToggleModes={handleToggleModes}
-                handleOpenPage={() => console.log("Hello, World!")}
               >
                 <div className="flex items-center gap-1 pl-4 pr-1">
                   <form
