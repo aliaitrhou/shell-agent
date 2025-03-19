@@ -3,6 +3,7 @@ import ChatItem from "./chat-item";
 import { ChatProps } from "@/types";
 import ChatItemWrapper from "./chat-item-wrapper";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { PiSpinnerBold } from "react-icons/pi";
 
 interface SidebarProps {
   currentChatId: string;
@@ -30,8 +31,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           <h3 className="font-kanit text-zinc-500 text-md">Your Chats</h3>
         </div>
         {loadingChats ? (
-          <div className="h-[30%] w-full flex items-center justify-center">
-            <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-600" />
+          <div className="h-[40%] w-full flex items-center justify-center">
+            <PiSpinnerBold className="mx-auto size-5 rounded-full animate-spin text-zinc-600/90" />
           </div>
         ) : (
           <div className="w-full h-full flex flex-col gap-2 px-1 py-2 md:px-2 overflow-y-auto">

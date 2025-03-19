@@ -9,6 +9,7 @@ import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import ChatMessages from "./chat-messages";
 import TerminalPrompt from "./terminal-prompt";
 import { linuxCommands } from "@/constants";
+import { PiSpinnerBold } from "react-icons/pi";
 
 interface Props {
   chatId: string;
@@ -45,8 +46,6 @@ const Terminal: React.FC<Props> = ({
   const [messages, setMessages] = useState<message[]>([]);
   // mode is default to prompt
   const [mode, setMode] = useState<Mode>("Prompt");
-  // const [loadingPdf, setLoadingPdf] = useState(false);
-  // const [pageToOpen, setPageToOpen] = useState(0);
   const [displayForm, setDisplayForm] = useState(true);
   const [commandsHistory, setCommandsHistory] = useState<string[]>([""]);
   const [pwd, setPwd] = useState("~");
@@ -438,7 +437,7 @@ const Terminal: React.FC<Props> = ({
 
   return (
     <section
-      className={`relative w-full h-[80dvh] pt-10 bg-zinc-800 rounded-xl border-[1px] border-zinc-700/60 shadow-2xl`}
+      className={`relative w-full h-[100dvh] sm:h-[80dvh] pt-10 bg-zinc-800 rounded-none sm:rounded-xl border-[1px] border-zinc-700/60 shadow-2xl`}
     >
       <TerminalTopBar
         currentChatId={chatId}
@@ -454,8 +453,8 @@ const Terminal: React.FC<Props> = ({
         className="w-full h-full overflow-y-scroll pl-3 py-2"
       >
         {loadingStatus.chats ? (
-          <div className="w-full h-full flex justify-center items-center">
-            <AiOutlineLoading3Quarters className="mx-auto h-7 w-7 rounded-full animate-spin text-zinc-700" />
+          <div className="w-full h-[90%] flex justify-center items-center">
+            <PiSpinnerBold className="mx-auto size-7 rounded-full animate-spin text-zinc-600/90" />
           </div>
         ) : (
           <>

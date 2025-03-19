@@ -54,10 +54,10 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({
     <>
       <div
         onClick={closeSidebar}
-        className="sm:hidden absolute top-0 z-40 h-full w-full bg-black/40"
+        className="sm:hidden absolute top-0 z-40 h-full w-full bg-black/30"
       ></div>
-      <Wrapper classNames="h-full w-48  absolute right-0 top-0 z-40  flex items-center sm:hidden">
-        <div className="w-full h-[90%] bg-zinc-800 border border-zinc-700  px-0 rounded-s-xl mt-8">
+      <Wrapper classNames="h-full w-48  absolute right-0 top-0 z-40  bg-zinc-800 border border-zinc-700 rounded-s-xl sm:hidden">
+        <div className="w-full h-full flex flex-col">
           <h3 className="sticky top-0 left-0 right-0 font-semibold font-kanit text-center text-zinc-500 text-sm p-2 border-b border-b-zinc-700">
             Your Chats
           </h3>

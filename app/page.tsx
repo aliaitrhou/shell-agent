@@ -5,15 +5,11 @@ import Terminal from "@/components/terminal";
 import { ChatProps } from "@/types";
 import Sidebar from "@/components/sidebar";
 import { useClerk, useUser } from "@clerk/clerk-react";
-import Link from "next/link";
-import Instructions from "@/components/instructions";
-import { AiFillGithub } from "react-icons/ai";
 import MobileSidebar from "@/components/mobileSidebar";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/page-wrapper";
 import PdfPreview from "@/components/pdf-preview";
-import Footer from "@/components/footer";
+import Landing from "@/components/landing";
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -270,15 +266,13 @@ export default function Home() {
 
   return (
     <PageWrapper
-      classNames={
-        "text-white h-fit sm:h-[92%] flex justify-center items-center"
-      }
       start={start}
+      classNames={`text-white h-auto ${start ? "h-screen" : ""} full flex flex-col justify-center items-center gap-4 lg:gap-6`}
       message={responseStatus.message}
       status={responseStatus.status}
     >
       {start ? (
-        <div className="w-full md:w-[95%] lg:w-[80%] mx-auto flex flex-row justify-center items-center px-1 sm:px-2 md:px-4 sm:gap-2 md:gap-3 lg:gap-4 xl:px-8">
+        <div className="h-full w-full md:w-[95%] lg:w-[80%] mx-auto flex flex-col sm:flex-row justify-center items-center px-0 sm:px-2 md:px-4 sm:gap-2 md:gap-3 lg:gap-4 xl:px-8">
           {openSidebar && (
             <Sidebar
               chats={chats}
@@ -305,6 +299,8 @@ export default function Home() {
               />
             )}
           </AnimatePresence>
+          {/* <div className="w-fit h-fit border"> */}
+          {/* </div> */}
           <Terminal
             chatId={currentChatId}
             openSidebar={openSidebar}
@@ -339,87 +335,10 @@ export default function Home() {
           )}
         </div>
       ) : (
-        <section
-          className={`flex flex-col justify-center items-center space-y-2 md:space-y-4 lg:space-y-6`}
-        >
-          <span className="font-light text-xs font-kanit rounded-full border border-white bg-zinc-300 text-white px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]">
-            <Link
-              target="_blank"
-              className="hover:underline italic flex items-center gap-1 text-zinc-800"
-              href={"https://github.com/aliaitrhou/quantum-shell"}
-            >
-              <span>Star it on Github</span>
-              <AiFillGithub />
-            </Link>
-          </span>
-          <div className="w-full flex flex-col justify-cneter items-center gap-2">
-            <h3 className="max-w-full sm:max-w-2xl md:max-w-3xl text-center text-3xl sm:text-5xl md:text-6xl font-kanit font-bold">
-              Turn{" "}
-              <span className="bg-clip-text text-transparent bg-gradient-to-br from-violet-500 via-blue-400 to-blue-200">
-                Unix Commands
-              </span>{" "}
-              Into Enjoyable Experiences
-            </h3>
-            <p className="text-zinc-300 font-light px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-sm sm:text-lg md:text-xl">
-              With A shell that{" "}
-              <span className="font-semibold">speaks your language</span> and
-              reduces the complexity of learning about OSes.
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-1 sm:gap-2 md:gap-3">
-            <div className="flex items-center">
-              <div className="relative">
-                <select
-                  name="model"
-                  aria-label="Models"
-                  defaultValue={"default"}
-                  onChange={handleSelectChange}
-                  className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400 bg-zinc-800  border-[1px] border-zinc-700/40 border-r-0 rounded-s-full p-2 sm:p-3 pr-8 sm:pr-10"
-                >
-                  <option value="default" disabled>
-                    Choose a model
-                  </option>
-                  <option value="Qwen/Qwen2.5-7B-Instruct-Turbo">
-                    Qwen2.5-7B
-                  </option>
-                  <option value="Qwen/Qwen2.5-72B-Instruct-Turbo">
-                    Qwen2.5-72B
-                  </option>
-                  <option value="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo">
-                    Llama-3.1-8B
-                  </option>
-                  <option value="meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo">
-                    Llama-3.1-405B
-                  </option>
-                </select>
-                <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px]  size-4 text-zinc-500" />
-              </div>
-              <div className="relative">
-                <select
-                  name="semester"
-                  defaultValue={"default"}
-                  onChange={handleSelectChange}
-                  className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-800  border-[1px] border-zinc-700/40 rounded-e-full p-2 sm:p-3 pr-8 sm:pr-10"
-                >
-                  <option value="default" disabled>
-                    Semester
-                  </option>
-                  <option value="S3">SEMESTER - S3</option>
-                  <option value="S4">SEMESTER - S4</option>
-                </select>
-                <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px]  size-4 text-zinc-500" />
-              </div>
-            </div>
-            <button
-              onClick={handleStartButtonClick}
-              className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 sm:p-3 md:px-4 md:py-3  text-zinc-400  bg-zinc-800  border-[1px] border-zinc-700/40 rounded-full hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none"
-            >
-              <span>⚡ GET STARTED</span>
-            </button>
-          </div>
-          <Instructions />
-          <Footer />
-        </section>
+        <Landing
+          handleClick={handleStartButtonClick}
+          handleChange={handleSelectChange}
+        />
       )}
     </PageWrapper>
   );
