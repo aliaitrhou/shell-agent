@@ -19,7 +19,6 @@
     "@prisma/client": "^6.3.1",
     "@vercel/analytics": "^1.4.1",
     "clsx": "^2.1.1",
-    "eventsource-parser": "^3.0.0",
     "framer-motion": "^11.11.17",
     "langchain": "0.0.151",
     "next": "canary",
