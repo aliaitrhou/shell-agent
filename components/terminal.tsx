@@ -2,7 +2,7 @@
 
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useClerk, useUser } from "@clerk/nextjs";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+
 import TerminalTopBar from "./terminal-top-bar";
 import { message, Mode } from "@/types";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
@@ -437,7 +437,7 @@ const Terminal: React.FC<Props> = ({
 
   return (
     <section
-      className={`relative w-full h-[100dvh] sm:h-[80dvh] pt-10 bg-zinc-800 rounded-none sm:rounded-xl border-[1px] border-zinc-700/60 shadow-2xl`}
+      className={`relative w-full h-[80dvh] sm:h-[80dvh] pt-10 bg-zinc-800 rounded-none sm:rounded-xl border-[1px] border-zinc-700/60`}
     >
       <TerminalTopBar
         currentChatId={chatId}

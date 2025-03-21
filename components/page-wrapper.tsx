@@ -20,7 +20,7 @@ const PageWrapper: React.FC<WrapperProps> = ({
 }) => {
   return (
     <main className={classNames}>
-      {!start && <div className="gradient_background"></div>}
+      <div className={"gradient_background"}></div>
       <Header />
       {message && (
         <div className="absolute top-0 w-full flex justify-center pt-16 sm:pt-8">

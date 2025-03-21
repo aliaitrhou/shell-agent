@@ -4,7 +4,7 @@ import React from "react";
 import { AiFillCheckCircle } from "react-icons/ai";
 import { IoIosWarning } from "react-icons/io";
 import { MdError } from "react-icons/md";
-import { CgSpinner } from "react-icons/cg";
+import { PiSpinnerBold } from "react-icons/pi";
 import { motion } from "framer-motion";
 
 interface AlertProps {
@@ -44,7 +44,7 @@ export const StatusAlert: React.FC<AlertProps> = ({ type, message }) => {
       {type === "success" && <AiFillCheckCircle />}
       {type === "error" && <MdError />}
       {type === "warning" && <IoIosWarning />}
-      {type === "loading" && <CgSpinner className="animate-spin" />}
+      {type === "loading" && <PiSpinnerBold className="animate-spin" />}
       <span className="font-kanit text-xs">{message}</span>
     </motion.div>
   );

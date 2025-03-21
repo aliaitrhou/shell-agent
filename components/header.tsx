@@ -61,14 +61,14 @@ const Header = () => {
               </SignedIn>
             </div>
             <SignedOut>
-              <div className="flex flex-row gap-1 sm:gap-2 font-mono">
+              <div className="flex flex-row gap-1 sm:gap-2 font-kanit">
                 <SignInButton mode="modal">
-                  <button className="text-orange-500 font-bold text-xs sm:text-sm border border-orange-500 hover:text-orange-300 hover:bg-[#ff7a064a] py-1 px-3 sm:py-2 sm:px-4 rounded-md transition duration-300 ease-in-out">
+                  <button className="text-orange-400 text-xs sm:text-sm border border-orange-400  hover:bg-orange-400/20 py-1 px-3 sm:py-2 sm:px-4 rounded-full transition duration-300 ease-in-out">
                     Sign in
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="bg-zinc-300 hover:bg-zinc-300/90 border border-zinc-100 text-black text-xs sm:text-sm font-bold py-1 px-3 sm:py-2 sm:px-4 rounded-md transition duration-300 ease-in-out">
+                  <button className="bg-zinc-300 hover:bg-zinc-300/80 border border-zinc-100 text-black text-xs sm:text-sm py-1 px-3 sm:py-2 sm:px-4 rounded-full transition duration-300 ease-in-out">
                     Sign up
                   </button>
                 </SignUpButton>

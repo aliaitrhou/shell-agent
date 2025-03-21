@@ -12,45 +12,51 @@ interface Props {
 
 const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
   return (
-    <section className="w-full h-full flex flex-col items-center justify-center space-y-3 sm:space-y-4 lg:space-y-6 pt-7">
+    <section className="relative w-full h-full flex flex-col items-center justify-center space-y-3 sm:space-y-4 lg:space-y-6">
+      <div className="absolute w-1/2 h-1/2 inner_gradient top-0 opacity-15" />
       <div className="flex items-center justify-center gap-3">
         <Link
-          className="w-fit hover:underline italic flex items-center gap-1 font-light text-xs font-kanit rounded-full border border-zinc-300 bg-zinc-400 text-zinc-700 px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]"
+          className="w-fit hover:underline italic flex items-center gap-1 font-light text-xs font-kanit rounded-full border border-zinc-300 bg-zinc-400 text-black px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]"
+          href={"https://github.com/aliaitrhou/shell-agent"}
           target="_blank"
-          href={"https://github.com/aliaitrhou/quantum-shell"}
         >
           <span className="inline-block">Star it on Github</span>
           <AiFillGithub />
         </Link>
         <Link
-          target="_blank"
-          className="w-fit hover:underline italic flex items-center gap-1 font-light text-xs font-kanit rounded-full border border-orange-500 bg-orange-600 text-orange-100 px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]"
+          className="w-fit hover:underline italic flex items-center gap-1 font-light text-xs font-kanit rounded-full border border-orange-400/40 bg-orange-600 text-orange-100 px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]"
           href={"https://www.aliaitrahou.me/contact"}
+          target="_blank"
         >
           <span className="inline-block">Request a feature</span>
           <TbTools />
         </Link>
       </div>
       <div className="w-full flex flex-col justify-cneter items-center gap-2">
-        <h3 className="max-w-full sm:max-w-2xl md:max-w-4xl text-center text-3xl sm:text-4xl md:text-5xl font-kanit font-bold uppercase">
+        <h3
+          style={{
+            wordSpacing: "-16px",
+          }}
+          className="max-w-full sm:max-w-2xl md:max-w-4xl text-center text-3xl sm:text-4xl md:text-5xl font-spaceMono font-bold uppercase"
+        >
           Our Course can now{" "}
-          <span className="bg-clip-text text-transparent bg-gradient-to-b from-violet-300 via-violet-600 to-violet-700">
+          <span className="bg-clip-text text-transparent bg-gradient-to-b from-violet-300 via-violet-500 to-violet-700">
             speak
           </span>{" "}
           with{" "}
-          <span className="bg-clip-text text-transparent bg-gradient-to-b from-red-400 via-red-500 to-pink-600 ">
+          <span className="bg-clip-text text-transparent bg-gradient-to-b from-red-300 via-red-500 to-pink-600 ">
             louder
           </span>{" "}
           voice!
         </h3>
         <p className="text-zinc-400 font-light px-3 sm:px-0 max-w-lg md:max-w-2xl text-center font-kanit text-lg sm:text-xl md:text-2xl">
           Shellagent is a shell that{" "}
-          <span className="font-semibold text-zinc-300">
+          <span className="font-normal text-zinc-300">
             speaks your language
           </span>{" "}
-          with robust{" "}
-          <span className="font-semibold text-zinc-300">environment</span>, to
-          simplify the learning process.
+          with robust environment that{" "}
+          <span className="font-normal text-zinc-300">simplify</span> the{" "}
+          learning process.
         </p>
       </div>
       <div className="flex flex-col items-center gap-1 sm:gap-2 md:gap-3">
@@ -61,7 +67,7 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
               aria-label="Models"
               defaultValue={"default"}
               onChange={handleChange}
-              className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400 bg-zinc-800  border-[1px] border-zinc-700/40 border-r-0 rounded-s-full p-2 sm:p-3 pr-8 sm:pr-10"
+              className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400 bg-zinc-700/20  border-[1px] border-zinc-700/50 border-r-0 rounded-s-full p-2 sm:p-3 pr-8 sm:pr-10"
             >
               <option value="default" disabled>
                 Choose a Model
@@ -80,7 +86,7 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
               name="semester"
               defaultValue={"default"}
               onChange={handleChange}
-              className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-800  border-[1px] border-zinc-700/40 rounded-e-full p-2 sm:p-3 pr-8 sm:pr-10"
+              className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-700/20  border-[1px] border-zinc-700/50 rounded-e-full p-2 sm:p-3 pr-8 sm:pr-10"
             >
               <option value="default" disabled>
                 Semester
@@ -93,7 +99,7 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
         </div>
         <button
           onClick={handleClick}
-          className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 sm:p-3 md:px-4 md:py-3  text-zinc-400  bg-zinc-800  border-[1px] border-zinc-700/40 rounded-full hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none"
+          className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 sm:p-3 md:px-4 md:py-3  text-zinc-400  bg-zinc-700/20  border-[1px] border-zinc-700/50 rounded-full hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none"
         >
           <span>⚡ GET STARTED</span>
         </button>
