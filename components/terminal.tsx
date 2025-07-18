@@ -5,11 +5,11 @@ import { useClerk, useUser } from "@clerk/nextjs";
 
 import TerminalTopBar from "./terminal-top-bar";
 import { message, Mode } from "@/types";
-import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 import ChatMessages from "./chat-messages";
 import TerminalPrompt from "./terminal-prompt";
 import { linuxCommands } from "@/constants";
 import { PiSpinnerBold } from "react-icons/pi";
+import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
 
 interface Props {
   chatId: string;
@@ -435,9 +435,13 @@ const Terminal: React.FC<Props> = ({
     }
   };
 
+  useEffect(() => {
+    console.log("Messages are : ", messages);
+  }, [messages]);
+
   return (
     <section
-      className={`relative w-full h-[80dvh] sm:h-[80dvh] pt-10 bg-zinc-800 rounded-none sm:rounded-xl border-[1px] border-zinc-700/60`}
+      className={`relative w-full h-[92dvh] sm:h-[80dvh] pt-10 bg-zinc-800 rounded-none sm:rounded-xl border-[1px] border-zinc-700/60`}
     >
       <TerminalTopBar
         currentChatId={chatId}
@@ -480,7 +484,7 @@ const Terminal: React.FC<Props> = ({
                             key={index}
                             className={
                               index === 0 && currentValueIsCommand
-                                ? "text-yellow-400"
+                                ? "text-orange-700"
                                 : ""
                             }
                           >
@@ -496,15 +500,15 @@ const Terminal: React.FC<Props> = ({
                       ref={textareaRef}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
                           const form = e.currentTarget.form;
+                          e.preventDefault();
                           if (form) {
                             form.requestSubmit(); // this will trigger the form's onSubmit handler
                           }
                         }
                       }}
                       onInput={textareaAutoGrow}
-                      className={`w-full font-spaceMono text-xs text-white border-none focus:outline-none resize-none bg-zinc-800/5`}
+                      className={`${mode == "Command" ? "text-white" : ""} w-full font-spaceMono text-xs text-white border-none focus:outline-none resize-none bg-zinc-800/5`}
                     />
                   </form>
                 </div>

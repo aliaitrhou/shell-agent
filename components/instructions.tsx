@@ -57,7 +57,7 @@ const Instructions = () => {
         <li>
           You&apos;re limited to <Keyword>15 chats</Keyword> and{" "}
           <Keyword>25 messages</Keyword> per each, dua paid services used and Me
-          being student :)
+          being a student
         </li>
       </List>
       <List title="Tips">

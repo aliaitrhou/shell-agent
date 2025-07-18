@@ -3,8 +3,8 @@
 import { message } from "@/types";
 import React from "react";
 import MarkdownRenderer from "./MarkdownRenderer";
-import { linuxCommands } from "@/constants";
 import TerminalPrompt from "./terminal-prompt";
+import MessageHighlight from "./message-highlight";
 
 // the model returns a markdown so i use this component to render it as html
 const MemoizedMarkdownRenderer = React.memo(MarkdownRenderer);
@@ -22,9 +22,7 @@ const ChatMessages: React.FC<Props> = React.memo(
       <>
         {messages.map((msg, index) => {
           // to hightlight commands of every "Command" mode messaege
-          const keyword = msg.text.split(" ");
-          const command =
-            msg.mode === "Command" && linuxCommands.includes(keyword[0]);
+          console.log("msg is : ", msg);
 
           return (
             <div
@@ -49,15 +47,10 @@ const ChatMessages: React.FC<Props> = React.memo(
                 {msg?.role == "user" ? (
                   <>
                     <p className="pl-4 w-full break-words font-spaceMono">
-                      {/* this might look tricky, i used this to hightlight the first word 
-                    if it is a commnd*/}
-                      {command ? (
-                        <>
-                          <span className="text-yellow-400">{keyword[0]}</span>{" "}
-                          {msg.text.slice(keyword[0].length)}
-                        </>
+                      {msg.text === "done" ? (
+                        ""
                       ) : (
-                        <>{msg.text === "done" ? "" : msg.text}</>
+                        <MessageHighlight text={msg.text} />
                       )}
                     </p>
                   </>

@@ -63,7 +63,7 @@ const Header = () => {
             <SignedOut>
               <div className="flex flex-row gap-1 sm:gap-2 font-kanit">
                 <SignInButton mode="modal">
-                  <button className="text-orange-400 text-xs sm:text-sm border border-orange-400  hover:bg-orange-400/20 py-1 px-3 sm:py-2 sm:px-4 rounded-full transition duration-300 ease-in-out">
+                  <button className="text-orange-600 text-xs sm:text-sm border border-orange-600  hover:bg-orange-400/20 py-1 px-3 sm:py-2 sm:px-4 rounded-full transition duration-300 ease-in-out">
                     Sign in
                   </button>
                 </SignInButton>
