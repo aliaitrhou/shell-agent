@@ -1,21 +1,15 @@
 "use client";
 
-import React, {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useClerk, useUser } from "@clerk/nextjs";
-import TerminalTopBar from "./ui/terminal-top-bar";
+
+import TerminalTopBar from "./terminal-top-bar";
 import { message, Mode } from "@/types";
-import ChatMessages from "./ui/chat-messages";
-import TerminalPrompt from "./ui/terminal-prompt";
+import ChatMessages from "./chat-messages";
+import TerminalPrompt from "./terminal-prompt";
 import { linuxCommands } from "@/constants";
 import { PiSpinnerBold } from "react-icons/pi";
-import commandRunner from "./command-runner";
-import learnAction from "./learn-action";
+import { commandRunner } from "./command-runner";
 
 interface Props {
   chatId: string;
@@ -54,7 +48,6 @@ const Terminal: React.FC<Props> = ({
   const [mode, setMode] = useState<Mode>("Prompt");
   const [displayForm, setDisplayForm] = useState(true);
   const [commandsHistory, setCommandsHistory] = useState<string[]>([""]);
-  // NOTE: this pwd state should be used to update the shell prompt that user interact with only
   const [pwd, setPwd] = useState("/");
 
   const [loadingStatus, setLoadingStatus] = useState({
@@ -75,40 +68,32 @@ const Terminal: React.FC<Props> = ({
     mode: Mode,
     cwd: string,
   ) => {
-    try {
-      const response = await fetch("/api/message", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chatId: id,
-          text: msg,
-          role: role,
-          mode,
-          cwd,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error("Failed to insert message:", response.statusText);
-        return;
-      }
-
-      await response.json();
-    } catch (error) {
-      console.error("Failed to insert message:", error);
-      // Show user-friendly error message
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "Assistent",
-          text: "Failed to save message. Please try again.",
-          mode: "Command",
-          cwd: pwd,
-        },
-      ]);
+    // check for valid inputs before making the request
+    if (!id || !msg || !role || !mode || !cwd) {
+      console.error("Missing required fields:", { id, msg, role, mode, cwd });
+      return;
     }
+
+    const response = await fetch("/api/message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chatId: id,
+        text: msg,
+        role: role,
+        mode,
+        cwd,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to insert message:", response.statusText);
+      return;
+    }
+
+    await response.json();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -128,19 +113,18 @@ const Terminal: React.FC<Props> = ({
     setMessages((prev) => [
       ...prev,
       {
-        role: "User",
+        role: "user",
         text: msg,
         mode: mode,
         cwd: pwd,
       },
     ]);
-
-    setChatHistory((prevHistory) => [...prevHistory, `User: ${msg}`]);
+    setChatHistory((prevHistory) => [...prevHistory, `user: ${msg}`]);
 
     console.log("message is : ", msg);
     // insert non empty user message to db
     if (msg && msg.trim() !== "" && chatId) {
-      insertMessagesByChatId(chatId, msg, "User", mode, pwd);
+      insertMessagesByChatId(chatId, msg, "user", mode, pwd);
     }
 
     if (mode == "Prompt") {
@@ -148,8 +132,8 @@ const Terminal: React.FC<Props> = ({
         setMessages((prev) => [
           ...prev,
           {
-            role: "Assistent",
-            text: "empty_message",
+            role: "assistent",
+            text: "done",
             mode: "Command",
             cwd: pwd,
           },
@@ -181,8 +165,8 @@ const Terminal: React.FC<Props> = ({
           setMessages((prev) => [
             ...prev,
             {
-              role: "Assistent",
-              text: "empty_message",
+              role: "assistent",
+              text: "done",
               mode: "Command",
               cwd: "~",
             },
@@ -194,111 +178,103 @@ const Terminal: React.FC<Props> = ({
     }
   };
 
-  const getModelAnswer = useCallback(
-    async (m: Mode) => {
-      setLoadingStatus({ chats: false, modelAnswer: true });
-      setDisplayForm(false);
+  const getModelAnswer = async (m: Mode) => {
+    setLoadingStatus({ chats: false, modelAnswer: true });
+    setDisplayForm(false);
 
-      // if the input is "clear" and current mode is "command" clean the terminal (reset the state)
-      if (msg.toLowerCase() === "clear" && m == "Command") {
-        setMessages([]);
-        setLoadingStatus({ chats: false, modelAnswer: false });
-        setDisplayForm(true);
-        setMsg("");
+    // if the input is "clear" and current mode is "command" clean the terminal (reset the state)
+    if (msg.toLowerCase() === "clear" && m == "Command") {
+      setMessages([]);
+      setLoadingStatus({ chats: false, modelAnswer: false });
+      setDisplayForm(true);
+      setMsg("");
+    } else {
+      if (m == "Command") {
+        // TODO: link around the working directory
+        const message = commandRunner(msg, chatId, "/");
+        setMessages((prev) => [...prev, message]);
       } else {
-        if (m == "Command") {
-          // TODO: link around the working directory
-          try {
-            const { text, newCwd } = await commandRunner({
-              command: msg,
-              chatId,
-              currentWorkingDirectory: "/",
-            });
+        try {
+          const res = await fetch("/api/model", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: msg,
+              chatHistory: chatHistory,
+              model: selectData.model,
+              prevMode: mode,
+            }),
+          });
 
-            setMessages((prev) => [
-              ...prev,
-              { role: "ShellOutput", text, cwd: newCwd, mode: "Command" },
-            ]);
-
-            insertMessagesByChatId(
-              chatId,
-              text || "empty_message",
-              "ShellOutput",
-              "Command",
-              newCwd,
+          if (!res.ok) {
+            throw new Error(
+              `Failed to fetch model response: ${res.status} ${res.statusText}`,
             );
-
-            setPwd(newCwd);
-          } catch (error) {
-            console.error(
-              "There was an error fetching from cmd endpoint!",
-              error,
-            );
-          } finally {
-            setLoadingStatus({ chats: false, modelAnswer: false });
-            // DONE: display the form after the model have respond.
-            setMsg("");
-            setDisplayForm(true);
           }
-        } else {
-          try {
-            // TODO: (Later Incha Allah) make the model aware of command messages
-            // by constructing  chatHistory array
-            const { answer, autoSwitch } = await learnAction(
-              msg,
-              chatHistory,
-              selectData.model,
-            );
 
-            console.log("auto switch: ", autoSwitch);
+          const responseData = await res.json();
+          console.log("responseData is : ", responseData);
 
-            // Update chat history
-            setChatHistory((prevHistory) => [
-              ...prevHistory,
-              `Assistent: ${answer}`,
-            ]);
+          const answer = responseData.answer || "";
+          const newMode = responseData.newMode;
 
-            // Add the assistant's response
-            setMessages((prev) => [
-              ...prev,
-              {
-                role: "Assistent",
-                text: answer,
-                cwd: "empty_cwd", // cause when lanter displaying messages with `chat-messages` it wount need cwd
-                mode: "Prompt",
-              },
-            ]);
+          // Update chat history
+          setChatHistory((prevHistory) => [
+            ...prevHistory,
+            `assistent: ${answer}`,
+          ]);
 
-            insertMessagesByChatId(chatId, answer, "Assistant", "Prompt", pwd);
-          } catch (error) {
-            console.error("Error fetching model response:", error);
-          } finally {
-            setLoadingStatus({ chats: false, modelAnswer: false });
-            setDisplayForm(true);
-            setMsg("");
+          // Add the assistant's response
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistent",
+              text: answer,
+              cwd: prev.length > 0 ? prev[prev.length - 1].cwd : "~",
+              mode: "Prompt",
+            },
+          ]);
+
+          // Handle mode switching if newMode is provided
+          if (newMode && newMode !== mode) {
+            setMode(newMode as Mode);
           }
+
+          // Save the message to database
+          if (answer.trim() && chatId) {
+            insertMessagesByChatId(chatId, answer, "assistant", "Prompt", pwd);
+          }
+        } catch (error) {
+          console.error("Error fetching model response:", error);
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistent",
+              text: "An error occurred. Please try again later.",
+              cwd: "~",
+              mode: "Prompt",
+            },
+          ]);
+        } finally {
+          setLoadingStatus({ chats: false, modelAnswer: false });
+          setDisplayForm(true);
+          setMsg("");
         }
       }
-    },
-    [msg, chatId, pwd, chatHistory, selectData.model],
-  );
+    }
+  };
 
   useEffect(() => {
     setLoadingStatus({ chats: true, modelAnswer: false });
     const getCurrentChatById = async (chatId: string) => {
-      const res = await fetch(`/api/messages/${chatId}`);
-
-      if (!res.ok) {
-        console.error("Failed to fetch chat messages:", res.statusText);
-        return;
-      }
-
-      let currentChatData;
       try {
-        currentChatData = await res.json();
+        const res = await fetch(`/api/messages/${chatId}`);
+        const currentChatData = await res.json();
         setMessages(currentChatData);
       } catch (error) {
-        console.error("Failed to parse response JSON:", error);
+        console.error(error);
       } finally {
         setLoadingStatus({ chats: false, modelAnswer: false });
       }

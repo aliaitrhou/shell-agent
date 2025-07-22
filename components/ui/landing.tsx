@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
 import { FaLocationArrow } from "react-icons/fa";
-import terminalOverview from "../public/terminal-overview.png";
+import terminalOverview from "@/public/terminal-overview.png";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { AiFillGithub } from "react-icons/ai";
@@ -52,7 +52,7 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
                 aria-label="Models"
                 defaultValue={"default"}
                 onChange={handleChange}
-                className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400 bg-zinc-700/20  border-[1px] border-zinc-700/50 border-r-0 rounded-sm p-3 sm:p-4 pr-8 sm:pr-10"
+                className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400 bg-zinc-700/50  border-[1px] border-zinc-700/90 border-r-0 rounded-sm p-3 sm:p-4 pr-8 sm:pr-10"
               >
                 <option value="default" disabled>
                   Choose a Model
@@ -73,7 +73,7 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
                 name="semester"
                 defaultValue={"default"}
                 onChange={handleChange}
-                className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-700/20  border-[1px] border-zinc-700/50 rounded-e-sm p-3 sm:p-4 pr-8 sm:pr-10"
+                className="text-xs appearance-none sm:text-sm focus:outline-none text-zinc-400  bg-zinc-700/50  border-[1px] border-zinc-700/90 rounded-e-sm p-3 sm:p-4 pr-8 sm:pr-10"
               >
                 <option value="default" disabled>
                   Semester
@@ -86,7 +86,7 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
           </div>
           <button
             onClick={handleClick}
-            className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 sm:p-3 md:px-4 md:py-3 text-zinc-400  bg-zinc-700/20  border-[1px] border-zinc-700/50 rounded-sm hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none flex flex-row items-center gap-2"
+            className="font-kanit text-sm md:text-sm lg:text-lg px-2 py-2 sm:p-3 md:px-4 md:py-3 text-zinc-400  bg-zinc-700/50 border-[1px] border-zinc-700/90 rounded-sm hover:shadow-zincShadow transition-shadow duration-700 ease-in-out focus:outline-none flex flex-row items-center gap-2"
           >
             <FaLocationArrow color="white" className="shadow-2xl" />
           </button>

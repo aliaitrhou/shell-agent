@@ -1,7 +1,7 @@
 import React from "react";
 import { StatusAlert } from "./alert";
 import Header from "./header";
-import Footer from "./footer";
+// import Footer from "./footer";
 
 interface WrapperProps {
   message: string;
