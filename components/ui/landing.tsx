@@ -4,9 +4,9 @@ import terminalOverview from "@/public/terminal-overview.png";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { AiFillGithub } from "react-icons/ai";
-import { TbTools } from "react-icons/tb";
 import Image from "next/image";
 import Footer from "./footer";
+import { lexend, mplus } from "@/app/fonts";
 
 interface Props {
   handleClick: () => void;
@@ -15,8 +15,8 @@ interface Props {
 
 const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
   return (
-    <section className="relative w-full h-full flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-10 lg:gap-14 pt-8">
-      <div className="space-y-4">
+    <section className="relative w-full h-full flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-8 py-0">
+      <div className="space-y-2">
         <div className="flex items-center justify-center gap-3">
           <Link
             className="shadow-2xl shadow-white w-fit hover:underline italic flex items-center gap-1 font-light text-xs font-kanit rounded-full border border-zinc-300 bg-zinc-400 text-black px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]"
@@ -26,22 +26,16 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
             <span className="inline-block">Star it on Github</span>
             <AiFillGithub />
           </Link>
-          <Link
-            className="shadow-2xl w-fit hover:underline italic flex items-center gap-1 font-light text-xs font-kanit rounded-full border border-orange-400/40 bg-orange-600 text-orange-100 px-[2px] py-[1px] sm:px-1 md:px-2 md:py-[2px]"
-            href={"https://www.aliaitrahou.me/contact"}
-            target="_blank"
-          >
-            <span className="inline-block">Request a feature</span>
-            <TbTools />
-          </Link>
         </div>
-        <div className="w-full flex flex-col justify-cneter items-center gap-2">
-          <p className="max-w-full sm:max-w-xl md:max-w-3xl text-center text-xl sm:text-2xl md:text-4xl font-mplus font-medium">
-            Our Course now{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-b from-violet-300 via-violet-500 to-violet-700">
-              speaks louder
-            </span>
-            —through a shell that understands your language.
+        <div className="flex flex-col justify-cneter items-center gap-2">
+          <h3 className={`${lexend.className} text-4xl`}>
+            Learn faster & Smarter
+          </h3>
+          <p
+            className={`mx-auto text-center max-w-xl text-xl sm:text-2xl md:text-2xl font-medium ${mplus.className} text-zinc-300`}
+          >
+            Our course now speaks louder through a shell that understands your
+            language.
           </p>
         </div>
         <div className="flex flex-row justify-center gap-1 sm:gap-2 md:gap-3 font-spaceMono">
@@ -91,7 +85,6 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
             <FaLocationArrow color="white" className="shadow-2xl" />
           </button>
         </div>
-        <Footer />
       </div>
       <div className="min-w-full h-full">
         <div className="relative mx-auto h-[650px]">
@@ -104,6 +97,7 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
           />
         </div>
       </div>
+      <Footer />
     </section>
   );
 };

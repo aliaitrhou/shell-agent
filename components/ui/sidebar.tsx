@@ -1,8 +1,6 @@
 import React from "react";
 import ChatItem from "./chat-item";
 import { ChatProps } from "@/types";
-import ChatItemWrapper from "./chat-item-wrapper";
-import { PiSpinnerBold } from "react-icons/pi";
 
 interface SidebarProps {
   currentChatId: string;
@@ -24,29 +22,32 @@ const Sidebar: React.FC<SidebarProps> = ({
   handleRemoveChat,
 }) => {
   return (
-    <section className="hidden h-[72dvh] w-36 md:w-44 sm:flex flex-col bg-zinc-800 rounded-lg border border-zinc-700/60">
+    <section className="hidden h-[72dvh] sm:flex flex-col bg-zinc-800 rounded-sm border border-zinc-700/60">
       <div className="h-8 sm:h-10 border-b border-b-zinc-700/60 flex items-center justify-center">
         <h3 className="font-kanit text-zinc-500 text-md">Your Chats</h3>
       </div>
       {loadingChats ? (
-        <div className="h-[40%] w-full flex items-center justify-center">
-          <PiSpinnerBold className="mx-auto size-5 rounded-full animate-spin text-zinc-600/90" />
+        <div className="h-full w-full flex flex-col gap-2 px-1 py-2 md:px-2 overflow-y-auto">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-6 w-28 py-1 px-2 rounded-[4px] bg-zinc-700/50 animate-pulse"
+            />
+          ))}
         </div>
       ) : (
-        <div className="w-full h-auto flex flex-col gap-2 px-1 py-2 md:px-2 overflow-y-auto">
+        <div className="h-full flex flex-col gap-2 px-1 py-2 md:px-2 overflow-y-auto">
           {chats.map((chat, index) => (
-            <ChatItemWrapper key={index} idx={index}>
-              {/* i used the index for the chat item animation delay */}
-              <ChatItem
-                active={chat.id === currentChatId}
-                chatId={chat.id}
-                onClick={() => setActiveChatId(chat.id)}
-                handleRenameChat={handleRenameChat}
-                handleDeleteChat={handleRemoveChat}
-                disableDelete={disableRemoveChat}
-                name={chat.name}
-              />
-            </ChatItemWrapper>
+            <ChatItem
+              key={index}
+              active={chat.id === currentChatId}
+              chatId={chat.id}
+              onClick={() => setActiveChatId(chat.id)}
+              handleRenameChat={handleRenameChat}
+              handleDeleteChat={handleRemoveChat}
+              disableDelete={disableRemoveChat}
+              name={chat.name}
+            />
           ))}
         </div>
       )}

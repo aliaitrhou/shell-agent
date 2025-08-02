@@ -1,5 +1,10 @@
-export default async function learnAction(message, chatHistory, selectedModel) {
-  const res = await fetch("/api/model", {
+export default async function learnAction(
+  message: string,
+  chatHistory: string[],
+  selectedModel: string,
+  selectSemester: string,
+) {
+  const res = await fetch(`/api/model?semester=${selectSemester}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -8,8 +13,7 @@ export default async function learnAction(message, chatHistory, selectedModel) {
       message,
       // TODO: make the model aware of command messages
       chatHistory,
-      model: selectData.model,
-      prevMode: mode,
+      model: selectedModel,
     }),
   });
 
@@ -24,6 +28,7 @@ export default async function learnAction(message, chatHistory, selectedModel) {
 
   const answer = responseData.answer || "";
   const newMode = responseData.newMode;
+  console.log("new Mode:", newMode);
 
   // NOTE: Remove this variable later and make it boolean
   // so the model can decied whether to switch or not.

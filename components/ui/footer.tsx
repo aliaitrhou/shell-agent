@@ -1,17 +1,38 @@
 "use client";
 
+import { lexend } from "@/app/fonts";
+import Link from "next/link";
 import React from "react";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="w-full text-center text-zinc-500 mx-auto">
-      <p className="font-light text-xs sm:text-sm md:text-md font-mplus">
-        © {new Date().getFullYear()} By{" "}
-        <a href="https://aliaitrahou.me" target="_blank">
-          <span className="text-orange-500 font-semibold">Ali</span>
-        </a>
-        , All rights reserved.
-      </p>
+    <footer className={`w-full font-light text-zinc-500 ${lexend.className}`}>
+      <div className="w-1/2 px-20 mx-auto flex flex-row items-center justify-evenly">
+        <p className="">© {currentYear} All rights reserved.</p>
+        <Link
+          href={"/terms-of-use"}
+          className="hover:underline hover:underline-offset-2"
+        >
+          Terms of use
+        </Link>
+        <Link
+          href="https://aliaitrahou.me"
+          target="_blank"
+          className="hover:underline hover:underline-offset-2"
+        >
+          <span>Made by Ali</span>
+        </Link>
+
+        <Link
+          href={"https://www.aliaitrahou.me/contact"}
+          target="_blank"
+          className="hover:underline hover:underline-offset-2"
+        >
+          <span>Request a feature</span>
+        </Link>
+      </div>
     </footer>
   );
 };

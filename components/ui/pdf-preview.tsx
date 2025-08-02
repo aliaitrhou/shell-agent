@@ -20,7 +20,7 @@ const PdfPreview: React.FC<Props> = ({ pageToOpen, handleClosePdf }) => {
 
   return (
     <section
-      className={`relative h-[100dvh] sm:h-[80dvh] w-full bg-zinc-800 rounded-none sm:rounded-xl border border-zinc-700/60 overflow-hidden`}
+      className={`relative h-[100dvh] sm:h-[80dvh] w-full bg-zinc-800 rounded-none sm:rounded-sm border border-zinc-700/60 overflow-hidden`}
     >
       <div className="h-8 sm:h-10 px-4 bg-zinc-800 border-b-[1px] border-b-zinc-700/60 flex items-center justify-between font-kanit text-sm text-zinc-500 ">
         <span className="">Chapter 1</span>

@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useClerk, useUser } from "@clerk/nextjs";
 import TerminalTopBar from "./ui/terminal-top-bar";
 import { message, Mode } from "@/types";
@@ -16,6 +10,7 @@ import { linuxCommands } from "@/constants";
 import { PiSpinnerBold } from "react-icons/pi";
 import commandRunner from "./command-runner";
 import learnAction from "./learn-action";
+import VimNanoEditor from "./ui/vim-nano-editor";
 
 interface Props {
   chatId: string;
@@ -50,13 +45,10 @@ const Terminal: React.FC<Props> = ({
   const [msg, setMsg] = useState("");
   const [chatHistory, setChatHistory] = useState<string[]>([]); // State to manage chat history
   const [messages, setMessages] = useState<message[]>([]);
-  // mode is default to prompt
   const [mode, setMode] = useState<Mode>("Prompt");
   const [displayForm, setDisplayForm] = useState(true);
-  const [commandsHistory, setCommandsHistory] = useState<string[]>([""]);
-  // NOTE: this pwd state should be used to update the shell prompt that user interact with only
   const [pwd, setPwd] = useState("/");
-
+  const [renderEditor, setRenderEditor] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState({
     chats: false,
     modelAnswer: false,
@@ -75,40 +67,32 @@ const Terminal: React.FC<Props> = ({
     mode: Mode,
     cwd: string,
   ) => {
-    try {
-      const response = await fetch("/api/message", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chatId: id,
-          text: msg,
-          role: role,
-          mode,
-          cwd,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error("Failed to insert message:", response.statusText);
-        return;
-      }
-
-      await response.json();
-    } catch (error) {
-      console.error("Failed to insert message:", error);
-      // Show user-friendly error message
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "Assistent",
-          text: "Failed to save message. Please try again.",
-          mode: "Command",
-          cwd: pwd,
-        },
-      ]);
+    // check for valid inputs before making the request
+    if (!id || !msg || !role || !mode || !cwd) {
+      console.error("Missing required fields:", { id, msg, role, mode, cwd });
+      return;
     }
+
+    const response = await fetch("/api/message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chatId: id,
+        text: msg,
+        role: role,
+        mode,
+        cwd,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to insert message:", response.statusText);
+      return;
+    }
+
+    await response.json();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -137,7 +121,6 @@ const Terminal: React.FC<Props> = ({
 
     setChatHistory((prevHistory) => [...prevHistory, `User: ${msg}`]);
 
-    console.log("message is : ", msg);
     // insert non empty user message to db
     if (msg && msg.trim() !== "" && chatId) {
       insertMessagesByChatId(chatId, msg, "User", mode, pwd);
@@ -148,7 +131,7 @@ const Terminal: React.FC<Props> = ({
         setMessages((prev) => [
           ...prev,
           {
-            role: "Assistent",
+            role: "Assistant",
             text: "empty_message",
             mode: "Command",
             cwd: pwd,
@@ -159,146 +142,157 @@ const Terminal: React.FC<Props> = ({
         await getModelAnswer("Prompt");
       }
     } else {
-      // with command mode
-      switch (msg.trim().toLowerCase()) {
-        case "clear":
-          setMessages([]);
-          setLoadingStatus({ chats: false, modelAnswer: false });
-          setDisplayForm(true);
-          setMsg("");
-          break;
-        case "exit":
-          // close the terminal
-          closeTerminal();
-          selectData = {
-            model: "",
-            semester: "",
-          };
-          setMsg("");
-          break;
-        case "":
-          // done indicate that input is empty
-          setMessages((prev) => [
-            ...prev,
-            {
-              role: "Assistent",
-              text: "empty_message",
-              mode: "Command",
-              cwd: "~",
-            },
-          ]);
-          break;
-        default:
-          await getModelAnswer("Command");
-      }
-    }
-  };
+      const trimmedMsg = msg.trim();
 
-  const getModelAnswer = useCallback(
-    async (m: Mode) => {
-      setLoadingStatus({ chats: false, modelAnswer: true });
-      setDisplayForm(false);
+      const isEditorOpenCommand = (command: string): boolean => {
+        const editorPattern = /^(vim|nano)(\s+\S+)?$/;
+        return editorPattern.test(command);
+      };
 
-      // if the input is "clear" and current mode is "command" clean the terminal (reset the state)
-      if (msg.toLowerCase() === "clear" && m == "Command") {
+      if (isEditorOpenCommand(trimmedMsg)) {
+        setRenderEditor(true);
+      } else if (trimmedMsg == "clear") {
         setMessages([]);
         setLoadingStatus({ chats: false, modelAnswer: false });
         setDisplayForm(true);
         setMsg("");
+      } else if (trimmedMsg == "exit") {
+        // close the terminal
+        closeTerminal();
+        selectData = {
+          model: "",
+          semester: "",
+        };
+        setMsg("");
+      } else if (trimmedMsg == "") {
+        // empty_message indicate that input is empty user press Enter with empty input
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "Assistant",
+            text: "empty_message",
+            mode: "Command",
+            cwd: "~",
+          },
+        ]);
       } else {
-        if (m == "Command") {
-          // TODO: link around the working directory
-          try {
-            const { text, newCwd } = await commandRunner({
-              command: msg,
-              chatId,
-              currentWorkingDirectory: "/",
-            });
+        await getModelAnswer("Command");
+      }
+    }
+  };
 
-            setMessages((prev) => [
-              ...prev,
-              { role: "ShellOutput", text, cwd: newCwd, mode: "Command" },
-            ]);
+  const getModelAnswer = async (m: Mode) => {
+    setLoadingStatus({ chats: false, modelAnswer: true });
+    setDisplayForm(false);
 
-            insertMessagesByChatId(
-              chatId,
-              text || "empty_message",
-              "ShellOutput",
-              "Command",
-              newCwd,
-            );
+    // if the input is "clear" and current mode is "command" clean the terminal (reset the state)
+    if (msg.toLowerCase() === "clear" && m == "Command") {
+      setMessages([]);
+      setLoadingStatus({ chats: false, modelAnswer: false });
+      setDisplayForm(true);
+      setMsg("");
+    } else {
+      if (m == "Command") {
+        // TODO: link around the working directory
+        // the endpoint should also be the one updating the chatHistory
+        try {
+          const { shellOutput, newCwd } = await commandRunner({
+            command: msg,
+            chatId,
+            currentWorkingDirectory: pwd,
+          });
 
-            setPwd(newCwd);
-          } catch (error) {
-            console.error(
-              "There was an error fetching from cmd endpoint!",
-              error,
-            );
-          } finally {
-            setLoadingStatus({ chats: false, modelAnswer: false });
-            // DONE: display the form after the model have respond.
-            setMsg("");
-            setDisplayForm(true);
-          }
-        } else {
-          try {
-            // TODO: (Later Incha Allah) make the model aware of command messages
-            // by constructing  chatHistory array
-            const { answer, autoSwitch } = await learnAction(
-              msg,
-              chatHistory,
-              selectData.model,
-            );
+          console.log("terminal (shellOutput var): ", shellOutput);
 
-            console.log("auto switch: ", autoSwitch);
+          // Update UI
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "ShellOutput",
+              text: shellOutput.output,
+              cwd: newCwd,
+              mode: "Command",
+            },
+          ]);
 
-            // Update chat history
-            setChatHistory((prevHistory) => [
-              ...prevHistory,
-              `Assistent: ${answer}`,
-            ]);
+          // add the new message to db
+          //
+          insertMessagesByChatId(
+            chatId,
+            shellOutput.output || "empty_message",
+            "ShellOutput",
+            "Command",
+            newCwd,
+          );
 
-            // Add the assistant's response
-            setMessages((prev) => [
-              ...prev,
-              {
-                role: "Assistent",
-                text: answer,
-                cwd: "empty_cwd", // cause when lanter displaying messages with `chat-messages` it wount need cwd
-                mode: "Prompt",
-              },
-            ]);
+          // add the new message chat history
+          setChatHistory((prevHistory) => [
+            ...prevHistory,
+            `ShellOutput: ${shellOutput.output}`,
+          ]);
 
-            insertMessagesByChatId(chatId, answer, "Assistant", "Prompt", pwd);
-          } catch (error) {
-            console.error("Error fetching model response:", error);
-          } finally {
-            setLoadingStatus({ chats: false, modelAnswer: false });
-            setDisplayForm(true);
-            setMsg("");
-          }
+          setPwd(newCwd);
+        } catch (error) {
+          console.error(
+            "There was an error fetching from cmd endpoint!",
+            error,
+          );
+        } finally {
+          setLoadingStatus({ chats: false, modelAnswer: false });
+          // DONE: display the form after the model have respond.
+          setMsg("");
+          setDisplayForm(true);
+        }
+      } else {
+        try {
+          // TODO: Make the model aware of command messages by merging them with chatHistory
+          const { answer, autoSwitch } = await learnAction(
+            msg,
+            chatHistory,
+            selectData.model,
+            selectData.semester,
+          );
+
+          console.log("auto switch: ", autoSwitch);
+
+          // Add the assistant's response
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "Assistant",
+              text: answer,
+              cwd: "empty_cwd", // cause when lanter displaying messages with `chat-messages` it wount need cwd
+              mode: "Prompt",
+            },
+          ]);
+
+          insertMessagesByChatId(chatId, answer, "Assistant", "Prompt", pwd);
+
+          // Update chat history
+          setChatHistory((prevHistory) => [
+            ...prevHistory,
+            `Assistant: ${answer}`,
+          ]);
+        } catch (error) {
+          console.error("Error fetching model response:", error);
+        } finally {
+          setLoadingStatus({ chats: false, modelAnswer: false });
+          setDisplayForm(true);
+          setMsg("");
         }
       }
-    },
-    [msg, chatId, pwd, chatHistory, selectData.model],
-  );
+    }
+  };
 
   useEffect(() => {
     setLoadingStatus({ chats: true, modelAnswer: false });
     const getCurrentChatById = async (chatId: string) => {
-      const res = await fetch(`/api/messages/${chatId}`);
-
-      if (!res.ok) {
-        console.error("Failed to fetch chat messages:", res.statusText);
-        return;
-      }
-
-      let currentChatData;
       try {
-        currentChatData = await res.json();
+        const res = await fetch(`/api/messages/${chatId}`);
+        const currentChatData = await res.json();
         setMessages(currentChatData);
       } catch (error) {
-        console.error("Failed to parse response JSON:", error);
+        console.error(error);
       } finally {
         setLoadingStatus({ chats: false, modelAnswer: false });
       }
@@ -309,25 +303,38 @@ const Terminal: React.FC<Props> = ({
     }
   }, [chatId]);
 
-  // this useEffect should run every time the user toggle between chats
+  const handleCloseVimNanoEditor = (output: string) => {
+    setRenderEditor(false);
+    setMsg("");
+
+    // Update UI
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "ShellOutput",
+        text: output,
+        cwd: pwd,
+        mode: "Command",
+      },
+    ]);
+
+    // add the new message to db
+    //
+    insertMessagesByChatId(
+      chatId,
+      output || "empty_message",
+      "ShellOutput",
+      "Command",
+      pwd,
+    );
+
+    // add the new message chat history
+    setChatHistory((prevHistory) => [...prevHistory, `ShellOutput: ${output}`]);
+  };
+
+  //TODO: this useEffect should run every time the user toggle between chats
   // so a new chatHistory/commandsHistory created which means that the models
   // would have a new memory each time.
-  useEffect(() => {
-    const commands = messages
-      .map((m: message) => {
-        if (m.mode == "Command") {
-          const command = m.text;
-          return command;
-        }
-        return "";
-      })
-      .filter(Boolean);
-
-    setCommandsHistory(commands);
-
-    // TODO: add the prompt chat history here
-  }, [messages]);
-
   const scroll = () => {
     if (refContainer.current) {
       const { offsetHeight, scrollHeight, scrollTop } =
@@ -366,90 +373,96 @@ const Terminal: React.FC<Props> = ({
         textareaRef.current.scrollHeight + "px";
     }
   };
-
-  useEffect(() => {
-    console.log("Messages are : ", messages);
-  }, [messages]);
+  console.log("chat id : ", chatId);
 
   return (
     <section
-      className={`relative w-full h-[92dvh] sm:h-[80dvh] pt-10 bg-zinc-800 rounded-none sm:rounded-xl border-[1px] border-zinc-700/60`}
+      className={`relative w-full h-[92dvh] sm:h-[80dvh] pt-10 bg-zinc-800 rounded-none sm:rounded-sm border-[1px] border-zinc-700/60`}
     >
       <TerminalTopBar
-        currentChatId={chatId}
         disableDelete={disableRemoveChat}
         disableCreate={disableCreateChat}
-        handleDeleteSession={handleRemoveChat}
+        closeEditor={() => setRenderEditor(false)} // close editor if delete/create a new chat
+        handleDeleteSession={() => handleRemoveChat(chatId)}
         handleToggleSidebar={handleToggleSidebar}
         openSidebar={openSidebar}
         handleAddSession={handleCreateChat}
       />
-      <div
-        ref={refContainer}
-        className="w-full h-full overflow-y-scroll pl-3 py-2"
-      >
-        {loadingStatus.chats ? (
-          <div className="w-full h-[90%] flex justify-center items-center">
-            <PiSpinnerBold className="mx-auto size-7 rounded-full animate-spin text-zinc-600/90" />
-          </div>
-        ) : (
-          <>
-            <ChatMessages messages={messages} handleClick={openPdfPreview} />
-            {/* command/prompt inserting */}
-            {displayForm && (
-              <TerminalPrompt
-                mode={mode}
-                pwd={pwd}
-                handleToggleModes={handleToggleModes}
-              >
-                <div className="flex items-center gap-1 pl-4 pr-1">
-                  <form
-                    onSubmit={handleSubmit}
-                    className="relative w-full p-0 flex items-center justify-start mt-[1px]"
-                  >
-                    {/* this is used to hightlight the first word user types if the current mode is "Command" 
+      {renderEditor ? (
+        <VimNanoEditor
+          sessionId={chatId}
+          scriptCwd={pwd}
+          commandMsg={msg}
+          closeEditorCallback={(t: string) => handleCloseVimNanoEditor(t)}
+        />
+      ) : (
+        <div
+          ref={refContainer}
+          className="w-full h-full overflow-y-scroll pl-3 py-2"
+        >
+          {loadingStatus.chats ? (
+            <div className="w-full h-[90%] flex justify-center items-center">
+              <PiSpinnerBold className="mx-auto size-7 rounded-full animate-spin text-zinc-600/90" />
+            </div>
+          ) : (
+            <>
+              <ChatMessages messages={messages} handleClick={openPdfPreview} />
+              {/* command/prompt inserting */}
+              {displayForm && (
+                <TerminalPrompt
+                  mode={mode}
+                  pwd={pwd}
+                  handleToggleModes={handleToggleModes}
+                >
+                  <div className="flex items-center gap-1 pl-4 pr-1">
+                    <form
+                      onSubmit={handleSubmit}
+                      className="relative w-full p-0 flex items-center justify-start mt-[1px]"
+                    >
+                      {/* this is used to hightlight the first word user types if the current mode is "Command" 
                         if that word is included in linux commands array */}
-                    {mode == "Command" && (
-                      <div className="absolute w-full font-spaceMono text-xs text-white bg-transparent pointer-events-none">
-                        {keywords.map((word, index) => (
-                          <span
-                            key={index}
-                            className={
-                              index === 0 && currentValueIsCommand
-                                ? "text-orange-700"
-                                : ""
+                      {mode == "Command" && (
+                        <div className="absolute w-full font-spaceMono text-xs text-white bg-transparent pointer-events-none">
+                          {keywords.map((word, index) => (
+                            <span
+                              key={index}
+                              className={
+                                index === 0 && currentValueIsCommand
+                                  ? "text-orange-700"
+                                  : ""
+                              }
+                            >
+                              {word}{" "}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <textarea
+                        onChange={handleChange}
+                        value={msg}
+                        maxLength={250}
+                        ref={textareaRef}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            const form = e.currentTarget.form;
+                            e.preventDefault();
+                            if (form) {
+                              form.requestSubmit(); // this will trigger the form's onSubmit handler
                             }
-                          >
-                            {word}{" "}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    <textarea
-                      onChange={handleChange}
-                      value={msg}
-                      maxLength={250}
-                      ref={textareaRef}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          const form = e.currentTarget.form;
-                          e.preventDefault();
-                          if (form) {
-                            form.requestSubmit(); // this will trigger the form's onSubmit handler
                           }
-                        }
-                      }}
-                      onInput={textareaAutoGrow}
-                      className={`${mode == "Command" ? "text-white" : ""} w-full font-spaceMono text-xs text-white border-none focus:outline-none resize-none bg-zinc-800/5`}
-                    />
-                  </form>
-                </div>
-              </TerminalPrompt>
-            )}
-            {loadingStatus.modelAnswer && <div className="ml-2 loader" />}
-          </>
-        )}
-      </div>
+                        }}
+                        onInput={textareaAutoGrow}
+                        className={`${mode == "Command" ? "text-white" : ""} w-full font-spaceMono text-xs text-white border-none focus:outline-none resize-none bg-zinc-800/5`}
+                      />
+                    </form>
+                  </div>
+                </TerminalPrompt>
+              )}
+              {loadingStatus.modelAnswer && <div className="ml-2 loader" />}
+            </>
+          )}
+        </div>
+      )}
     </section>
   );
 };

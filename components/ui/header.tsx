@@ -1,4 +1,4 @@
-"use client";
+"us client";
 import React, { useEffect, useState } from "react";
 import {
   SignedIn,
@@ -11,6 +11,7 @@ import { dark } from "@clerk/themes";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { MdLocalFireDepartment } from "react-icons/md";
+import { mplus } from "@/app/fonts";
 
 const Header = () => {
   const [isClient, setIsClient] = useState(false);
@@ -34,7 +35,9 @@ const Header = () => {
         <div className="flex flex-row items-center gap-1">
           <MdLocalFireDepartment className="font-bold text-orange-600  size-9 sm:size-10 lg:size-10" />
 
-          <p className="text-xl sm:text-2xl lg:text-3xl italic font-kanit font-bold text-orange-600">
+          <p
+            className={`${mplus.className} text-xl sm:text-2xl lg:text-3xl italic font-bold text-orange-600`}
+          >
             ShellAgent
           </p>
         </div>

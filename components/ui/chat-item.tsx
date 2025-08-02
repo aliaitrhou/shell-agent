@@ -92,7 +92,7 @@ const ChatItem: React.FC<Props> = ({
   return (
     <div
       ref={menuRef}
-      className={`relative w-full rounded-[4px] py-1 px-2 ${
+      className={`relative w-28 rounded-[4px] py-1 px-2 ${
         active
           ? "bg-zinc-700/50 border border-zinc-600/40"
           : "hover:bg-zinc-700/20 border border-zinc-700/40"

@@ -1,6 +1,5 @@
 // Each chat should have it's running commands envirement so i well use
 // chatId as the envirement/session id
-
 export default async function commandRunner({
   command,
   chatId,
@@ -34,12 +33,15 @@ export default async function commandRunner({
 
   const responseData = await res.json();
 
-  console.log("Client side (response Data):", responseData);
+  console.log(
+    "Ali pro here is what came out in the command ouput: ",
+    responseData,
+  );
+
+  console.log("Ouput: ", responseData.cwd);
 
   return {
-    role: "ShellOutput",
-    text: responseData.output as string,
-    mode: "Command",
-    newCwd: responseData.cwd as string,
+    shellOutput: responseData,
+    newCwd: responseData.cwd,
   };
 }

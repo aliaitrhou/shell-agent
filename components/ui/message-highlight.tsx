@@ -7,9 +7,10 @@ hljs.registerLanguage("bash", bash);
 
 type Props = {
   text: string;
+  classNames?: string;
 };
 
-const MessageHighlight: React.FC<Props> = ({ text }) => {
+const MessageHighlight: React.FC<Props> = ({ text, classNames }) => {
   const messageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ const MessageHighlight: React.FC<Props> = ({ text }) => {
   }, [text]);
 
   return (
-    <code ref={messageRef} className="!bg-transparent !text-white">
+    <code ref={messageRef} className={classNames}>
       {text}
     </code>
   );

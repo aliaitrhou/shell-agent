@@ -3,22 +3,22 @@ import { XMarkIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/solid";
 import ButtonHoverEffect from "./button-hover-effect";
 
 interface Props {
-  currentChatId: string;
   openSidebar: boolean;
+  closeEditor: () => void;
   disableDelete: boolean;
   disableCreate: boolean;
   handleToggleSidebar: () => void;
   handleAddSession: () => void;
-  handleDeleteSession: (chatId: string) => void;
+  handleDeleteSession: () => void;
 }
 
 const TerminalTopBar: React.FC<Props> = ({
   openSidebar,
+  closeEditor,
   disableDelete,
   disableCreate,
   handleToggleSidebar,
   handleAddSession,
-  currentChatId,
   handleDeleteSession,
 }) => {
   return (
@@ -26,7 +26,10 @@ const TerminalTopBar: React.FC<Props> = ({
       <div className="group flex items-center gap-2">
         <ButtonHoverEffect desc="Remove current chat">
           <button
-            onClick={() => handleDeleteSession(currentChatId)}
+            onClick={() => {
+              closeEditor();
+              handleDeleteSession();
+            }}
             disabled={disableDelete}
             className={`bg-red-500 w-4 h-4 rounded-full flex items-center justify-center focus:outline-none  ${disableDelete && "cursor-not-allowed"}`}
           >
@@ -43,7 +46,10 @@ const TerminalTopBar: React.FC<Props> = ({
         </ButtonHoverEffect>
         <ButtonHoverEffect desc="Create New Chat">
           <button
-            onClick={handleAddSession}
+            onClick={() => {
+              closeEditor();
+              handleAddSession();
+            }}
             disabled={disableCreate}
             className={`bg-green-500 w-4 h-4 rounded-full flex items-center justify-center  focus:outline-none`}
           >

@@ -47,13 +47,16 @@ const ChatMessages: React.FC<Props> = React.memo(
                       {msg.text === "empty_message" ? (
                         ""
                       ) : (
-                        <MessageHighlight text={msg.text} />
+                        <MessageHighlight
+                          text={msg.text}
+                          classNames="!bg-transparent !text-white"
+                        />
                       )}
                     </p>
                   </div>
                 </div>
               );
-            case "Assistent":
+            case "Assistant":
               return (
                 <div
                   key={index}
