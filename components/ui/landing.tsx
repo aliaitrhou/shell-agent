@@ -55,10 +55,20 @@ const Landing: React.FC<Props> = ({ handleClick, handleChange }) => {
                 <option value="serverless-qwen-qwen3-32b-fp8">
                   Qwen3 32B FP8
                 </option>
-                <option value="deepseek-ai/DeepSeek-R1-Distill-Qwen-7B">
+                <option
+                  value="
+deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free
+  "
+                >
                   DEEPSEEK-AI
                 </option>
-                <option value="deepseek-ai/DeepSeek-V3">DEEPSEEK V3</option>
+                <option
+                  value="
+meta-llama/Llama-3.3-70B-Instruct-Turbo-Free
+                  "
+                >
+                  META-LLAMA
+                </option>
               </select>
               <ChevronDownIcon className="pointer-events-none absolute right-3 top-[10px] sm:top-[14px]  size-4 text-zinc-500" />
             </div>

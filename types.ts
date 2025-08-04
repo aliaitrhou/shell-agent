@@ -2,7 +2,7 @@ export type message = {
   chatId?: string;
   createdAt?: string;
   id?: string;
-  role: "user" | "assistent";
+  role: "User" | "Assistant" | "ShellOutput";
   cwd?: string;
   mode?: Mode;
   text: string;

@@ -9,7 +9,6 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        kanit: ["Kanit", "sans-serif"],
         spaceMono: ["Space Mono", "monospace"],
       },
       boxShadow: {

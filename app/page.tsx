@@ -3,13 +3,13 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
 import Terminal from "@/components/terminal";
 import { ChatProps } from "@/types";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/ui/sidebar";
 import { useClerk, useUser } from "@clerk/clerk-react";
-import MobileSidebar from "@/components/mobileSidebar";
+import MobileSidebar from "@/components/ui/mobileSidebar";
 import { AnimatePresence } from "framer-motion";
-import PageWrapper from "@/components/page-wrapper";
-import PdfPreview from "@/components/pdf-preview";
-import Landing from "@/components/landing";
+import PageWrapper from "@/components/ui/page-wrapper";
+import PdfPreview from "@/components/ui/pdf-preview";
+import Landing from "@/components/ui/landing";
 
 export default function Home() {
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -267,12 +267,13 @@ export default function Home() {
   return (
     <PageWrapper
       start={start}
-      classNames={`text-white h-auto ${start ? "h-screen" : ""} full flex flex-col justify-center items-center gap-4 lg:gap-6`}
+      // h-auto might be needed
+      classNames={`text-white ${start ? "h-screen" : ""} full flex flex-col justify-center items-center`}
       message={responseStatus.message}
       status={responseStatus.status}
     >
       {start ? (
-        <div className="h-full w-full md:w-[95%] lg:w-[80%] mx-auto flex flex-col sm:flex-row justify-center items-center px-0 sm:px-2 md:px-4 sm:gap-2 md:gap-3 lg:gap-4 xl:px-8">
+        <div className="h-full w-full flex flex-col sm:flex-row justify-center items-center px-0 sm:px-8 md:px-16 lg:px-24 gap-0 sm:gap-4">
           {openSidebar && (
             <Sidebar
               chats={chats}
