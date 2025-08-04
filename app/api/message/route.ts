@@ -5,6 +5,12 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: Request) {
   const { chatId, text, role, mode, cwd } = await req.json();
 
+  console.log("chaId is : ", chatId);
+  console.log("text is : ", text);
+  console.log("mode is : ", mode);
+  console.log("role is : ", role);
+  console.log("cwd is : ", cwd);
+
   if (!chatId || !text || !role || !mode || !cwd)
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
