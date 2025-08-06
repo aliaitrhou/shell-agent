@@ -23,14 +23,15 @@ model Chat {
 }
 
 model Message {
-  id        String      @id @default(uuid())
-  chatId    String
-  chat      Chat        @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  role      MessageRole // "user" or "assistant" or "shellOutput"
-  text      String
-  mode      Mode        @default(Prompt) // Enum for "Prompt" or "Command"
-  cwd       String      @default("empty_cwd") // Current working directory
-  createdAt DateTime    @default(now())
+  id         String      @id @default(uuid())
+  chatId     String
+  chat       Chat        @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  role       MessageRole // "user" or "assistant" or "shellOutput"
+  text       String
+  mode       Mode        @default(Prompt) // Enum for "Prompt" or "Command"
+  cwd        String      @default("empty_cwd") // Current working directory
+  pageNumber String      @default("Pending")
+  createdAt  DateTime    @default(now())
 }
 
 enum MessageRole {
