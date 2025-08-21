@@ -12,10 +12,10 @@ const Footer = () => {
       <div className="w-1/2 px-20 mx-auto flex flex-row items-center justify-evenly">
         <p className="">© {currentYear} All rights reserved.</p>
         <Link
-          href={"/terms-of-use"}
+          href={"/user-guide"}
           className="hover:underline hover:underline-offset-2"
         >
-          Terms of use
+          User Guide
         </Link>
         <Link
           href="https://aliaitrahou.me"
