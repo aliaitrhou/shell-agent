@@ -35,7 +35,7 @@ export const OutlineActiveSectionHighlight = memo((props: Props) => {
 
   return (
     <motion.div
-      className="absolute left-3 w-[1px] bg-orange-400"
+      className="absolute left-3 w-[1px] bg-yellow-300"
       layout
       initial={{ opacity: 0 }}
       animate={{
