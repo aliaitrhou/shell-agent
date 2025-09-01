@@ -20,16 +20,16 @@ body {
     linear-gradient(
       0deg,
       transparent 49%,
-      hsla(0, 0%, 100%, 0.04) 50%,
-      hsla(0, 0%, 100%, 0.04) 51%,
+      hsla(0, 0%, 100%, 0.05) 50%,
+      hsla(0, 0%, 100%, 0.05) 51%,
       transparent 52%,
       transparent
     ),
     linear-gradient(
       90deg,
       transparent 49%,
-      hsla(0, 0%, 100%, 0.04) 50%,
-      hsla(0, 0%, 100%, 0.04) 51%,
+      hsla(0, 0%, 100%, 0.05) 50%,
+      hsla(0, 0%, 100%, 0.05) 51%,
       transparent 52%,
       transparent
     );
@@ -42,6 +42,23 @@ body {
   z-index: -1;
 }
 
+.gradient_background_down {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1),
+    rgba(0, 0, 0, 0) 40%
+  );
+  pointer-events: none;
+  z-index: 999;
+  transform: rotate(180deg);
+}
+
 .loader {
   width: 20px;
   aspect-ratio: 4;
@@ -49,6 +66,13 @@ body {
     calc(100% / 3) 100% space;
   clip-path: inset(0 100% 0 0);
   animation: l1 1s steps(4) infinite;
+}
+
+iframe[src*="course-"] {
+  border: none !important;
+  outline: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 @keyframes l1 {
