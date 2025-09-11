@@ -13,9 +13,10 @@ export async function POST(req: Request) {
     const { searchParams } = new URL(req.url);
     const semester = searchParams.get("semester");
 
+    console.log("chat history : ", chatHistory);
+
     // NOTE: Remove this variable later and make it boolean
     // so the model an decied whether to switch or not.
-    const prevMode = "Command";
     const together = new Together({ apiKey });
     client = new Client({ connectionString: process.env.DATABASE_URL });
 
@@ -42,11 +43,9 @@ export async function POST(req: Request) {
 
       const { rows } = await client.query(query, [semester, `[${em}]`]);
 
-      console.log("Rows are :", rows);
       return rows;
     };
 
-    console.log("Message is : ", message);
     const embedding = await getEmbedding(message);
 
     await client.connect();
@@ -62,7 +61,6 @@ export async function POST(req: Request) {
       .join("\n\n");
 
     console.log("formattedReferences: ", formattedReferences);
-    // - Return a mode switch marker **in the message**, not a separate tool call.
     const prompt = `
 Rules:
 - Consice replies and stright to point.
@@ -73,7 +71,7 @@ REFERENCES:
 ${formattedReferences}
 `.trim();
 
-    console.log("modle is : ", model);
+    console.log("model is : ", model);
     const response = await together.chat.completions.create({
       model: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
       messages: [
@@ -85,48 +83,23 @@ ${formattedReferences}
       ],
       temperature: 0.7,
       max_tokens: 200,
-      tool_choice: "auto",
-      tools: [
-        {
-          type: "function",
-          function: {
-            name: "switch_mode",
-            description: "Toggle between Prompt and Command modes.",
-            parameters: {
-              type: "object",
-              properties: {
-                new_mode: {
-                  type: "string",
-                  description: "The new mode to activate, Prompt or Command.",
-                },
-              },
-              required: ["new_mode"],
-            },
-          },
-        },
-      ],
       stream: false,
     });
 
     const answer = response?.choices[0]?.message?.content ?? null;
-    const toolToCall = response?.choices[0]?.message?.tool_calls?.[0];
 
-    if (!answer && toolToCall) {
-      console.log("Model made a tool call but didn't return a direct answer.");
-    }
+    const pdfData = {
+      page: results[0].page_num,
+      chapter: results[0].pdf_name,
+      semester: results[0].semester,
+    };
 
-    let newMode;
-    if (toolToCall?.function?.name === "switch_mode") {
-      const { new_mode } = JSON.parse(toolToCall?.function?.arguments);
-      newMode = new_mode != prevMode ? new_mode : prevMode;
-    }
-
-    console.log("New Mode to sent back to client:  ", newMode);
+    console.log("pdfData: ", pdfData);
 
     return new Response(
       JSON.stringify({
         answer,
-        newMode,
+        pdfData,
       }),
     );
   } catch (error) {
