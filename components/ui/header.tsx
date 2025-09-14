@@ -1,4 +1,5 @@
-"us client";
+"use client";
+
 import React, { useEffect, useState } from "react";
 import {
   SignedIn,
@@ -8,10 +9,10 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
-import { MdLocalFireDepartment } from "react-icons/md";
-import { mplus } from "@/app/fonts";
+import { lexend } from "@/app/fonts";
+import { Logo } from "./logo";
+import { WiStars } from "react-icons/wi";
 
 const Header = () => {
   const [isClient, setIsClient] = useState(false);
@@ -30,22 +31,13 @@ const Header = () => {
   }
 
   return (
-    <nav className="w-full flex flex-row justify-between items-center p-2 sm:px-2 md:px-4 lg:px-6 sm:py-3">
-      <Link href="/">
-        <div className="flex flex-row items-center gap-1">
-          <MdLocalFireDepartment className="font-bold text-orange-600  size-9 sm:size-10 lg:size-10" />
+    <header className="sticky top-0 z-40 sm:z-0 sm:static bg-zinc-950 sm:bg-transparent w-full flex flex-row justify-between items-center p-2 sm:px-2 md:px-4 lg:px-5 lg:pt-5">
+      <Logo />
 
-          <p
-            className={`${mplus.className} text-xl sm:text-2xl lg:text-3xl italic font-bold text-orange-600`}
-          >
-            ShellAgent
-          </p>
-        </div>
-      </Link>
       <div className="space-x-2">
         {isClient && (
           <>
-            <div className="flex items-center gap-2 md:gap-4">
+            <div className="flex flex-row items-center gap-2 md:gap-2">
               {user && (
                 <p className="text-zinc-400 font-kanit text-xs sm:text-sm sm:text-md">
                   {getGreeting()} {user?.firstName}
@@ -57,21 +49,23 @@ const Header = () => {
                     baseTheme: dark,
                     elements: {
                       userButtonAvatarBox:
-                        "w-8 h-8 sm:w-10 sm:h-10 border-[2px] border-zinc-400",
+                        "w-8 h-8 sm:w-9 sm:h-9 border border-white rounded-full",
                     },
                   }}
                 />
               </SignedIn>
             </div>
             <SignedOut>
-              <div className="flex flex-row gap-1 sm:gap-2 font-kanit">
+              <div
+                className={`flex flex-row gap-1 sm:gap-2 ${lexend.className}`}
+              >
                 <SignInButton mode="modal">
-                  <button className="text-orange-600 text-xs sm:text-sm border border-orange-600  hover:bg-orange-400/20 py-1 px-3 sm:py-2 sm:px-4 rounded-full transition duration-300 ease-in-out">
+                  <button className="text-yellow-400 text-sm sm:text-md font-extralight border border-yellow-400  hover:bg-yellow-300/20 py-0 px-2 sm:px-2 md:py-1 md:px-3 rounded-md transition duration-300 ease-in-out">
                     Sign in
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="bg-zinc-300 hover:bg-zinc-300/80 border border-zinc-100 text-black text-xs sm:text-sm py-1 px-3 sm:py-2 sm:px-4 rounded-full transition duration-300 ease-in-out">
+                  <button className="bg-zinc-100 hover:bg-zinc-300 border border-zinc-100 text-black font-extralight py-0 px-2 sm:px-2 md:py-1 md:px-3 rounded-md text-sm sm:text-md transition duration-300 ease-in-out">
                     Sign up
                   </button>
                 </SignUpButton>
@@ -80,7 +74,7 @@ const Header = () => {
           </>
         )}
       </div>
-    </nav>
+    </header>
   );
 };
 

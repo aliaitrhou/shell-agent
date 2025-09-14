@@ -6,13 +6,10 @@ import { IoIosWarning } from "react-icons/io";
 import { MdError } from "react-icons/md";
 import { PiSpinnerBold } from "react-icons/pi";
 import { motion } from "framer-motion";
+import { lexend } from "@/app/fonts";
+import { AlertProps } from "@/stores/use-alert-store";
 
-interface AlertProps {
-  message: string;
-  type?: string;
-}
-
-export const StatusAlert: React.FC<AlertProps> = ({ type, message }) => {
+const StatusAlert: React.FC<AlertProps> = ({ type, message }) => {
   let textColor;
   switch (type) {
     case "success":
@@ -30,16 +27,20 @@ export const StatusAlert: React.FC<AlertProps> = ({ type, message }) => {
 
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        translateY: -100,
-      }}
+      initial={{ opacity: 0, marginTop: 0, y: -50, scale: 0.95 }}
       animate={{
         opacity: 1,
-        translateY: 0,
+        marginTop: 50,
+        y: 0,
+        scale: 1,
+        transition: {
+          duration: 4,
+          ease: "easeOut",
+          type: "spring",
+          stiffness: 120,
+        },
       }}
-      transition={{ duration: 0.5 }}
-      className={`border-[1px] rounded-md z-50 border-neutral-600/60 bg-neutral-700/60 backdrop-blur-lg font-spaceMono ${textColor} flex items-center gap-2 px-4 py-2 text-sm shadow-2xl`}
+      className={`border-[1px] rounded-md z-50 border-neutral-600/60 bg-neutral-700/60 backdrop-blur-lg ${lexend.className} ${textColor} flex items-center gap-2 px-4 py-2 text-sm shadow-2xl`}
     >
       {type === "success" && <AiFillCheckCircle />}
       {type === "error" && <MdError />}
@@ -49,3 +50,5 @@ export const StatusAlert: React.FC<AlertProps> = ({ type, message }) => {
     </motion.div>
   );
 };
+
+export default StatusAlert;
