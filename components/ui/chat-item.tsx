@@ -8,27 +8,25 @@ import React, {
   KeyboardEvent,
 } from "react";
 import { BsThreeDots } from "react-icons/bs";
-import { RiDeleteBinLine } from "react-icons/ri";
-import { FiEdit } from "react-icons/fi";
+import { lexend } from "@/app/fonts";
+import { useTerminalTabs } from "@/stores/terminal-tabs-store";
+import { HiOutlineXMark } from "react-icons/hi2";
+import { FaLock, FaSquarePen, FaTrash } from "react-icons/fa6";
 
 interface Props {
   name: string;
+  maxWidth: number;
   chatId: string;
-  onClick: () => void;
   active: boolean;
-  disableDelete: boolean;
-  handleDeleteChat: (id: string) => void;
-  handleRenameChat: (id: string, newName: string) => void;
+  isClosed: boolean;
 }
 
 const ChatItem: React.FC<Props> = ({
   name,
+  maxWidth,
   chatId,
-  onClick,
-  disableDelete,
   active,
-  handleDeleteChat,
-  handleRenameChat,
+  isClosed,
 }) => {
   const [openMenu, setOpenMenu] = useState(false);
   const [newName, setNewName] = useState(name);
@@ -36,6 +34,12 @@ const ChatItem: React.FC<Props> = ({
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const {
+    disableRemoveChat,
+    handleRemoveChat,
+    handleRenameChat,
+    setActiveChatId,
+  } = useTerminalTabs();
 
   useEffect(() => {
     setNewName(name);
@@ -61,7 +65,7 @@ const ChatItem: React.FC<Props> = ({
 
   const handleDelete = () => {
     setOpenMenu(false);
-    handleDeleteChat(chatId);
+    handleRemoveChat(chatId);
   };
 
   const handleRename = () => {
@@ -84,7 +88,6 @@ const ChatItem: React.FC<Props> = ({
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       saveNewName();
-      // setNewName(name);
       setOpenInput(false);
     }
   };
@@ -92,54 +95,67 @@ const ChatItem: React.FC<Props> = ({
   return (
     <div
       ref={menuRef}
-      className={`relative w-28 rounded-[4px] py-1 px-2 ${
+      className={`min-w-0 max-w-32 flex-1 ${lexend.className} relative rounded-t-lg py-1 lg:py-1 px-2 ${
         active
-          ? "bg-zinc-700/50 border border-zinc-600/40"
-          : "hover:bg-zinc-700/20 border border-zinc-700/40"
-      } text-zinc-300 text-xs flex flex-row justify-between items-center`}
+          ? "relative bg-zinc-800 border-x-[2px] border-t-[2px] border-zinc-700/20 border-b-[2px] border-b-zinc-800"
+          : "bg-zinc-700/20 hover:bg-zinc-700/30  border-zinc-700/40"
+      } text-zinc-300 text-xs lg:text-sm font-extralight flex flex-row justify-between items-center gap-0 `}
+      style={{ width: `${Math.floor(maxWidth)}px` }}
     >
+      {isClosed && (
+        <FaLock className="absolute -top-[6px] -right-[2px] -rotate-45 text-zinc-600" />
+      )}
       {openInput ? (
         <input
           ref={inputRef}
-          className={`w-full rounded-sm font-kanit  ${active ? "bg-zinc-600" : "bg-zinc-700/70"} text-white focus:outline-none focus:ring-2 focus:ring-blue-400`}
+          className={`rounded-sm w-full  ${active ? "bg-zinc-700" : "bg-zinc-700/20"} text-white focus:outline-none focus:ring-2 text-xs focus:ring-blue-400`}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onBlur={saveNewName}
           value={newName}
+          maxLength={20}
         />
       ) : (
-        <div onClick={onClick} className="w-full text-start cursor-pointer">
-          <span className="text-xs font-kanit w-full text-zinc-400">
+        <div
+          onClick={() => setActiveChatId(chatId)}
+          className="min-w-0 text-start cursor-pointer flex-1"
+        >
+          <span
+            className={`flex-1 min-w-0 text-xs ${isClosed ? "text-zinc-500" : "text-zinc-300"} truncate block`}
+          >
             {newName}
           </span>
         </div>
       )}
 
       {openMenu && (
-        <div className="absolute right-0 top-[27px] z-50 bg-zinc-600/50 backdrop-blur-[2px] border border-zinc-600 rounded-md flex flex-col gap-1 items-center p-1 text-white">
+        <div className="absolute left-24 top-8 z-50 bg-zinc-700/70 backdrop-blur-[2px] border border-zinc-600/40 rounded-md flex flex-col gap-1 items-center p-1 text-white text-sm">
           <button
             onClick={handleRename}
-            className="w-full px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center gap-2"
+            className="w-full text-xs px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center gap-2"
           >
             <span>Rename</span>
-            <FiEdit className="text-zinc-300" />
+            <FaSquarePen className="text-zinc-300" />
           </button>
           <button
             onClick={handleDelete}
-            disabled={disableDelete}
-            className={`w-full px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center ${disableDelete && "cursor-not-allowed"} gap-2`}
+            disabled={disableRemoveChat}
+            className={`w-full text-xs px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center ${disableRemoveChat && "cursor-not-allowed"} gap-2`}
           >
             <span>Delete</span>
-            <RiDeleteBinLine className="text-zinc-300" />
+            <FaTrash className="text-zinc-300" />
           </button>
         </div>
       )}
 
       <button
-        className="ml-2 focus:outline-none border-none text-zinc-400"
+        className={`hidden md:block focus:outline-none border-none ${isClosed ? "text-zinc-500" : "text-zinc-300"} text-zinc-300  ${openMenu ? "bg-zinc-600/50" : "hover:bg-zinc-500/50"} p-[2px] rounded-full`}
         onClick={handleThreeDotsClick}
       >
-        <BsThreeDots />
+        <BsThreeDots className="rotate-90" />
+      </button>
+      <button onClick={handleDelete} className="md:hidden">
+        <HiOutlineXMark className="size-4" />
       </button>
     </div>
   );
