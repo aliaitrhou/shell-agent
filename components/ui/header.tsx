@@ -12,7 +12,6 @@ import { dark } from "@clerk/themes";
 import { useUser } from "@clerk/nextjs";
 import { lexend } from "@/app/fonts";
 import { Logo } from "./logo";
-import { WiStars } from "react-icons/wi";
 
 const Header = () => {
   const [isClient, setIsClient] = useState(false);
@@ -31,7 +30,7 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-40 sm:z-0 sm:static bg-zinc-950 sm:bg-transparent w-full flex flex-row justify-between items-center p-2 sm:px-2 md:px-4 lg:px-5 lg:pt-5">
+    <header className="sticky top-0 z-40 sm:z-0 sm:static bg-transparent w-full flex flex-row justify-between items-center p-2 sm:px-2 md:px-4 lg:px-5 lg:pt-5">
       <Logo />
 
       <div className="space-x-2">
