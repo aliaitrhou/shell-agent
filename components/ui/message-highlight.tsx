@@ -20,7 +20,11 @@ const MessageHighlight: React.FC<Props> = ({ text, classNames }) => {
   }, [text]);
 
   return (
-    <code ref={messageRef} className={classNames}>
+    <code
+      ref={messageRef}
+      className={`${classNames} language-bash`}
+      data-highlight="yes"
+    >
       {text}
     </code>
   );

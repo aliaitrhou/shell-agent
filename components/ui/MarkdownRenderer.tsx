@@ -7,9 +7,9 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import { FaRegCopy } from "react-icons/fa6";
 import { BsCopy } from "react-icons/bs";
 import { FaCheck } from "react-icons/fa6";
+import { mplus } from "@/app/fonts";
 
 interface Props {
   language: string;
@@ -32,9 +32,11 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
   };
 
   return (
-    <div className="relative w-fit max-w-xs sm:max-w-xl md:max-w-2xl ml-2  codeblock bg-zinc-900/60 border-[.3px] border-zinc-600 rounded-md overflow-hidden my-3 text-xs">
+    <div
+      className={`relative w-fit max-w-xs sm:max-w-xl md:max-w-2xl ml-2  codeblock bg-zinc-900/60 border-[.3px] border-zinc-600 rounded-md overflow-hidden my-3 text-xs ${mplus.className}`}
+    >
       <div className="flex items-center justify-between w-full text-xs px-3 py-1 rounded-t bg-zinc-900/40 text-zinc-400 border-b-[.3px] border-zinc-600">
-        <span className="lowercase font-spaceMono ">{language}</span>
+        <span className="lowercase">{language}</span>
         <button
           className="focus:outline-none"
           onClick={() => handleCopyCode(value)}
@@ -54,12 +56,12 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
         customStyle={{
           marginTop: "5px",
           background: "transparent",
-          padding: "0.6rem 0.6rem",
+          padding: "0.3rem 0.4rem",
           overflowX: "auto",
         }}
         codeTagProps={{
           style: {
-            fontSize: "0.8rem",
+            fontSize: "0.7rem",
             overflowX: "auto",
           },
         }}
@@ -91,7 +93,7 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
             return <>{childrenArray}</>; // Don't wrap div or pre inside p
           }
 
-          return <p className="sm:mx-1 md:mx-2 last:mb-0">{childrenArray}</p>;
+          return <p className="my-1">{childrenArray}</p>;
         },
         code({
           inline,
@@ -129,7 +131,7 @@ const MarkdownRenderer: FC<MarkdownRendererProps> = ({ children }) => {
             <code
               className={
                 className ||
-                "text-xs  bg-zinc-700 border border-zinc-600 px-1 rounded-md text-green-500"
+                "text-[10px] sm:text-xs  bg-zinc-700 border border-zinc-600 whitespace-nowrap px-1 rounded-md text-green-500"
               }
               {...props}
             >
