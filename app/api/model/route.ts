@@ -9,6 +9,7 @@ export async function POST(req: Request) {
 
   try {
     const { message, chatHistory, model } = await req.json();
+    console.log("Model is :", model)
 
     const { searchParams } = new URL(req.url);
     const semester = searchParams.get("semester");
@@ -50,7 +51,24 @@ export async function POST(req: Request) {
 
     await client.connect();
 
+    const getTotalPages = async (semester: string, pdfName: string) => {
+      if (!client) throw new Error("Database client not initialized");
+
+      const query = `
+        SELECT MAX(page_num) as total_pages
+        FROM pdf_embeddings 
+        WHERE semester = $1 AND pdf_name = $2
+      `;
+
+      const { rows } = await client.query(query, [semester, pdfName]);
+      return rows[0]?.total_pages || 0;
+    }
+
     const results = await getContext(embedding, semester);
+
+    const totalPages = results.length > 0
+      ? await getTotalPages(results[0].semester, results[0].pdf_name)
+      : 0;
     const context = results.map((r) => r.content).join("\n");
 
     const formattedReferences = results
@@ -60,7 +78,6 @@ export async function POST(req: Request) {
       )
       .join("\n\n");
 
-    console.log("formattedReferences: ", formattedReferences);
     const prompt = `
 Rules:
 - Consice replies and stright to point.
@@ -71,34 +88,44 @@ REFERENCES:
 ${formattedReferences}
 `.trim();
 
-    console.log("model is : ", model);
     const response = await together.chat.completions.create({
-      model: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+      model,
       messages: [
         {
           role: "system",
-          content: prompt + `CHAT_HISTORY:${chatHistory}\nCONTEXT: ${context}`,
+          content: `${prompt}\n\nCHAT_HISTORY:\n${chatHistory}\n\nCONTEXT:\n${context}`
         },
         { role: "user", content: message },
       ],
       temperature: 0.7,
-      max_tokens: 200,
+      max_tokens: 300,
       stream: false,
     });
 
     const answer = response?.choices[0]?.message?.content ?? null;
+    console.log("answer is : ", answer)
 
     const pdfData = {
       page: results[0].page_num,
       chapter: results[0].pdf_name,
       semester: results[0].semester,
+      totalPages
     };
 
     console.log("pdfData: ", pdfData);
 
+    const cleanedAnswer = answer
+      ?.replace(/<think>[\s\S]*?(<\/think>|$)/g, "")
+      .trim();
+
+
+    console.log("cleanedAnswer: ", cleanedAnswer)
+
     return new Response(
       JSON.stringify({
-        answer,
+        answer: model === "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free"
+          ? cleanedAnswer
+          : answer,
         pdfData,
       }),
     );
