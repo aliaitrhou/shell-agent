@@ -3,11 +3,10 @@
 Shell Agent is an innovative web app designed for software engineering students to explore and learn Linux commands through an engaging chat-like terminal interface 💻. Built with insights from real teachers' courses 📚 and enhanced by Retrieval-Augmented Generation (RAG).
 
 ## Features
-
-- Simulates a terminal for a hands-on learning experience.
 - Ask Linux-related questions or type commands, and get instant, AI-driven responses.
+- Interactive terminal-style chat interface.
 - Delivers precise and contextual answers based on real course material.
-- Perfect for students and aspiring engineers.
+- Perfect for beginners and aspiring engineers.
 
 ## Setup
 
@@ -18,7 +17,14 @@ In order for you to setup this project with your own resources, consider followi
 [Neon](https://neon.tech/) gives you a free Postgres database with vector extension enabled, which is perfect for this project.
 
 - Create a postgres database with vector extension enabled.
-- Add a .env file with DATABASE_URL
+- Add a .env file with DATABASE_URL variable:
+
+### LLMs with TogetherAI:
+
+[TogetherAI](https://together.AI/) provides access to various open-source LLMs, including the BGE models which are great for generating embeddings.
+
+- Create an account on TogetherAI and get your API key.
+- Add the API key to your .env file as TOGETHER_API_KEY variable.
 
 ### Create python script
 
