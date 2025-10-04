@@ -1,30 +1,3 @@
-## About
-
-Shell Agent is an innovative web app designed for software engineering students to explore and learn Linux commands through an engaging chat-like terminal interface 💻. Built with insights from real teachers' courses 📚 and enhanced by Retrieval-Augmented Generation (RAG).
-
-## Features
-
-- Simulates a terminal for a hands-on learning experience.
-- Ask Linux-related questions or type commands, and get instant, AI-driven responses.
-- Delivers precise and contextual answers based on real course material.
-- Perfect for students and aspiring engineers.
-
-## Setup
-
-In order for you to setup this project with your own resources, consider following instructions below.
-
-### Database with Neon:
-
-[Neon](https://neon.tech/) gives you a free Postgres database with vector extension enabled, which is perfect for this project.
-
-- Create a postgres database with vector extension enabled.
-- Add a .env file with DATABASE_URL
-
-### Create python script
-
-Python script that take pdf as argument then extract it's data page by page, convert each page data into embedding and finally insert each page with it's corresponding embedding into vector database.
-
-```python
 import os
 import sys
 import io
@@ -148,20 +121,3 @@ if __name__ == "__main__":
     cursor.close()
     connection.close()
     print("✅ Done. Connection closed.")
-```
-
-### Insert with a bash script
-
-This function well be used to loop through the PDFs (courses) and run the `python script` on each one of them.
-
-```bash
-#!/bin/bash
-
-for file in public/courses/*; do
-  echo "Start Processing: $file"
-  python3 script.py $file
-  echo "Finish Processing: $file"
-done
-```
-
-With that setup you should be able to use your own resources with shell agent as infrastructure to learn more effectively.
