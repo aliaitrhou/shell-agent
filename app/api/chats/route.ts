@@ -9,42 +9,29 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // Ensure the user exists (but don't create chats here)
   let user = await prisma.user.findUnique({
     where: { clerkId },
   });
 
-  // If user doesn't exist, create one
   if (!user) {
     user = await prisma.user.create({
       data: { clerkId },
     });
-
-    await prisma.chat.create({
-      data: {
-        userId: user.id,
-        name: "First Chat",
-      },
-    });
-  } else {
-    const chats = await prisma.chat.findMany({
-      where: { userId: user.id },
-    });
-
-    // If no chats exist, create a default chat
-    if (chats.length === 0) {
-      await prisma.chat.create({
-        data: {
-          userId: user.id,
-          name: "First Chat",
-        },
-      });
-    }
   }
 
-  // Refetch updated chats
-  const updatedChats = await prisma.chat.findMany({
+  const chats = await prisma.chat.findMany({ where: { userId: user.id } });
+  // If user has no chats, create the first one
+  if (chats.length === 0) {
+    await prisma.chat.create({
+      data: { userId: user.id, name: "First Tab" },
+    });
+  }
+
+  // Fetch chats only
+  const newChats = await prisma.chat.findMany({
     where: { userId: user.id },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "asc" },
     include: {
       _count: {
         select: { messages: true },
@@ -52,11 +39,11 @@ export async function GET() {
     },
   });
 
-  const formattedChats = updatedChats.map((chat) => ({
+  const formattedChats = newChats.map((chat) => ({
     id: chat.id,
     createdAt: chat.createdAt,
     name: chat.name,
-    messageCount: chat._count.messages,
+    closedTab: chat.isExpired,
   }));
 
   return NextResponse.json(formattedChats);
@@ -79,6 +66,20 @@ export async function POST(request: NextRequest) {
     create: { clerkId },
   });
 
+  // Count how many chats the user already has
+  const chatCount = await prisma.chat.count({
+    where: { userId: user.id },
+  });
+
+  if (chatCount >= 6) {
+    return NextResponse.json({
+      message: "You can only create up to 6 chats.",
+      children: `<Link href="user-guide#limitations">Learn more</Link>`,
+      status: "error",
+      chat: null,
+    });
+  }
+
   // Create a new chat with the provided name and the user's id
   const chat = await prisma.chat.create({
     data: {
@@ -86,7 +87,6 @@ export async function POST(request: NextRequest) {
       name,
     },
   });
-
   return NextResponse.json({
     message: "Chat created successfully.",
     status: "success",

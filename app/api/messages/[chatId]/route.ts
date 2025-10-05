@@ -1,5 +1,4 @@
 // endpoint to be used to retrieve messages from a chat based on a provided chatId.
-import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
@@ -7,6 +6,7 @@ export async function GET(
   { params }: { params: Promise<{ chatId: string }> },
 ) {
   const { chatId } = await params;
+  console.log("chatId is : ", chatId);
 
   // check if the chat exists
   const chat = await prisma.chat.findUnique({
@@ -14,12 +14,21 @@ export async function GET(
   });
 
   if (!chat)
-    return NextResponse.json({ error: "Invalid chat ID" }, { status: 404 });
+    return Response.json({ error: "Invalid chat ID" }, { status: 404 });
+
   const messages = await prisma.message.findMany({
     where: { chatId },
     orderBy: { createdAt: "asc" },
-    select: { role: true, text: true, cwd: true, mode: true },
+    select: {
+      role: true,
+      text: true,
+      cwd: true,
+      mode: true,
+      pageNumber: true,
+      chapterName: true,
+      containerExpiry: true,
+    },
   });
 
-  return NextResponse.json(messages);
+  return Response.json(messages);
 }
