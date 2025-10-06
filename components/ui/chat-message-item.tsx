@@ -30,7 +30,7 @@ const ChatMessageItem = ({
         />
         <div>{text}</div>
         <div
-          className={`max-w-full font-light text-xs text-zinc-300 mt-[1px] break-words ${msg.text === "empty_message" ? "mb-2" : ""}`}
+          className={`max-w-full font-light text-xs text-zinc-300 mt-[1px] break-words ${text === "empty_message" ? "mb-2" : ""}`}
         >
           <div className="pl-4 w-full break-words">
             {text === "empty_message" ? (
