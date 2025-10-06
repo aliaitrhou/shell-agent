@@ -9,7 +9,7 @@ type Props = TOCHeading & {
   active: boolean;
 };
 
-export const OutlineViewItem = ({ id, level, value, active }: Props) => {
+export const OutlineViewItem = ({ id, level, value, active, index }: Props) => {
   console.log(`Id is : ${id} and Level ${level}, is Active: ${active}`);
   const refItem = useRef<HTMLLIElement>(null);
   const registerOutlineItem = useTocStore((state) => state.registerOutlienItem);
@@ -18,11 +18,12 @@ export const OutlineViewItem = ({ id, level, value, active }: Props) => {
     if (id) registerOutlineItem(id, refItem as RefObject<HTMLLIElement>);
   }, [id, registerOutlineItem]);
 
+
   return (
     <li ref={refItem} className="py-1">
       <span
         style={{
-          marginLeft: `${level * 15}px`,
+          marginLeft: `${level * 20}px`,
         }}
       >
         <Link

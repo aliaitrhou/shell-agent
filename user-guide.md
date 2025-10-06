@@ -45,12 +45,16 @@ Let's try it!:
 Boom:
 ![editor 1](/doc-imgs/editor1.png)
 
-Now you can ask for example, and try running them using the editor:
+Now you can ask with `Prompt` mode to get examples of scripts, or how to write a specific one.
+
 ![run script](/doc-imgs/terminal.png)
 
 As you can see, the scripts can be executed directly from the terminal with this syntax `./script_name.sh`.
 
 For safety reasons shell agent doesn't require you to change the permission of the script to make it executable, it's done automatically.
+
+Script Editor doesn't accept inputs, so if your script requires user input, it won't work as expected.
+
 
 ![editor 2](/doc-imgs/editor2.png)
 
@@ -59,7 +63,9 @@ For safety reasons shell agent doesn't require you to change the permission of t
 
 Shell agent is designed to help you learn effectively by providing context from your course material.
 
-The web app uses RAG to power the language models with context from your course, so the LLM understands and respond to your queries based on the content of the courses you are studying.
+The web app uses RAG to power the language models with context from your course, so it understands and respond to your queries based on the content of the courses you are studying.
+
+![course context](/doc-imgs/term-pdf.png)
 
 As you may know this project is open source, you can clone shell agent and use an infrastructure to host your own courses of choice.
 
@@ -82,8 +88,3 @@ Each tab is a separate container, which means that you can have multiple session
 Source Code - [Shell agent Github](https://github.com/aliaitrhou/shell-agent)
 
 About Shell Agent - [https://www.aliaitrahou.me/projects/shell-agent](https://www.aliaitrahou.me/projects/shell-agent).
-
-About developer - [https://www.aliaitrahou.me/contact](https://www.aliaitrahou.me/contact).
-
-
-

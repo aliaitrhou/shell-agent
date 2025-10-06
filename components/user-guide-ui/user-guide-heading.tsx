@@ -12,7 +12,7 @@ export const createRehypeHeading = (level: number) => {
   const HeadingTag = `h${level}` as unknown as React.ElementType;
 
   const RehypeHeading: React.FC<Props> = ({ id, children, ...rest }) => {
-    const refHeading = useRef<HTMLHeadingElement>(null);
+    const refHeading = useRef<HTMLHeadingElement | null>(null);
     const registerHeading = useTocStore((state) => state.registerHeading);
 
     useEffect(() => {
