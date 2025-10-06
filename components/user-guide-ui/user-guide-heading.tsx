@@ -16,6 +16,7 @@ export const createRehypeHeading = (level: number) => {
     const registerHeading = useTocStore((state) => state.registerHeading);
 
     useEffect(() => {
+      // @ts-expect-error  ref type
       if (id) registerHeading(id, refHeading);
     }, [id, registerHeading]);
 

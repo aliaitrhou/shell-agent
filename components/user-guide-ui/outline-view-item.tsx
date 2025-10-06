@@ -9,7 +9,7 @@ type Props = TOCHeading & {
   active: boolean;
 };
 
-export const OutlineViewItem = ({ id, level, value, active, index }: Props) => {
+export const OutlineViewItem = ({ id, level, value, active }: Props) => {
   console.log(`Id is : ${id} and Level ${level}, is Active: ${active}`);
   const refItem = useRef<HTMLLIElement>(null);
   const registerOutlineItem = useTocStore((state) => state.registerOutlienItem);
