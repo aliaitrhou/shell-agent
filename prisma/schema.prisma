@@ -19,6 +19,7 @@ model Chat {
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String    @default("New Chat")
   messages  Message[]
+  isExpired Boolean   @default(false)
   createdAt DateTime  @default(now())
 }
 
