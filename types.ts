@@ -1,18 +1,22 @@
 export type message = {
   chatId?: string;
-  createdAt?: string;
   id?: string;
   role: "User" | "Assistant" | "ShellOutput";
-  cwd?: string;
-  mode?: Mode;
+  cwd: string;
+  mode: Mode;
   text: string;
+  pageNumber?: number | null;
+  chapterName?: string | null;
+  containerExpiry?: string | null;
 };
 
 export interface ChatProps {
   id: string;
   createdAt: string;
   name: string;
-  messageCount: number;
+  closedTab: boolean;
 }
 
 export type Mode = "Prompt" | "Command";
+
+export type ModeStatus = "Page" | "Countdown";

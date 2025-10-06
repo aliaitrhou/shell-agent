@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["img.clerk.com"], // Add your external image domain here
   },
+  // devIndicators: false
+  reactStrictMode: false
 };
 
 export default nextConfig;
