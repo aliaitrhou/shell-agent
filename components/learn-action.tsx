@@ -24,14 +24,11 @@ export default async function learnAction(
   }
 
   const responseData = await res.json();
-  console.log("responseData is : ", responseData);
 
-  const answer = responseData.answer || "";
-  const newMode = responseData.newMode;
-  console.log("new Mode:", newMode);
+  const answer = responseData.answer;
+  const pdfData = responseData.pdfData;
 
   // NOTE: Remove this variable later and make it boolean
   // so the model can decied whether to switch or not.
-  const autoSwitch = false;
-  return { answer, autoSwitch };
+  return { answer, pdfData };
 }
