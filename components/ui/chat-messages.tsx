@@ -10,16 +10,25 @@ import { firaCode, mplus } from "@/app/fonts";
 // the model returns a markdown so i use this component to render it as html
 const MemoizedMarkdownRenderer = React.memo(MarkdownRenderer);
 
+
 interface Props extends React.ComponentPropsWithoutRef<"textarea"> {
   messages: message[];
   handleClick: () => void;
 }
 
+
 const ChatMessages: React.FC<Props> = React.memo(
   ({ messages, handleClick }) => {
+
     return (
       <>
         {messages.map((msg, index) => {
+          const prevAssistant = messages
+            .slice(0, index)
+            .reverse()
+            .find((m) => m.role === "Assistant" && m.pageNumber != null);
+
+
           switch (msg.role) {
             case "User":
               return (
@@ -30,8 +39,8 @@ const ChatMessages: React.FC<Props> = React.memo(
                   <TerminalPrompt
                     mode={msg.mode}
                     pwd={msg.cwd}
-                    pageNumber={msg.pageNumber}
-                    chapterName={msg.chapterName}
+                    pageNumber={prevAssistant?.pageNumber || msg.pageNumber || null}
+                    chapterName={msg.chapterName || prevAssistant?.chapterName || null}
                     containerExpiry={msg.containerExpiry}
                     handleOpenPdf={() => handleClick()}
                   />

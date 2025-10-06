@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ChatProps } from "@/types";
-import ChatItem from "./chat-item";
+import ChatTab from "./chat-tab";
 import { motion } from "framer-motion";
 
 interface MobileSidebarProps {
@@ -63,7 +63,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({
           </h3>
           <div className="h-full space-y-2 p-4">
             {chats.map((chat, index) => (
-              <ChatItem
+              <ChatTab
                 key={index}
                 active={chat.id === currentChatId}
                 chatId={chat.id}

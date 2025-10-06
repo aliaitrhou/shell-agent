@@ -10,7 +10,7 @@ import {
 } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { useUser } from "@clerk/nextjs";
-import { lexend } from "@/app/fonts";
+import { lexend, montserrat } from "@/app/fonts";
 import { Logo } from "./logo";
 
 const Header = () => {
@@ -36,9 +36,9 @@ const Header = () => {
       <div className="space-x-2">
         {isClient && (
           <>
-            <div className="flex flex-row items-center gap-2 md:gap-2">
+            <div className="flex flex-row items-center ">
               {user && (
-                <p className="text-zinc-400 font-kanit text-xs sm:text-sm sm:text-md">
+                <p className={` pr-2 text-white ${montserrat.className} text-xs sm:text-sm sm:text-md`}>
                   {getGreeting()} {user?.firstName}
                 </p>
               )}
@@ -48,7 +48,7 @@ const Header = () => {
                     baseTheme: dark,
                     elements: {
                       userButtonAvatarBox:
-                        "w-8 h-8 sm:w-9 sm:h-9 border border-white rounded-full",
+                        "w-8 h-8 sm:w-9 sm:h-9 shadow-xl border-2 border-white rounded-full",
                     },
                   }}
                 />

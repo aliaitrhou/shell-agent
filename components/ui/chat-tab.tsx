@@ -11,7 +11,8 @@ import { BsThreeDots } from "react-icons/bs";
 import { lexend } from "@/app/fonts";
 import { useTerminalTabs } from "@/stores/terminal-tabs-store";
 import { HiOutlineXMark } from "react-icons/hi2";
-import { FaLock, FaSquarePen, FaTrash } from "react-icons/fa6";
+import { FaLock } from "react-icons/fa6";
+import { FiEdit2, FiTrash } from "react-icons/fi";
 
 interface Props {
   name: string;
@@ -95,11 +96,10 @@ const ChatItem: React.FC<Props> = ({
   return (
     <div
       ref={menuRef}
-      className={`min-w-0 max-w-32 flex-1 ${lexend.className} relative rounded-t-lg py-1 lg:py-1 px-2 ${
-        active
-          ? "relative bg-zinc-800 border-x-[2px] border-t-[2px] border-zinc-700/20 border-b-[2px] border-b-zinc-800"
-          : "bg-zinc-700/20 hover:bg-zinc-700/30  border-zinc-700/40"
-      } text-zinc-300 text-xs lg:text-sm font-extralight flex flex-row justify-between items-center gap-0 `}
+      className={`min-w-0 max-w-32 flex-1 ${lexend.className} relative ${active
+        ? "rounded-t-lg  py-1 lg:py-[6px] px-2  relative bg-zinc-800 border-x-[2px] border-t-[2px] border-zinc-700/30 border-b-[2px] border-b-zinc-800"
+        : "rounded-lg py-[2px] lg:py-[4px] px-2 self-center   bg-zinc-700/20 hover:bg-zinc-700/30  border-zinc-700/40 mb-[2px]"
+        } text-zinc-300 text-xs lg:text-sm font-extralight flex flex-row justify-between items-center gap-0  `}
       style={{ width: `${Math.floor(maxWidth)}px` }}
     >
       {isClosed && (
@@ -129,27 +129,29 @@ const ChatItem: React.FC<Props> = ({
       )}
 
       {openMenu && (
-        <div className="absolute left-24 top-8 z-50 bg-zinc-700/70 backdrop-blur-[2px] border border-zinc-600/40 rounded-md flex flex-col gap-1 items-center p-1 text-white text-sm">
+        <div className="absolute left-24 top-8 z-50 bg-zinc-700  border border-zinc-600 rounded-md flex flex-col gap-1 items-center p-1 text-white text-sm">
           <button
             onClick={handleRename}
             className="w-full text-xs px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center gap-2"
+
           >
             <span>Rename</span>
-            <FaSquarePen className="text-zinc-300" />
+            <FiEdit2 className="text-zinc-300" />
           </button>
+          <div className="w-full h-[1px] bg-zinc-600" />
           <button
             onClick={handleDelete}
             disabled={disableRemoveChat}
-            className={`w-full text-xs px-2 py-1 hover:bg-blue-500 rounded-md flex flex-row justify-between items-center ${disableRemoveChat && "cursor-not-allowed"} gap-2`}
+            className={`w-full text-xs px-2 py-1 text-red-400 hover:text-white hover:bg-blue-500 rounded-md flex flex-row justify-between items-center ${disableRemoveChat && "cursor-not-allowed"} gap-2`}
           >
             <span>Delete</span>
-            <FaTrash className="text-zinc-300" />
+            <FiTrash />
           </button>
         </div>
       )}
 
       <button
-        className={`hidden md:block focus:outline-none border-none ${isClosed ? "text-zinc-500" : "text-zinc-300"} text-zinc-300  ${openMenu ? "bg-zinc-600/50" : "hover:bg-zinc-500/50"} p-[2px] rounded-full`}
+        className={`hidden md:block focus:outline-none border-none ${isClosed ? "text-zinc-500" : "text-zinc-300"} text-zinc-300  ${openMenu ? "bg-zinc-600" : "hover:bg-zinc-500/50"} p-[2px] rounded-full`}
         onClick={handleThreeDotsClick}
       >
         <BsThreeDots className="rotate-90" />

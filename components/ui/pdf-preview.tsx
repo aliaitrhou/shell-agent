@@ -1,55 +1,84 @@
 "use client";
 
+import { lexend } from "@/app/fonts";
+import { usePdfPreviewStore } from "@/stores/use-pdf-store";
 import React, { useState, useEffect } from "react";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { HiOutlineArrowNarrowLeft, HiOutlineArrowNarrowRight } from "react-icons/hi";
+import { RxCross2 } from "react-icons/rx";
+
 
 interface Props {
-  pageToOpen: number;
   handleClosePdf: () => void;
 }
 
-const PdfPreview: React.FC<Props> = ({ pageToOpen, handleClosePdf }) => {
-  const [loading, setLoading] = useState(true);
+const PdfPreview: React.FC<Props> = ({ handleClosePdf }) => {
 
-  // Reset loading state whenever page changes
+  const { page, chapter, semester, totalPages } = usePdfPreviewStore();
+  const [currentPage, setCurrentPage] = useState(page);
+
   useEffect(() => {
-    setLoading(true);
-  }, [pageToOpen]);
+    setCurrentPage(page)
+  }, [page])
 
-  console.log("Pdf preview mounts!!!");
+
+  const source = `/${semester}/${chapter}#page=${currentPage}&toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&view=FitH&zoom=page-fit&pagemode=none&background=#27272a`;
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (totalPages && currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const isPrevDisabled = currentPage <= 1;
+  const isNextDisabled = totalPages ? currentPage >= totalPages : false;
+
 
   return (
     <section
-      className={`relative h-[100dvh] sm:h-[80dvh] w-full bg-zinc-800 rounded-none sm:rounded-sm border border-zinc-700/60 overflow-hidden`}
+      className={`relative h-[80dvh] md:h-[75dvh] flex flex-col w-full bg-zinc-800 rounded-none sm:rounded-md border-[2px] border-zinc-700/40 overflow-hidden ${lexend.className} font-light py-[6px]`}
     >
-      <div className="h-8 sm:h-10 px-4 bg-zinc-800 border-b-[1px] border-b-zinc-700/60 flex items-center justify-between font-kanit text-sm text-zinc-500 ">
-        <span className="">Chapter 1</span>
+      <div className="absolute top-0 w-full h-10 pl-2 pr-1 bg-zinc-800 border-b-[2px] border-b-zinc-700/40 flex items-center justify-between text-sm text-zinc-300 ">
         <span className="">
-          P{pageToOpen < 10 ? `0${pageToOpen}` : `${pageToOpen}`}
+          {semester}: {chapter.charAt(0).toUpperCase() + chapter.slice(1)}
         </span>
-      </div>
-      {loading && (
-        <div className="w-full h-full flex items-center justify-center">
-          <AiOutlineLoading3Quarters className="mx-auto h-5 w-5 rounded-full animate-spin text-zinc-600" />
-        </div>
-      )}
-      {/* Key attribute forces iframe to re-render when page changes */}
-      <iframe
-        key={`pdf-frame-${pageToOpen}`}
-        className="h-full w-full pt-[2px]"
-        src={`/course-s3/chap1.pdf#page=${pageToOpen}&toolbar=0&view=FitH&scrollbar=0&statusbar=0&navpanes=0&background=#27272a&zoom=90`}
-        width="800"
-        height="500"
-        onLoad={() => setLoading(false)}
-      ></iframe>
-      <div className="absolute bg-zinc-800 bottom-0 py-2 px-2 right-0 w-full flex flex-row justify-between items-center text-sm border-t-[1px] border-zinc-700/60">
-        <span className="text-zinc-500 font-kanit">By auther name</span>
         <button
           onClick={handleClosePdf}
-          className="px-2 sm:px-3 py-0 bg-zinc-700/80 backdrop-blur-sm border-2 border-zinc-700/60 text-zinc-400 focus:outline-none rounded-full  font-spaceMono"
+          className="p-1 text-zinc-500 hover:bg-zinc-700  focus:outline-none rounded-full"
         >
-          Close
+          <RxCross2 className="size-4" />
         </button>
+      </div>
+      <iframe
+        key={`pdf-frame-${currentPage}`}
+        className="h-full w-full pt-[2px]"
+        src={source}
+        width="800"
+        height="00"
+      ></iframe>
+      <div className="absolute bg-zinc-800 bottom-0 py-2 px-2 sm:px-3 lg:px-4 right-0 w-full text-sm border-t-[2px] border-zinc-700/40">
+        <div className="mx-auto w-32 flex items-center justify-between gap-5">
+          <button
+            className="border border-zinc-600 active:border-zinc-500 bg-zinc-700 rounded-lg p-1"
+            disabled={isPrevDisabled}
+            onClick={handlePrevPage}
+          >
+            <HiOutlineArrowNarrowLeft />
+          </button>
+          <span>{currentPage}</span>
+          <button
+            className="border border-zinc-600 active:border-zinc-500  bg-zinc-700 rounded-lg p-1"
+            disabled={isNextDisabled}
+            onClick={handleNextPage}
+          >
+            <HiOutlineArrowNarrowRight />
+          </button>
+        </div>
       </div>
     </section>
   );

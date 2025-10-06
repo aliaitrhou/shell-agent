@@ -2,6 +2,7 @@ import { Mode } from "@/types";
 import React from "react";
 import { IoTriangleSharp } from "react-icons/io5";
 import { BsArrow90DegDown, BsArrow90DegRight } from "react-icons/bs";
+import { usePdfPreviewStore } from "@/stores/use-pdf-store";
 
 interface shellPromptProps {
   type: "left-side" | "cwd";
@@ -38,8 +39,12 @@ interface TerminalPromptProps {
   mode: Mode;
   children?: React.ReactNode;
   handleToggleModes?: () => void;
-  handleOpenPage?: (n: number) => void;
-  pageNumber?: number;
+  handleOpenPdf?: (chapterName?: string, pageNumber?: number) => void;
+  // Prompt mode context
+  pageNumber?: number | null;
+  chapterName?: string | null;
+  // Command mode context
+  containerExpiry?: string | null;
   pwd: string;
 }
 
@@ -47,11 +52,48 @@ const TerminalPrompt: React.FC<TerminalPromptProps> = ({
   mode,
   children,
   handleToggleModes,
-  handleOpenPage,
+  handleOpenPdf,
   pageNumber,
+  chapterName,
+  containerExpiry,
   pwd,
 }) => {
-  console.log("termianl prompt mounts");
+
+
+  const { updatePdfPreview } = usePdfPreviewStore();
+
+  const renderContextBadge = () => {
+    // Prompt mode - show page info if available
+    if (mode === "Prompt") {
+      if (pageNumber && chapterName && handleOpenPdf) {
+        return (
+          <button
+            onClick={() => {
+              console.log("Opening PDF:", chapterName, "page:", pageNumber);
+              updatePdfPreview({ page: pageNumber });
+              handleOpenPdf(chapterName, pageNumber);
+            }}
+            className="text-xs font-thin text-zinc-700 focus:outline-none hover:text-zinc-900 transition-colors"
+          >
+            Page {pageNumber}
+          </button>
+        );
+      } else {
+        return <div className="text-xs font-thin text-zinc-700">Pending</div>;
+      }
+    }
+
+    // Command mode - show container expiry
+    if (mode === "Command") {
+      return (
+        <div className="text-xs font-thin text-zinc-700">
+          {containerExpiry || "No container"}
+        </div>
+      );
+    }
+
+    return <div className="text-xs font-thin text-zinc-700">Pending</div>;
+  };
 
   return (
     <div className="flex flex-col justify-center gap-1">
@@ -75,29 +117,10 @@ const TerminalPrompt: React.FC<TerminalPromptProps> = ({
           <BsArrow90DegRight className="absolute -left-2 -bottom-[6px] size-5 text-blue-400" />
           <BsArrow90DegDown className="absolute -left-2 -bottom-[19px] size-5 text-blue-400 rotate-[271deg]" />
         </div>
-        <div
-          className={`relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2  rounded-s-full rounded-e-full bg-white mr-1 font-spaceMono`}
-        >
-          <IoTriangleSharp
-            className={`absolute -left-[11px] z-20 rotate-[269deg] text-white h-4 w-5`}
-          />
-          {/*TODO: make the button opens the pdf page used in rag */}
-          {pageNumber && handleOpenPage ? (
-            <button
-              onClick={() => {
-                handleOpenPage(pageNumber);
-              }}
-              className={`text-xs font-thin text-zinc-700 focus:outline-none`}
-            >
-              Page {pageNumber}
-            </button>
-          ) : (
-            <span
-              className={`text-xs font-thin text-zinc-700 focus:outline-none`}
-            >
-              Pending
-            </span>
-          )}
+
+        <div className="relative flex flex-row justify-start items-center self-start shrink-0 text-white px-2 rounded-s-full rounded-e-full bg-white mr-1 font-spaceMono">
+          <IoTriangleSharp className="absolute -left-[11px] z-20 rotate-[269deg] text-white h-4 w-5" />
+          {renderContextBadge()}
         </div>
       </div>
       {children}

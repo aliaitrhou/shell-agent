@@ -18,7 +18,7 @@ const TerminalTopBar: React.FC<Props> = ({ closeEditor, chatId }) => {
 
   return (
     <div
-      className={`absolute z-30 top-0 left-0 right-0 ${lexend.className} font-light w-full bg-neutral-900 h-10 lg:h-12 border-b-[2px] border-b-zinc-700/40 rounded-t-md px-3 lg:px-4 flex items-center gap-1`}
+      className={`absolute z-30 top-0 left-0 right-0 ${lexend.className} font-light w-full bg-[#181818] h-10 lg:h-12 border-b-[2px] border-b-zinc-700/50 rounded-t-xl px-3 lg:px-4 flex items-center gap-1`}
     >
       <div className="group flex items-center gap-2 shrink-0">
         <ButtonHoverEffect desc="Remove current chat">
@@ -54,7 +54,7 @@ const TerminalTopBar: React.FC<Props> = ({ closeEditor, chatId }) => {
           </button>
         </ButtonHoverEffect>
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="relative flex-1 min-w-0">
         <Sidebar />
       </div>
     </div>

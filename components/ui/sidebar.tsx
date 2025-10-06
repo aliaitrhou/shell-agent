@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import ChatItem from "./chat-item";
+import ChatTab from "./chat-tab";
 import { useTerminalTabs } from "@/stores/terminal-tabs-store";
 
 const Sidebar = () => {
@@ -29,12 +29,10 @@ const Sidebar = () => {
     return () => observer.disconnect();
   }, [chats.length]); // depends on chats length only
 
-  console.log("Chats (sidebar): ", chats);
-
   return (
-    <div className="flex gap-1 h-full px-1 md:px-2 pt-[10px] lg:pt-4">
+    <div className="relative -bottom-[.6px] flex gap-1 h-full px-1 md:px-2 pt-[10px] lg:pt-4">
       {chats.map((chat, _index) => (
-        <ChatItem
+        <ChatTab
           key={chat.id}
           maxWidth={maxWidth}
           active={chat.id === activeChatId}
