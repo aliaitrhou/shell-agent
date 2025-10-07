@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useRef } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import { lexend, montserrat, mplus } from "@/app/fonts";
+import { lexend, mplus } from "@/app/fonts";
 import Image from "next/image";
 import DesktopOverview from "@/public/terminal-overview.png";
 import MobileOverview from "@/public/mobile-overview.png";
@@ -137,7 +137,7 @@ const LandingView: React.FC<Props> = ({
           </button>
         </div>
       </div>
-      <div className="relative w-full min-h-0 flex-1 flex flex-col justify-center items-center gap-10">
+      <div className="relative w-full min-h-0 flex-1 flex flex-col justify-center items-center gap-6">
         <div className="gradient_background_down"></div>
         <div
           className={`${mplus.className} text-white text-xs md:text-sm font-thin flex items-center justify-center gap-3 px-8`}
@@ -160,7 +160,7 @@ const LandingView: React.FC<Props> = ({
             </span>
           </Link>
         </div>
-        <div className="hidden md:block relative w-full max-w-full px-4 md:h-[450px] lg:h-[550px] xl:h-[600px] scale-x-105">
+        <div className="hidden md:block relative w-full max-w-full px-4 md:h-[450px] lg:h-[500px] xl:h-[570px]">
           <Image
             src={DesktopOverview}
             alt="Terminal overview preview"

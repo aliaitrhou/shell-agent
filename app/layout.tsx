@@ -4,7 +4,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { Analytics } from "@vercel/analytics/react";
 import { firaCode, mplus, lexend, montserrat } from "./fonts";
-import Header from "@/components/ui/header";
 import ClinetLayout from "@/components/clinet-layout";
 
 const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
